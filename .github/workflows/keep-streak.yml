@@ -2,26 +2,26 @@ name: Daily Streak Update
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # Every day at 9AM UTC
-  workflow_dispatch:      # <- now properly indented under `on`
+    - cron: '0 9 * * *' # Daily at 9 AM UTC
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # REQUIRED to allow push with GITHUB_TOKEN
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Write timestamp
+      - name: Update timestamp
         run: echo "Last updated: $(date -u)" > last-updated.txt
 
       - name: Commit and push
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull origin main --rebase
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add last-updated.txt
-          git commit -m "📆 Daily streak update" || echo "No changes"
-          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git
+          git commit -m "📆 Daily streak update" || echo "No changes to commit"
+          git push
