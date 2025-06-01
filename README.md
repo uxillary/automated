@@ -1,5 +1,7 @@
 # 🟢 Automated
 
+[![.github/workflows/keep-streak.yml](https://github.com/uxillary/automated/actions/workflows/keep-streak.yml/badge.svg)](https://github.com/uxillary/automated/actions/workflows/keep-streak.yml)
+
 > ✨ A repo that does absolutely nothing...  
 > ...except **everything I need**.
 
