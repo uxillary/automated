@@ -1,0 +1,49 @@
+name: YouTube data
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+      - name: Fetch YouTube stats
+        env:
+          API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          CHANNEL_ID=UCSBP35Fbo5Ka4XB4k1q8lAA
+
+          STATS=$(curl -s "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=$CHANNEL_ID&key=$API_KEY")
+
+          SUBS=$(echo "$STATS" | jq -r '.items[0].statistics.subscriberCount')
+          VIDEOS=$(echo "$STATS" | jq -r '.items[0].statistics.videoCount')
+
+          echo "[$DATE] Subscribers: $SUBS | Videos: $VIDEOS" >> youtube-stats.txt
+
+      - name: Commit and push YouTube stats
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase || true
+          git add youtube-stats.txt
+          git commit -m "📺 Logged YouTube subscriber + video count" || echo "No changes"
+          git push
