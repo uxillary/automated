@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 9 * * *'  # Daily at 9AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Hello World
+        run: echo Hello, world!
+
+      - name: Run demo script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+      - name: Update timestamp file
+        run: echo 'Last updated: $(date -u)' > last-updated.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add last-updated.txt
+          git commit -m "📆 Daily streak update" || echo "No chan
