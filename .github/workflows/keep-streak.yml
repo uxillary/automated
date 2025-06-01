@@ -3,7 +3,7 @@ name: Daily Streak Update
 on:
   schedule:
     - cron: '0 9 * * *'  # Every day at 9AM UTC
-  workflow_dispatch:
+  workflow_dispatch:      # <- now properly indented under `on`
 
 jobs:
   update:
