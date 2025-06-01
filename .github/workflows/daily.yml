@@ -29,7 +29,9 @@ jobs:
           echo test, and deploy your project.
 
       - name: Update timestamp file
-        run: echo 'Last updated: $(date -u)' > last-updated.txt
+        run: |
+          DATE=$(date -u)
+          echo "Last updated: $DATE" > last-updated.txt
 
       - name: Commit and push changes
         run: |
