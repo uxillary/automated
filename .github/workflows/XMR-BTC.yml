@@ -31,8 +31,8 @@ jobs:
       - name: Fetch BTC & XMR prices
         run: |
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          
-          BTC=$(curl -s https://api.coindesk.com/v1/bpi/currentprice/BTC.json | jq -r ".bpi.USD.rate")
+
+          BTC=$(curl -s https://api.coindesk.com/v1/bpi/currentprice.json | jq -r ".bpi.USD.rate_float")
           echo "[$DATE] BTC: $BTC USD" >> btc.txt
 
           XMR=$(curl -s https://api.coinpaprika.com/v1/tickers/xmr-monero | jq -r ".quotes.USD.price")
