@@ -4,6 +4,7 @@
 > ...except **everything I need**.
 
 This project runs a daily GitHub Action that updates a timestamp file to keep my contribution graph green. 🌱
+I will add other automated tasks here in future.
 
 ![Daily Streak Status](https://github.com/uxillary/automated/actions/workflows/daily.yml/badge.svg)
 
