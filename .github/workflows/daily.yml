@@ -1,4 +1,4 @@
-name: CI
+name: Daily Streak
 
 on:
   push:
