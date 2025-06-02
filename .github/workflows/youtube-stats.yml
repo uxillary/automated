@@ -1,0 +1,52 @@
+name: youTube stats
+env:
+    API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+    run: |
+    DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+
+    mkdir -p youtube
+
+    CHANNEL_IDS=("UCSBP35Fbo5Ka4XB4k1q8lAA" "UCQ1vRrmmQtjAjWV1Xa0cCrg" "UClLdLKAF2G5M5zSmM3XMkOg" "UC5qhdhNZQhD1gj8XqfBYEg" "UCtCdgJ40L_jdFUAZR2MiYzg")
+    CHANNEL_NAMES=("Main" "Fortnite" "Troubleshooting" "Adamsmr" "AJ Studios")
+
+    total_subs=0
+    total_vids=0
+    total_views=0
+
+    echo "channel_id,name,subscribers,videos,views" > youtube/youtube.csv
+    echo '{' > youtube/youtube.json
+    echo '  "updated": "'"$DATE"'",' >> youtube/youtube.json
+    echo '  "channels": [' >> youtube/youtube.json
+
+    for i in "${!CHANNEL_IDS[@]}"; do
+      CHANNEL_ID="${CHANNEL_IDS[$i]}"
+      NAME="${CHANNEL_NAMES[$i]}"
+      STATS=$(curl -s "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=$CHANNEL_ID&key=$API_KEY")
+      SUBS=$(echo "$STATS" | jq -r '.items[0].statistics.subscriberCount')
+      VIDS=$(echo "$STATS" | jq -r '.items[0].statistics.videoCount')
+      VIEWS=$(echo "$STATS" | jq -r '.items[0].statistics.viewCount')
+
+      echo "$CHANNEL_ID,$NAME,$SUBS,$VIDS,$VIEWS" >> youtube/youtube.csv
+
+      [[ $i -gt 0 ]] && echo ',' >> youtube/youtube.json
+      echo '    {' >> youtube/youtube.json
+      echo '      "id": "'"$CHANNEL_ID"'",' >> youtube/youtube.json
+      echo '      "name": "'"$NAME"'",' >> youtube/youtube.json
+      echo '      "subscribers": '"$SUBS"',' >> youtube/youtube.json
+      echo '      "videos": '"$VIDS"',' >> youtube/youtube.json
+      echo '      "views": '"$VIEWS"'' >> youtube/youtube.json
+      echo -n '    }' >> youtube/youtube.json
+
+      total_subs=$((total_subs + SUBS))
+      total_vids=$((total_vids + VIDS))
+      total_views=$((total_views + VIEWS))
+    done
+
+    echo '' >> youtube/youtube.json
+    echo '  ],' >> youtube/youtube.json
+    echo '  "totals": {' >> youtube/youtube.json
+    echo '    "subscribers": '"$total_subs"',' >> youtube/youtube.json
+    echo '    "videos": '"$total_vids"',' >> youtube/youtube.json
+    echo '    "views": '"$total_views"'' >> youtube/youtube.json
+    echo '  }' >> youtube/youtube.json
+    echo '}' >> youtube/youtube.json
