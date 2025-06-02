@@ -43,12 +43,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          git stash --include-untracked
-          git pull origin main --rebase
-          git stash pop || true
-      
-          git add youtube/
-          git commit -m "📊 Updated YouTube stats JSON + CSV in /youtube" || echo "No changes"
+          git pull origin main --rebase || true
+          git add youtube-stats.txt
+          git commit -m "📺 Logged YouTube subscriber + video count" || echo "No changes"
           git push
-
