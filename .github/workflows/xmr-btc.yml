@@ -1,53 +1,47 @@
-name: XMR & BTC
+name: XMR-BTC Price Tracker
 
 on:
-  push:
-    paths:
-      - '.github/workflows/xmr-btc.yml'
-      - 'xmr-btc/**'
-  pull_request:
-    branches: [ "main" ]
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
+    - cron: '0 8,14,20 * * *'  # Every day at 08:00, 14:00, and 20:00 UTC
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  fetch_prices:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      - name: Run a multi-line script
+      - name: Fetch XMR and BTC Prices
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p xmr-btc docs
 
-      - name: Fetch BTC & XMR prices
-        run: |
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
+          XMR=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd" | jq -r '.monero.usd')
           BTC=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd" | jq -r '.bitcoin.usd')
-          echo "[$DATE] BTC: $BTC USD" >> btc.txt
 
-          XMR=$(curl -s https://api.coinpaprika.com/v1/tickers/xmr-monero | jq -r ".quotes.USD.price")
-          echo "[$DATE] XMR: $XMR USD" >> xmr.txt
+          # Append to CSV history
+          echo "$DATE,$XMR,$BTC" >> xmr-btc/history.csv
 
-      - name: Commit and push price logs
+          # Write snapshot JSON
+          echo "{
+            \"date\": \"$DATE\",
+            \"XMR\": \"$XMR\",
+            \"BTC\": \"$BTC\"
+          }" > docs/xmr-btc.json
+
+      - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add youtube/ btc.txt xmr.txt
-          git commit -m "🔄 Auto update: BTC, XMR & YouTube stats" || echo "No changes"
+          git add xmr-btc/history.csv docs/xmr-btc.json
+          git commit -m "💱 XMR/BTC price update" || echo "No changes"
           git push
-          
