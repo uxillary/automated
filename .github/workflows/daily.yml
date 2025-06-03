@@ -2,9 +2,9 @@ name: Daily Streak
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - '.github/workflows/daily.yml'
+      - 'last-updated.txt'
   schedule:
     - cron: '0 9 * * *'  # Daily at 9AM UTC
   workflow_dispatch:
@@ -19,14 +19,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Run Hello World
-        run: echo Hello, world!
-
-      - name: Run demo script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
 
       - name: Update timestamp file
         run: |
