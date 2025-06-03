@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/youtube-combined.yml'
       - 'youtube/**'
+      - 'docs/youtube.json'
   workflow_dispatch:
   schedule:
     - cron: '0 8,14,20 * * *' # Run 3 times daily at 08:00, 14:00, 20:00 UTC
@@ -27,7 +28,7 @@ jobs:
         env:
           API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          mkdir -p youtube
+          mkdir -p youtube docs
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
           echo "date,channel,videos,subscribers,views" > youtube/youtube.csv
           echo "{" > youtube/youtube.json
@@ -52,6 +53,7 @@ jobs:
 
           sed -i '$ s/,$//' youtube/youtube.json
           echo "}" >> youtube/youtube.json
+          cp youtube/youtube.json docs/youtube.json
 
       - name: Commit and push
         run: |
@@ -60,6 +62,6 @@ jobs:
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add youtube/
-          git commit -m "📊 YouTube stats update" || echo "No changes"
+          git add youtube/ docs/youtube.json
+          git commit -m "📊 YouTube stats update (and export to docs)" || echo "No changes"
           git push
