@@ -35,6 +35,43 @@
       text-align: right;
     }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+fetch('youtube.json')
+  .then(res => res.json())
+  .then(data => {
+    const ctx = document.getElementById('subsChart').getContext('2d');
+    const labels = Object.keys(data);
+    const subs = labels.map(k => data[k].subscribers);
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Subscribers',
+          data: subs,
+          backgroundColor: '#4285f4'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Subscribers by Channel' }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: val => val.toLocaleString()
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
 </head>
 <body>
 
@@ -61,10 +98,16 @@
       const tbody = document.querySelector('#statsTable tbody');
       tbody.innerHTML = '';
 
+      const labels = [];
+      const subs = [];
+
       Object.entries(data).forEach(([channel, stats]) => {
+        labels.push(channel.replace(/_/g, ' '));
+        subs.push(stats.subscribers);
+
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td class="channel">${channel.replace(/_/g, ' ')}</td>
+          <td>${channel}</td>
           <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
           <td class="right">${Number(stats.videos).toLocaleString()}</td>
           <td class="right">${Number(stats.views).toLocaleString()}</td>
@@ -72,12 +115,38 @@
         `;
         tbody.appendChild(row);
       });
-    })
-    .catch(err => {
-      console.error('Error loading data:', err);
-      document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+
+      // Draw Chart
+      const ctx = document.getElementById('subsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Subscribers',
+            data: subs,
+            backgroundColor: '#ff6384'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Subscribers by Channel' }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: val => val.toLocaleString()
+              }
+            }
+          }
+        }
+      });
     });
 </script>
+
 
 </body>
 </html>
