@@ -5,9 +5,10 @@ on:
     paths:
       - '.github/workflows/youtube-combined.yml'
       - 'youtube/**'
-  workflow_dispatch:
+      - 'docs/youtube/**'
   schedule:
-    - cron: '0 8 */2 * *' # Run every 48 hrs at 8am
+    - cron: '0 */48 * * *'  # Every 48 hours
+  workflow_dispatch:
 
 permissions:
   contents: write
