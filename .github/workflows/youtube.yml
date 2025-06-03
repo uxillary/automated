@@ -1,0 +1,65 @@
+name: YouTube Combined Stats
+
+on:
+  push:
+    paths:
+      - '.github/workflows/youtube-combined.yml'
+      - 'youtube/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8,14,20 * * *' # Run 3 times daily at 08:00, 14:00, 20:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  youtube_stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install jq -y
+
+      - name: Fetch YouTube stats
+        env:
+          API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          mkdir -p youtube
+          DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          echo "date,channel,videos,subscribers,views" > youtube/youtube.csv
+          echo "{" > youtube/youtube.json
+
+          CHANNELS=( \
+            "UCSBP35Fbo5Ka4XB4k1q8lAA:Main" \
+            "UCQ1vRrmmQtjAjWV1Xa0cCrg:Fortnite" \
+            "UClLdLKAF2G5M5zSmM3XMkOg:Troubleshooting" \
+            "UC5qhdHzN2qOhlgJ8XfqBEYg:Adamsmr" \
+            "UCtCdgJ40L_jdFUAZR2MiYzg:AJ_Studios" )
+
+          for entry in "${CHANNELS[@]}"; do
+            IFS=":" read -r CHANNEL_ID LABEL <<< "$entry"
+            STATS=$(curl -s "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=$CHANNEL_ID&key=$API_KEY")
+            SUBS=$(echo "$STATS" | jq -r '.items[0].statistics.subscriberCount')
+            VIDEOS=$(echo "$STATS" | jq -r '.items[0].statistics.videoCount')
+            VIEWS=$(echo "$STATS" | jq -r '.items[0].statistics.viewCount')
+
+            echo "$DATE,$LABEL,$VIDEOS,$SUBS,$VIEWS" >> youtube/youtube.csv
+            echo "  \"$LABEL\": { \"date\": \"$DATE\", \"videos\": $VIDEOS, \"subscribers\": $SUBS, \"views\": $VIEWS }," >> youtube/youtube.json
+          done
+
+          sed -i '$ s/,$//' youtube/youtube.json
+          echo "}" >> youtube/youtube.json
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked
+          git pull origin main --rebase
+          git stash pop || true
+          git add youtube/
+          git commit -m "📊 YouTube stats update" || echo "No changes"
+          git push
