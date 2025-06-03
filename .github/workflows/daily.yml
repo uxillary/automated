@@ -1,10 +1,6 @@
 name: Daily Streak
 
 on:
-  push:
-    paths:
-      - '.github/workflows/daily.yml'
-      - 'last-updated.txt'
   schedule:
     - cron: '0 9 * * *'  # Daily at 9AM UTC
   workflow_dispatch:
