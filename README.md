@@ -24,12 +24,7 @@ Everything updates **automatically**, cleanly logged in JSON, CSV, or TXT format
 
 ### 🎥 YouTube Stats
 
-- Collects data for:
-  - Main
-  - Fortnite
-  - Troubleshooting
-  - Adamsmr
-  - AJ Studios
+- Collects data across my 5 channels
 - Updates every **48 hours**
 - JSON snapshot → `docs/youtube.json`
 - CSV history → `youtube/youtube.csv`
