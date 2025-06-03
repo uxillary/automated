@@ -13,6 +13,9 @@
       .then(res => res.json())
       .then(data => {
         document.getElementById('stats').textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById('stats').textContent = 'Error loading data: ' + err;
       });
   </script>
 </body>
