@@ -2,11 +2,13 @@ name: XMR & BTC
 
 on:
   push:
-    branches: [ "main" ]
+    paths:
+      - '.github/workflows/xmr-btc.yml'
+      - 'xmr-btc/**'
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '1 */48 * * *'  # Every 48 hours
+    - cron: '0 */6 * * *'  # Every 6 hours
   workflow_dispatch:
 
 permissions:
