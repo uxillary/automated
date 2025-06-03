@@ -7,7 +7,7 @@ on:
       - 'youtube/**'
       - 'docs/youtube/**'
   schedule:
-    - cron: '0 */48 * * *'  # Every 48 hours
+    - cron: '0 */24 * * *'  # Every 24 hours
   workflow_dispatch:
 
 permissions:
@@ -30,7 +30,14 @@ jobs:
         run: |
           mkdir -p docs youtube
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          echo "date,channel,videos,subscribers,views" > youtube/youtube.csv
+
+          # Append to this file over time (historical)
+          HISTORY_FILE="youtube/youtube-history.csv"
+          if [ ! -f "$HISTORY_FILE" ]; then
+            echo "date,channel,videos,subscribers,views" > "$HISTORY_FILE"
+          fi
+
+          # Overwrite this file each time (latest snapshot)
           echo "{" > docs/youtube.json
 
           CHANNELS=( \
@@ -47,7 +54,7 @@ jobs:
             VIDEOS=$(echo "$STATS" | jq -r '.items[0].statistics.videoCount')
             VIEWS=$(echo "$STATS" | jq -r '.items[0].statistics.viewCount')
 
-            echo "$DATE,$LABEL,$VIDEOS,$SUBS,$VIEWS" >> youtube/youtube.csv
+            echo "$DATE,$LABEL,$VIDEOS,$SUBS,$VIEWS" >> "$HISTORY_FILE"
             echo "  \"$LABEL\": { \"date\": \"$DATE\", \"videos\": $VIDEOS, \"subscribers\": $SUBS, \"views\": $VIEWS }," >> docs/youtube.json
           done
 
@@ -62,5 +69,5 @@ jobs:
           git pull origin main --rebase
           git stash pop || true
           git add youtube/ docs/youtube.json
-          git commit -m "📊 YouTube stats update to /docs" || echo "No changes"
+          git commit -m "📊 YouTube stats update (snapshot + history)" || echo "No changes"
           git push
