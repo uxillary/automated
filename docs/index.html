@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YouTube Stats Viewer</title>
+  <meta charset="UTF-8" />
+</head>
+<body>
+  <h1>YouTube Stats</h1>
+  <pre id="stats">Loading...</pre>
+
+  <script>
+    fetch('youtube.json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('stats').textContent = JSON.stringify(data, null, 2);
+      });
+  </script>
+</body>
+</html>
