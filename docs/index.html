@@ -3,20 +3,81 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f7fa;
+      padding: 2rem;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    .channel {
+      font-weight: bold;
+    }
+    .right {
+      text-align: right;
+    }
+  </style>
 </head>
 <body>
-  <h1>YouTube Stats</h1>
-  <pre id="stats">Loading...</pre>
 
-  <script>
-    fetch('youtube.json')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('stats').textContent = JSON.stringify(data, null, 2);
-      })
-      .catch(err => {
-        document.getElementById('stats').textContent = 'Error loading data: ' + err;
+<h1>YouTube Stats</h1>
+<table id="statsTable">
+  <thead>
+    <tr>
+      <th>Channel</th>
+      <th>Subscribers</th>
+      <th>Videos</th>
+      <th>Views</th>
+      <th>Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="5">Loading...</td></tr>
+  </tbody>
+</table>
+
+<script>
+  fetch('youtube.json')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.querySelector('#statsTable tbody');
+      tbody.innerHTML = '';
+
+      Object.entries(data).forEach(([channel, stats]) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="channel">${channel.replace(/_/g, ' ')}</td>
+          <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
+          <td class="right">${Number(stats.videos).toLocaleString()}</td>
+          <td class="right">${Number(stats.views).toLocaleString()}</td>
+          <td class="right">${stats.date}</td>
+        `;
+        tbody.appendChild(row);
       });
-  </script>
+    })
+    .catch(err => {
+      console.error('Error loading data:', err);
+      document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+    });
+</script>
+
 </body>
 </html>
