@@ -34,119 +34,69 @@
     .right {
       text-align: right;
     }
+    .totals {
+      font-weight: bold;
+      background: #e8f4ff;
+    }
   </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-fetch('youtube.json')
-  .then(res => res.json())
-  .then(data => {
-    const ctx = document.getElementById('subsChart').getContext('2d');
-    const labels = Object.keys(data);
-    const subs = labels.map(k => data[k].subscribers);
-
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Subscribers',
-          data: subs,
-          backgroundColor: '#4285f4'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: { display: true, text: 'Subscribers by Channel' }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: val => val.toLocaleString()
-            }
-          }
-        }
-      }
-    });
-  });
-</script>
 </head>
 <body>
+  <h1>YouTube Stats</h1>
+  <table id="statsTable">
+    <thead>
+      <tr>
+        <th>Channel</th>
+        <th>Subscribers</th>
+        <th>Videos</th>
+        <th>Views</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="5">Loading...</td></tr>
+    </tbody>
+  </table>
 
-<h1>YouTube Stats</h1>
-<table id="statsTable">
-  <thead>
-    <tr>
-      <th>Channel</th>
-      <th>Subscribers</th>
-      <th>Videos</th>
-      <th>Views</th>
-      <th>Last Updated</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td colspan="5">Loading...</td></tr>
-  </tbody>
-</table>
+  <script>
+    fetch('youtube.json')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#statsTable tbody');
+        tbody.innerHTML = '';
 
-<script>
-  fetch('youtube.json')
-    .then(res => res.json())
-    .then(data => {
-      const tbody = document.querySelector('#statsTable tbody');
-      tbody.innerHTML = '';
+        let totalSubs = 0, totalVids = 0, totalViews = 0;
 
-      const labels = [];
-      const subs = [];
+        Object.entries(data).forEach(([channel, stats]) => {
+          totalSubs += Number(stats.subscribers);
+          totalVids += Number(stats.videos);
+          totalViews += Number(stats.views);
 
-      Object.entries(data).forEach(([channel, stats]) => {
-        labels.push(channel.replace(/_/g, ' '));
-        subs.push(stats.subscribers);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="channel">${channel.replace(/_/g, ' ')}</td>
+            <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
+            <td class="right">${Number(stats.videos).toLocaleString()}</td>
+            <td class="right">${Number(stats.views).toLocaleString()}</td>
+            <td class="right">${stats.date}</td>
+          `;
+          tbody.appendChild(row);
+        });
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${channel}</td>
-          <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
-          <td class="right">${Number(stats.videos).toLocaleString()}</td>
-          <td class="right">${Number(stats.views).toLocaleString()}</td>
-          <td class="right">${stats.date}</td>
+        const totalsRow = document.createElement('tr');
+        totalsRow.className = 'totals';
+        totalsRow.innerHTML = `
+          <td class="right">Total</td>
+          <td class="right">${totalSubs.toLocaleString()}</td>
+          <td class="right">${totalVids.toLocaleString()}</td>
+          <td class="right">${totalViews.toLocaleString()}</td>
+          <td></td>
         `;
-        tbody.appendChild(row);
+        tbody.appendChild(totalsRow);
+      })
+      .catch(err => {
+        console.error('Error loading data:', err);
+        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
       });
-
-      // Draw Chart
-      const ctx = document.getElementById('subsChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Subscribers',
-            data: subs,
-            backgroundColor: '#ff6384'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Subscribers by Channel' }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: val => val.toLocaleString()
-              }
-            }
-          }
-        }
-      });
-    });
-</script>
-
-
+  </script>
 </body>
 </html>
