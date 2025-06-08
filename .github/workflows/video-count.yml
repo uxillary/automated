@@ -69,6 +69,6 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@users.noreply.github.com"
-          git add youtube_video_count.json
+          git add data/youtube/youtube_video_count.json
           git commit -m "Update YouTube video counts" || echo "No changes to commit"
           git push
