@@ -25,6 +25,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add last-updated.txt
+          git add data/last-updated.txt
           git commit -m "📆 Daily streak update" || echo "No changes"
           git push
