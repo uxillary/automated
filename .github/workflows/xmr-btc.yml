@@ -33,15 +33,15 @@ jobs:
             \"date\": \"$DATE\",
             \"XMR\": \"$XMR\",
             \"BTC\": \"$BTC\"
-          }" > docs/xmr-btc.json
+          }" > xmr-btc/xmr-btc.json
 
       - name: Commit and push
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "uxillary"
+          git config --global user.email "adamjch@proton.me"
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add xmr-btc/history.csv docs/xmr-btc.json
+          git add xmr-btc/history.csv xmr-btc/xmr-btc.json
           git commit -m "💱 XMR/BTC price update" || echo "No changes"
           git push
