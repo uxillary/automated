@@ -18,22 +18,20 @@ jobs:
 
       - name: Fetch XMR and BTC Prices
         run: |
-          mkdir -p xmr-btc docs
-
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
           XMR=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd" | jq -r '.monero.usd')
           BTC=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd" | jq -r '.bitcoin.usd')
 
           # Append to CSV history
-          echo "$DATE,$XMR,$BTC" >> xmr-btc/history.csv
+          echo "$DATE,$XMR,$BTC" >> data/xmr-btc/history.csv
 
           # Write snapshot JSON
           echo "{
             \"date\": \"$DATE\",
             \"XMR\": \"$XMR\",
             \"BTC\": \"$BTC\"
-          }" > xmr-btc/xmr-btc.json
+          }" > data/xmr-btc/xmr-btc.json
 
       - name: Commit and push
         run: |
@@ -42,6 +40,6 @@ jobs:
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add xmr-btc/history.csv xmr-btc/xmr-btc.json
+          git add data/xmr-btc/history.csv data/xmr-btc/xmr-btc.json
           git commit -m "💱 XMR/BTC price update" || echo "No changes"
           git push
