@@ -34,7 +34,7 @@ jobs:
             TOTAL=$((TOTAL + COUNT))
           done
 
-          echo "Total YouTube videos: $TOTAL" > data/video-count.txt
+          echo "$TOTAL" > data/video-count.txt
 
       - name: Commit and push
         run: |
