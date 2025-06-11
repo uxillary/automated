@@ -1,0 +1,34 @@
+name: Update Stats
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # runs daily at 2am UTC
+  workflow_dispatch:     # allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Run stat updater
+        env:
+          GH_TOKEN: ${{ secrets.API_GITHUB }}
+        run: node scripts/update_stats.js
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add docs/*.txt
+          git commit -m "Update GitHub stats [skip ci]" || echo "No changes"
+          git push
