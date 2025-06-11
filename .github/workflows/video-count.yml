@@ -34,12 +34,12 @@ jobs:
             TOTAL=$((TOTAL + COUNT))
           done
 
-          echo "$TOTAL" > data/video-count.txt
+          echo "$TOTAL" > docs/video-count.txt
 
       - name: Commit and push
         run: |
           git config --global user.name "uxillary"
           git config --global user.email "adam@ajstudios.dev"
-          git add data/video-count.txt
+          git add docs/video-count.txt
           git diff --cached --quiet || git commit -m "📺 Update video count"
           git push
