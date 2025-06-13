@@ -1,82 +1,98 @@
-# 🟢 Automated
-
-> ✨ A repo that does absolutely nothing...  
-> ...except **everything I need**.
 
 ![Daily Streak Status](https://github.com/uxillary/automated/actions/workflows/daily.yml/badge.svg)
 
-A collection of automated GitHub Actions tracking various stats and updates across my projects.
-I will add other automated tasks here in future.
+# 📊 automated
+
+Welcome to **automated** – a GitHub-powered dashboard for tracking YouTube channel statistics, cryptocurrency prices (XMR + BTC), and daily GitHub activity streaks using GitHub Actions and GitHub Pages.
 
 ## 🔧 What This Repo Does
 
-This repo runs background GitHub Actions to:
-
-- 🟦 **Fetch YouTube stats** for all my channels (subs, videos, views)
-- 🟠 **Track XMR + BTC mining stats** (via SupportXMR and Freebitco.in)
-- 🟩 **Update a daily streak file** to maintain GitHub contribution activity, as seen in my youtube video
-
-Everything updates **automatically**, cleanly logged in JSON, CSV, or TXT formats for later use in dashboards, visualizations, or integrations.
+This repo uses GitHub Actions to automatically:
+- Fetch **YouTube stats** (subscribers, views, videos) from multiple channels
+- Track **Monero (XMR)** and **Bitcoin (BTC)** prices 3x daily
+- Keep a **daily commit streak** alive with a timestamp file
+- Display everything neatly on a public **GitHub Pages dashboard**
 
 ---
 
-## 🚀 Features
+## 📺 YouTube Stats Tracker
 
-### 🎥 YouTube Stats
+- Pulls stats from 5 YouTube channels
+- Appends to a `youtube.csv` for long-term tracking
+- Updates a current snapshot in `docs/youtube.json`
+- Outputs hosted live via GitHub Pages
 
-- Collects data across my 5 channels
-- Updates every **48 hours**
-- JSON snapshot → `docs/youtube.json`
-- CSV history → `youtube/youtube.csv`
-- View stats: [GitHub Page Link](https://uxillary.github.io/automated/) (once you’ve published)
+📁 Files:
+- `youtube/youtube.csv` – historical stats
+- `docs/youtube.json` – latest snapshot (used on website)
 
----
-
-### ₿ XMR + BTC Tracker
-
-- Gets your **current Monero price** (SupportXMR)
-- Tracks **btc price** 
-- Updates **3x daily**
-- Output: `crypto/xmr-btc.json` (or CSV if added later)
+⏱ Schedule: every **48 hours**
 
 ---
 
-### 📆 Daily Streak Keeper
+## 🪙 XMR & BTC Price Logger
 
-- Writes `last-updated.txt` daily at 9AM UTC
-- Helps maintain your green contribution graph ✅
+- Fetches prices from CoinGecko
+- Saves to `docs/xmr-btc.json` and `crypto/xmr-btc.csv`
+- Useful for price widgets, system tray apps, or analytics
 
----
+📁 Files:
+- `docs/xmr-btc.json` – current price snapshot
+- `crypto/xmr-btc.csv` – historical log
 
-## 🧪 GitHub Actions Used
-
-| Workflow            | Trigger        | Output Location     |
-|---------------------|----------------|----------------------|
-| youtube.yml         | 48h + Manual   | `docs/youtube.json` |
-| xmr-btc.yml         | 3x daily       | `crypto/xmr-btc.*`  |
-| daily.yml           | Daily at 9AM   | `last-updated.txt`  |
+⏱ Schedule: 3x per day (08:00, 14:00, 20:00 UTC)
 
 ---
 
-## 🪄 Want to Use This?
+## 📆 Daily Streak Keeper
 
-1. **Fork this repo**
-2. Go to `Settings > Secrets and Variables > Actions` and add:
+- Updates a timestamp file (`last-updated.txt`) once per day
+- Helps maintain a daily commit streak even with no changes
+- Minimal footprint, runs silently without pushing other files
+
+📁 File:
+- `last-updated.txt` – updated once daily
+
+⏱ Schedule: every **day at 09:00 UTC**
+
+---
+
+## 🌐 GitHub Pages Dashboard
+
+Live site:
+➡️ https://uxillary.github.io/automated/
+
+This renders the data visually with JavaScript. JSON is used for live stats display, while CSV files power long-term tracking.
+
+---
+
+## 🛠️ Setup Guide
+
+To fork and use this yourself:
+1. Create a **GitHub Personal Access Token** (for pushing data)
+2. Get a **YouTube Data API Key**
+3. Set up the required **GitHub Secrets**:
    - `YOUTUBE_API_KEY`
-   - Any other secrets for your own endpoints
-3. Enable GitHub Pages (use `/docs` folder)
-4. Customise workflows or HTML page as needed!
+
+Optional (for commit stats, crypto, and streaks):
+- Make sure GitHub Pages is enabled on `/docs`
+- Set up any additional APIs if using altcoins
 
 ---
 
-## 🔗 Related Projects
+## 🧠 Future Ideas
 
-- Personal dashboard site: [`AJ Studios`](https://ajstudios.dev)
-- GitHub profile: [`@admjski`](https://github.com/uxillary)
+- Chart.js or D3.js visuals
+- Weekly summary card generator
+- Discord bot integration
+- Telegram alerts
+- Webhooks for price thresholds
 
 ---
 
-## 📎 License
+## 👨‍💻 Maintained by:
+[**@uxillary**](https://github.com/uxillary) / AJ Studios  
+Inspired by automation, powered by caffeine, sustained by daily commits ☕
 
-MIT — Use freely, credit appreciated.
+---
 
