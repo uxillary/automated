@@ -3,7 +3,6 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -20,7 +19,6 @@
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 3rem;
     }
     th, td {
       padding: 1rem;
@@ -40,16 +38,10 @@
       font-weight: bold;
       background: #e8f4ff;
     }
-    canvas {
-      max-width: 100%;
-    }
   </style>
 </head>
 <body>
   <h1>YouTube Stats</h1>
-
-  <canvas id="growthChart" width="600" height="300"></canvas>
-
   <table id="statsTable">
     <thead>
       <tr>
@@ -65,7 +57,48 @@
     </tbody>
   </table>
 
-<script>
+  <script>
+    fetch('youtube.json')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#statsTable tbody');
+        tbody.innerHTML = '';
+
+        let totalSubs = 0, totalVids = 0, totalViews = 0;
+
+        Object.entries(data).forEach(([channel, stats]) => {
+          totalSubs += Number(stats.subscribers);
+          totalVids += Number(stats.videos);
+          totalViews += Number(stats.views);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="channel">${channel.replace(/_/g, ' ')}</td>
+            <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
+            <td class="right">${Number(stats.videos).toLocaleString()}</td>
+            <td class="right">${Number(stats.views).toLocaleString()}</td>
+            <td class="right">${stats.date}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        const totalsRow = document.createElement('tr');
+        totalsRow.className = 'totals';
+        totalsRow.innerHTML = `
+          <td class="right">Total</td>
+          <td class="right">${totalSubs.toLocaleString()}</td>
+          <td class="right">${totalVids.toLocaleString()}</td>
+          <td class="right">${totalViews.toLocaleString()}</td>
+          <td></td>
+        `;
+        tbody.appendChild(totalsRow);
+      })
+      .catch(err => {
+        console.error('Error loading data:', err);
+        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+      });
+  </script>
+  <script>
 async function fetchData() {
   const text = await (await fetch('youtube-history.csv')).text();
   const rows = text.trim().split('\n');
