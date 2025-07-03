@@ -113,25 +113,29 @@
   <!-- Chart JS -->
   <script>
     async function fetchData() {
-      const text = await (await fetch('../data/youtube/youtube-history.csv')).text(); // Correct path
+      const text = await (await fetch('../data/youtube/youtube-history.csv')).text();
       const rows = text.trim().split('\n');
       const headers = rows.shift().split(',');
 
       const dailyTotals = {};
 
       rows.forEach(row => {
-        const [channel, date, videos, subscribers, views] = row.split(',');
+        if (!row.trim()) return; // skip empty lines
+
+        const parts = row.split(',');
+        if (parts.length < 5) return; // skip malformed rows
+
+        const [channel, date, videos, subscribers, views] = parts;
 
         if (!dailyTotals[date]) {
           dailyTotals[date] = { subs: 0, vids: 0, views: 0 };
         }
 
-        dailyTotals[date].subs += Number(subscribers);
-        dailyTotals[date].vids += Number(videos);
-        dailyTotals[date].views += Number(views);
+        dailyTotals[date].subs += Number(subscribers) || 0;
+        dailyTotals[date].vids += Number(videos) || 0;
+        dailyTotals[date].views += Number(views) || 0;
       });
 
-      // Prepare data for charting
       const labels = Object.keys(dailyTotals).sort();
       const subsData = labels.map(date => dailyTotals[date].subs);
       const vidsData = labels.map(date => dailyTotals[date].vids);
@@ -139,6 +143,7 @@
 
       return { labels, subsData, vidsData, viewsData };
     }
+
 
     async function drawChart() {
       const { labels, subsData, vidsData, viewsData } = await fetchData();
