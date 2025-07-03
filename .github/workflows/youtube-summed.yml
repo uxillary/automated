@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   youtube_stats:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
 
     steps:
