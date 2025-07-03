@@ -3,6 +3,7 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -19,6 +20,7 @@
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 3rem;
     }
     th, td {
       padding: 1rem;
@@ -38,10 +40,16 @@
       font-weight: bold;
       background: #e8f4ff;
     }
+    canvas {
+      max-width: 100%;
+    }
   </style>
 </head>
 <body>
   <h1>YouTube Stats</h1>
+
+  <canvas id="growthChart" width="600" height="300"></canvas>
+
   <table id="statsTable">
     <thead>
       <tr>
@@ -66,6 +74,9 @@
 
         let totalSubs = 0, totalVids = 0, totalViews = 0;
 
+        let labels = [];
+        let subsData = [];
+
         Object.entries(data).forEach(([channel, stats]) => {
           totalSubs += Number(stats.subscribers);
           totalVids += Number(stats.videos);
@@ -80,6 +91,10 @@
             <td class="right">${stats.date}</td>
           `;
           tbody.appendChild(row);
+
+          // Build chart data
+          labels.push(stats.date);
+          subsData.push(Number(stats.subscribers));
         });
 
         const totalsRow = document.createElement('tr');
@@ -92,6 +107,34 @@
           <td></td>
         `;
         tbody.appendChild(totalsRow);
+
+        // Draw the chart
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Subscribers',
+              data: subsData,
+              borderColor: '#1e90ff',
+              backgroundColor: 'rgba(30,144,255,0.2)',
+              tension: 0.3,
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { title: { display: true, text: 'Date' } },
+              y: { beginAtZero: false, title: { display: true, text: 'Subscribers' } }
+            },
+            plugins: {
+              title: { display: true, text: 'YouTube Subscriber Growth Over Time' },
+              tooltip: { mode: 'index', intersect: false }
+            }
+          }
+        });
       })
       .catch(err => {
         console.error('Error loading data:', err);
