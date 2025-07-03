@@ -1,35 +1,40 @@
-name: YouTube Totals
+name: Update YouTube Summed CSV
 
 on:
   schedule:
-    - cron: '0 1 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    - cron: '0 2 * * *'  # Runs daily at 2:00 AM UTC
+  workflow_dispatch:  # Manual trigger
 
 jobs:
-  sum_stats:
+  update-csv:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Sum YouTube stats
+        uses: actions/checkout@v3
+
+      - name: Read youtube.json and calculate totals
+        id: calc
         run: |
-          FILE="data/youtube/youtube-history-summed.csv"
-          mkdir -p data/youtube
-          DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          if [ ! -f "$FILE" ]; then
-            echo "date,total_subscribers,total_videos,total_views" > "$FILE"
-          fi
-          TOTAL_SUBS=$(jq '[.[] | .subscribers] | add' docs/youtube.json)
-          TOTAL_VIDEOS=$(jq '[.[] | .videos] | add' docs/youtube.json)
-          TOTAL_VIEWS=$(jq '[.[] | .views] | add' docs/youtube.json)
-          echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> "$FILE"
-      - name: Commit and push totals
+          # Read JSON and sum using jq
+          total_subs=$(jq '[.[] | .subscribers] | add' youtube.json)
+          total_videos=$(jq '[.[] | .videos] | add' youtube.json)
+          total_views=$(jq '[.[] | .views] | add' youtube.json)
+
+          # Set GitHub Action outputs
+          echo "total_subs=$total_subs" >> $GITHUB_ENV
+          echo "total_videos=$total_videos" >> $GITHUB_ENV
+          echo "total_views=$total_views" >> $GITHUB_ENV
+
+      - name: Append new row to CSV
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          DATE=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          echo "$DATE,$total_subs,$total_videos,$total_views" >> data/youtube/youtube-history-summed.csv
+
+      - name: Commit and push changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add data/youtube/youtube-history-summed.csv
-          git commit -m "📈 Update YouTube totals" || echo "No changes"
+          git commit -m "Update YouTube history: $DATE"
           git push
