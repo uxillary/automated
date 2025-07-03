@@ -27,8 +27,8 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+          git config --global user.name "uxillary"
+          git config --global user.email "adam@ajstudios.dev"
           git add docs/*.txt
           git commit -m "Update GitHub stats [skip ci]" || echo "No changes"
           git push

@@ -1,40 +1,93 @@
-name: Update YouTube Summed CSV
+name: YouTube Combined Stats (Summed)
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Runs daily at 2:00 AM UTC
-  workflow_dispatch:  # Manual trigger
+    - cron: '0 */24 * * *'  # Runs daily
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/youtube-summed.yml'
+      - 'youtube/**'
+      - 'docs/youtube/**'
+
+permissions:
+  contents: write
 
 jobs:
-  update-csv:
+  youtube_stats:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Read youtube.json and calculate totals
-        id: calc
+      - name: Install jq
+        run: sudo apt-get install jq -y
+
+      - name: Fetch YouTube stats (Summed)
+        env:
+          API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          # Read JSON and sum using jq
-          total_subs=$(jq '[.[] | .subscribers] | add' youtube.json)
-          total_videos=$(jq '[.[] | .videos] | add' youtube.json)
-          total_views=$(jq '[.[] | .views] | add' youtube.json)
+          mkdir -p docs youtube
+          DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
-          # Set GitHub Action outputs
-          echo "total_subs=$total_subs" >> $GITHUB_ENV
-          echo "total_videos=$total_videos" >> $GITHUB_ENV
-          echo "total_views=$total_views" >> $GITHUB_ENV
+          # Initialize files if missing
+          HISTORY_FILE="data/youtube/youtube-history-sum.csv"
+          SUMMED_FILE="data/youtube/youtube-history-summed.csv"
+          SNAPSHOT_FILE="docs/youtube-sum.json"
 
-      - name: Append new row to CSV
+          if [ ! -f "$HISTORY_FILE" ]; then
+            echo "date,channel,videos,subscribers,views" > "$HISTORY_FILE"
+          fi
+
+          if [ ! -f "$SUMMED_FILE" ]; then
+            echo "date,total_subscribers,total_videos,total_views" > "$SUMMED_FILE"
+          fi
+
+          # Start new JSON snapshot (safe file name)
+          echo "{" > "$SNAPSHOT_FILE"
+
+          # Prepare channel list
+          CHANNELS=( \
+            "UCSBP35Fbo5Ka4XB4k1q8lAA:Main" \
+            "UCQ1vRrmmQtjAjWV1Xa0cCrg:Fortnite" \
+            "UClLdLKAF2G5M5zSmM3XMkOg:Troubleshooting" \
+            "UC5qhdHzN2qOhlgJ8XfqBEYg:Adamsmr" \
+            "UCtCdgJ40L_jdFUAZR2MiYzg:AJ_Studios" )
+
+          total_subs=0
+          total_videos=0
+          total_views=0
+
+          for entry in "${CHANNELS[@]}"; do
+            IFS=":" read -r CHANNEL_ID LABEL <<< "$entry"
+            STATS=$(curl -s "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=$CHANNEL_ID&key=$API_KEY")
+            SUBS=$(echo "$STATS" | jq -r '.items[0].statistics.subscriberCount')
+            VIDEOS=$(echo "$STATS" | jq -r '.items[0].statistics.videoCount')
+            VIEWS=$(echo "$STATS" | jq -r '.items[0].statistics.viewCount')
+
+            echo "$DATE,$LABEL,$VIDEOS,$SUBS,$VIEWS" >> "$HISTORY_FILE"
+            echo "  \"$LABEL\": { \"date\": \"$DATE\", \"videos\": $VIDEOS, \"subscribers\": $SUBS, \"views\": $VIEWS }," >> "$SNAPSHOT_FILE"
+
+            total_subs=$((total_subs + SUBS))
+            total_videos=$((total_videos + VIDEOS))
+            total_views=$((total_views + VIEWS))
+          done
+
+          # Finalize JSON snapshot
+          sed -i '$ s/,$//' "$SNAPSHOT_FILE"
+          echo "}" >> "$SNAPSHOT_FILE"
+
+          # Append to summed CSV
+          echo "$DATE,$total_subs,$total_videos,$total_views" >> "$SUMMED_FILE"
+
+      - name: Commit and push
         run: |
-          DATE=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          echo "$DATE,$total_subs,$total_videos,$total_views" >> data/youtube/youtube-history-summed.csv
-
-      - name: Commit and push changes
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add data/youtube/youtube-history-summed.csv
-          git commit -m "Update YouTube history: $DATE"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked
+          git pull origin main --rebase
+          git stash pop || true
+          git add youtube/ docs/youtube-sum.json
+          git commit -m "📊 YouTube summed stats update (safe files)" || echo "No changes"
           git push
