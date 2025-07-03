@@ -66,80 +66,76 @@
   </table>
 
   <script>
-    fetch('youtube.json')
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.querySelector('#statsTable tbody');
-        tbody.innerHTML = '';
+fetch('youtube.json')
+  .then(res => res.json())
+  .then(data => {
+    const tbody = document.querySelector('#statsTable tbody');
+    tbody.innerHTML = '';
 
-        let totalSubs = 0, totalVids = 0, totalViews = 0;
+    let totalSubs = 0, totalVids = 0, totalViews = 0;
 
-        let labels = [];
-        let subsData = [];
+    Object.entries(data).forEach(([channel, stats]) => {
+      totalSubs += Number(stats.subscribers);
+      totalVids += Number(stats.videos);
+      totalViews += Number(stats.views);
 
-        Object.entries(data).forEach(([channel, stats]) => {
-          totalSubs += Number(stats.subscribers);
-          totalVids += Number(stats.videos);
-          totalViews += Number(stats.views);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="channel">${channel.replace(/_/g, ' ')}</td>
+        <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
+        <td class="right">${Number(stats.videos).toLocaleString()}</td>
+        <td class="right">${Number(stats.views).toLocaleString()}</td>
+        <td class="right">${stats.date}</td>
+      `;
+      tbody.appendChild(row);
+    });
 
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="channel">${channel.replace(/_/g, ' ')}</td>
-            <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
-            <td class="right">${Number(stats.videos).toLocaleString()}</td>
-            <td class="right">${Number(stats.views).toLocaleString()}</td>
-            <td class="right">${stats.date}</td>
-          `;
-          tbody.appendChild(row);
+    const totalsRow = document.createElement('tr');
+    totalsRow.className = 'totals';
+    totalsRow.innerHTML = `
+      <td class="right">Total</td>
+      <td class="right">${totalSubs.toLocaleString()}</td>
+      <td class="right">${totalVids.toLocaleString()}</td>
+      <td class="right">${totalViews.toLocaleString()}</td>
+      <td></td>
+    `;
+    tbody.appendChild(totalsRow);
 
-          // Build chart data
-          labels.push(stats.date);
-          subsData.push(Number(stats.subscribers));
-        });
+    // Build chart data (single point per snapshot)
+    const labels = [data[Object.keys(data)[0]].date]; // Take the current snapshot date
+    const subsData = [totalSubs];
 
-        const totalsRow = document.createElement('tr');
-        totalsRow.className = 'totals';
-        totalsRow.innerHTML = `
-          <td class="right">Total</td>
-          <td class="right">${totalSubs.toLocaleString()}</td>
-          <td class="right">${totalVids.toLocaleString()}</td>
-          <td class="right">${totalViews.toLocaleString()}</td>
-          <td></td>
-        `;
-        tbody.appendChild(totalsRow);
-
-        // Draw the chart
-        const ctx = document.getElementById('growthChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Subscribers',
-              data: subsData,
-              borderColor: '#1e90ff',
-              backgroundColor: 'rgba(30,144,255,0.2)',
-              tension: 0.3,
-              pointRadius: 4
-            }]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              x: { title: { display: true, text: 'Date' } },
-              y: { beginAtZero: false, title: { display: true, text: 'Subscribers' } }
-            },
-            plugins: {
-              title: { display: true, text: 'YouTube Subscriber Growth Over Time' },
-              tooltip: { mode: 'index', intersect: false }
-            }
-          }
-        });
-      })
-      .catch(err => {
-        console.error('Error loading data:', err);
-        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
-      });
-  </script>
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Total Subscribers',
+          data: subsData,
+          borderColor: '#1e90ff',
+          backgroundColor: 'rgba(30,144,255,0.2)',
+          tension: 0.3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Date' } },
+          y: { beginAtZero: false, title: { display: true, text: 'Subscribers' } }
+        },
+        plugins: {
+          title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
+          tooltip: { mode: 'index', intersect: false }
+        }
+      }
+    });
+  })
+  .catch(err => {
+    console.error('Error loading data:', err);
+    document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+  });
+</script>
 </body>
 </html>
