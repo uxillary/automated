@@ -1,0 +1,35 @@
+name: YouTube Totals
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sum_stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Sum YouTube stats
+        run: |
+          FILE="data/youtube/youtube-history-summed.csv"
+          mkdir -p data/youtube
+          DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          if [ ! -f "$FILE" ]; then
+            echo "date,total_subscribers,total_videos,total_views" > "$FILE"
+          fi
+          TOTAL_SUBS=$(jq '[.[] | .subscribers] | add' docs/youtube.json)
+          TOTAL_VIDEOS=$(jq '[.[] | .videos] | add' docs/youtube.json)
+          TOTAL_VIEWS=$(jq '[.[] | .views] | add' docs/youtube.json)
+          echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> "$FILE"
+      - name: Commit and push totals
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/youtube/youtube-history-summed.csv
+          git commit -m "📈 Update YouTube totals" || echo "No changes"
+          git push
