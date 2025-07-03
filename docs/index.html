@@ -3,6 +3,7 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -19,6 +20,7 @@
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 3rem;
     }
     th, td {
       padding: 1rem;
@@ -38,10 +40,18 @@
       font-weight: bold;
       background: #e8f4ff;
     }
+    canvas {
+      max-width: 100%;
+    }
   </style>
 </head>
 <body>
   <h1>YouTube Stats</h1>
+
+  <!-- Chart canvas -->
+  <canvas id="growthChart" width="600" height="300"></canvas>
+
+  <!-- Stats table -->
   <table id="statsTable">
     <thead>
       <tr>
@@ -57,6 +67,7 @@
     </tbody>
   </table>
 
+  <!-- Table JS -->
   <script>
     fetch('youtube.json')
       .then(res => res.json())
@@ -98,86 +109,88 @@
         document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
       });
   </script>
+
+  <!-- Chart JS -->
   <script>
-async function fetchData() {
-  const text = await (await fetch('youtube-history.csv')).text();
-  const rows = text.trim().split('\n');
-  const headers = rows.shift().split(',');
+    async function fetchData() {
+      const text = await (await fetch('../data/youtube/youtube-history.csv')).text(); // Correct path
+      const rows = text.trim().split('\n');
+      const headers = rows.shift().split(',');
 
-  const dailyTotals = {};
+      const dailyTotals = {};
 
-  rows.forEach(row => {
-    const [channel, date, videos, subscribers, views] = row.split(',');
+      rows.forEach(row => {
+        const [channel, date, videos, subscribers, views] = row.split(',');
 
-    if (!dailyTotals[date]) {
-      dailyTotals[date] = { subs: 0, vids: 0, views: 0 };
-    }
-
-    dailyTotals[date].subs += Number(subscribers);
-    dailyTotals[date].vids += Number(videos);
-    dailyTotals[date].views += Number(views);
-  });
-
-  // Prepare data for charting
-  const labels = Object.keys(dailyTotals).sort();
-  const subsData = labels.map(date => dailyTotals[date].subs);
-  const vidsData = labels.map(date => dailyTotals[date].vids);
-  const viewsData = labels.map(date => dailyTotals[date].views);
-
-  return { labels, subsData, vidsData, viewsData };
-}
-
-async function drawChart() {
-  const { labels, subsData, vidsData, viewsData } = await fetchData();
-
-  const ctx = document.getElementById('growthChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Total Subscribers',
-          data: subsData,
-          borderColor: '#1e90ff',
-          backgroundColor: 'rgba(30,144,255,0.2)',
-          tension: 0.3,
-          pointRadius: 4
-        },
-        {
-          label: 'Total Videos',
-          data: vidsData,
-          borderColor: '#ff6347',
-          backgroundColor: 'rgba(255,99,71,0.2)',
-          tension: 0.3,
-          pointRadius: 4
-        },
-        {
-          label: 'Total Views',
-          data: viewsData,
-          borderColor: '#32cd32',
-          backgroundColor: 'rgba(50,205,50,0.2)',
-          tension: 0.3,
-          pointRadius: 4
+        if (!dailyTotals[date]) {
+          dailyTotals[date] = { subs: 0, vids: 0, views: 0 };
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: { title: { display: true, text: 'Date' } },
-        y: { beginAtZero: false, title: { display: true, text: 'Count' } }
-      },
-      plugins: {
-        title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
-        tooltip: { mode: 'index', intersect: false }
-      }
-    }
-  });
-}
 
-drawChart();
-</script>
+        dailyTotals[date].subs += Number(subscribers);
+        dailyTotals[date].vids += Number(videos);
+        dailyTotals[date].views += Number(views);
+      });
+
+      // Prepare data for charting
+      const labels = Object.keys(dailyTotals).sort();
+      const subsData = labels.map(date => dailyTotals[date].subs);
+      const vidsData = labels.map(date => dailyTotals[date].vids);
+      const viewsData = labels.map(date => dailyTotals[date].views);
+
+      return { labels, subsData, vidsData, viewsData };
+    }
+
+    async function drawChart() {
+      const { labels, subsData, vidsData, viewsData } = await fetchData();
+
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Total Subscribers',
+              data: subsData,
+              borderColor: '#1e90ff',
+              backgroundColor: 'rgba(30,144,255,0.2)',
+              tension: 0.3,
+              pointRadius: 4
+            },
+            {
+              label: 'Total Videos',
+              data: vidsData,
+              borderColor: '#ff6347',
+              backgroundColor: 'rgba(255,99,71,0.2)',
+              tension: 0.3,
+              pointRadius: 4
+            },
+            {
+              label: 'Total Views',
+              data: viewsData,
+              borderColor: '#32cd32',
+              backgroundColor: 'rgba(50,205,50,0.2)',
+              tension: 0.3,
+              pointRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { beginAtZero: false, title: { display: true, text: 'Count' } }
+          },
+          plugins: {
+            title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
+            tooltip: { mode: 'index', intersect: false }
+          }
+        }
+      });
+    }
+
+    drawChart();
+  </script>
 
 </body>
 </html>
