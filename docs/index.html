@@ -113,7 +113,7 @@
   <!-- Chart JS -->
   <script>
 async function fetchData() {
-  const text = await (await fetch('../data/youtube/youtube-history-summed.csv')).text();
+  const text = await (await fetch('data/youtube/youtube-history-summed.csv')).text();
   const rows = text.trim().split('\n');
   const headers = rows.shift().split(',');
 
