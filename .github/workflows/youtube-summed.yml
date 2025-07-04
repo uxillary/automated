@@ -29,11 +29,11 @@ jobs:
         env:
           API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          mkdir -p docs data/youtube
+          mkdir -p docs docs/youtube
 
           DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
-          HISTORY_FILE="data/youtube/youtube-history-sum.csv"
+          HISTORY_FILE="docs/youtube/youtube-history-sum.csv"
           SNAPSHOT_FILE="docs/youtube-sum.json"
 
           if [ ! -f "$HISTORY_FILE" ]; then
@@ -79,12 +79,12 @@ jobs:
 
       - name: Append to summed CSV
         run: |
-          mkdir -p data/youtube
-          if [ ! -f "data/youtube/youtube-history-summed.csv" ]; then
-            echo "date,total_subscribers,total_videos,total_views" > data/youtube/youtube-history-summed.csv
+          mkdir -p docs/youtube
+          if [ ! -f "docs/youtube/youtube-history-summed.csv" ]; then
+            echo "date,total_subscribers,total_videos,total_views" > docs/youtube/youtube-history-summed.csv
           fi
 
-          echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> data/youtube/youtube-history-summed.csv
+          echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> docs/youtube/youtube-history-summed.csv
 
       - name: Commit and push changes
         run: |
@@ -93,6 +93,6 @@ jobs:
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add data/youtube/ docs/youtube-sum.json
+          git add docs/youtube/ docs/youtube-sum.json
           git commit -m "📊 YouTube summed stats update (safe files)" || echo "No changes"
           git push
