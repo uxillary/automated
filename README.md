@@ -21,6 +21,7 @@ This repo uses GitHub Actions to automatically:
 - Appends to a `youtube.csv` for long-term tracking
 - Updates a current snapshot in `docs/youtube.json`
 - Outputs hosted live via GitHub Pages
+- Displays graph for visual representation of growth over time.
 
 📁 Files:
 - `youtube/youtube.csv` – historical stats
@@ -91,7 +92,7 @@ Optional (for commit stats, crypto, and streaks):
 ---
 
 ## 👨‍💻 Maintained by:
-[**@uxillary**](https://github.com/uxillary) / AJ Studios  
+[**@uxillary**](https://github.com/uxillary) / [**AJ Studios**](https://ajstudios.dev)  
 Inspired by automation, powered by caffeine, sustained by daily commits ☕
 
 ---
