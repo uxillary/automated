@@ -151,7 +151,8 @@ async function drawChart() {
           borderColor: '#1e90ff',
           backgroundColor: 'rgba(30,144,255,0.2)',
           tension: 0.3,
-          pointRadius: 4
+          pointRadius: 4,
+          yAxisID: 'y_subs'
         },
         {
           label: 'Total Videos',
@@ -159,7 +160,8 @@ async function drawChart() {
           borderColor: '#ff6347',
           backgroundColor: 'rgba(255,99,71,0.2)',
           tension: 0.3,
-          pointRadius: 4
+          pointRadius: 4,
+          yAxisID: 'y_vids'
         },
         {
           label: 'Total Views',
@@ -167,15 +169,36 @@ async function drawChart() {
           borderColor: '#32cd32',
           backgroundColor: 'rgba(50,205,50,0.2)',
           tension: 0.3,
-          pointRadius: 4
+          pointRadius: 4,
+          yAxisID: 'y_views'
         }
       ]
     },
     options: {
       responsive: true,
       scales: {
-        x: { title: { display: true, text: 'Date' } },
-        y: { beginAtZero: false, title: { display: true, text: 'Count' } }
+        y_subs: {
+          type: 'linear',
+          position: 'left',
+          title: { display: true, text: 'Subscribers' },
+          beginAtZero: false
+        },
+        y_vids: {
+          type: 'linear',
+          position: 'right',
+          title: { display: true, text: 'Videos' },
+          beginAtZero: false,
+          grid: { drawOnChartArea: false }
+        },
+        y_views: {
+          type: 'linear',
+          position: 'right',
+          offset: true,
+          title: { display: true, text: 'Views' },
+          beginAtZero: false,
+          grid: { drawOnChartArea: false }
+        },
+        x: { title: { display: true, text: 'Date' } }
       },
       plugins: {
         title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
@@ -183,6 +206,7 @@ async function drawChart() {
       }
     }
   });
+
 }
 
 drawChart();
