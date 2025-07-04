@@ -1,5 +1,5 @@
 
-![Daily Streak Status](https://github.com/uxillary/automated/actions/workflows/daily.yml/badge.svg)
+[![YouTube Video Count](https://github.com/uxillary/automated/actions/workflows/video-count.yml/badge.svg)](https://github.com/uxillary/automated/actions/workflows/video-count.yml)
 
 # 📊 automated
 
