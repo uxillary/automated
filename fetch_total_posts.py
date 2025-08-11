@@ -22,10 +22,10 @@ def fetch_int(url):
 total = sum(fetch_int(url) for url in SITES)
 
 # write to single file
-with open("data/blog-total.txt", "w", encoding="utf-8") as f:
+with open("docs/blog-total.txt", "w", encoding="utf-8") as f:
     f.write(str(total))
 
 # append to CSV history
 now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-with open("data/blog-total.csv", "a", encoding="utf-8") as fcsv:
+with open("docs/blog-total.csv", "a", encoding="utf-8") as fcsv:
     fcsv.write(f"{now},{total}\n")
