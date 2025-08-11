@@ -55,7 +55,7 @@ jobs:
       - name: Run counter
         run: |
           python3 fetch_total_posts.py
-          echo "Total blog posts: $(cat data/blog-total.txt)"
+          echo "Total blog posts: $(cat docs/blog-total.txt)"
 
       - name: Commit and push if changed
         run: |
