@@ -40,3 +40,19 @@ jobs:
           else
             echo "No changes to commit."
           fi
+
+      - name: Publish metrics to docs (copy artifacts)
+        run: |
+          mkdir -p docs/metrics
+          cp -f data/metrics/youtube_enriched.csv docs/metrics/youtube_enriched.csv || true
+          cp -f data/metrics/youtube_summary.json docs/metrics/youtube_summary.json || true
+
+      - name: Commit published artifacts (if any)
+        run: |
+          git add docs/metrics/youtube_enriched.csv docs/metrics/youtube_summary.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "📤 Publish metrics artifacts to docs/"
+            git push
+          else
+            echo "No changes to publish."
+          fi
