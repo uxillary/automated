@@ -1,0 +1,42 @@
+{
+  "last_updated": "2025-08-18T01:06:13+00:00",
+  "current": {
+    "subscribers": 732,
+    "views": 833075,
+    "videos": 525
+  },
+  "rolling": {
+    "subs_per_day_7": 0.5714285714285714,
+    "subs_per_day_30": 0.3,
+    "views_per_day_7": 1442.857142857143,
+    "views_per_day_30": 592.5333333333333
+  },
+  "ratios": {
+    "views_per_video": 1586.8095238095239,
+    "views_per_sub": 1138.0806010928961,
+    "subs_per_video": 1.3942857142857144
+  },
+  "projection": {
+    "slope_subs_per_day": 0.3497478789789361,
+    "next_50": {
+      "target": 750,
+      "eta_days": 51.46564448810872,
+      "eta_date": "2025-10-08T12:16:44.683772591+00:00"
+    },
+    "next_100": {
+      "target": 800,
+      "eta_days": 194.4257680661885,
+      "eta_date": "2026-02-28T11:19:19.360918686+00:00"
+    },
+    "to_1000": {
+      "target": 1000,
+      "eta_days": 766.2662623785077,
+      "eta_date": "2027-09-23T07:29:38.069503065+00:00"
+    }
+  },
+  "source_csv": "docs/youtube/youtube-history-summed.csv",
+  "outputs": {
+    "enriched_csv": "data/metrics/youtube_enriched.csv",
+    "summary_json": "data/metrics/youtube_summary.json"
+  }
+}
