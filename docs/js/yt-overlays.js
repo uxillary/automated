@@ -83,7 +83,7 @@
   // Add “Next Milestones” badge (if JSON exists)
   try {
     const s = await getJSON(jsonUrls);
-    const p = s?.projection || {};
+    const proj = s?.projection || {};
     const toText = (o)=>!o||o.eta_days==null ? '—' : `${o.target}: ${o.eta_days.toFixed(1)}d (${new Date(o.eta_date).toUTCString().replace(' GMT','')})`;
 
     const wrap = document.createElement('div');
@@ -91,27 +91,22 @@
     wrap.innerHTML = `
       <div class="yt-eta-card">
         <div class="yt-eta-title">Next Milestones</div>
-        <div class="yt-eta-items">
-          <span>${toText(p.next_50)}</span>
-          <span>${toText(p.next_100)}</span>
-          <span>${toText(p.to_1000)}</span>
+        <div class="yt-eta-items pills">
+          <span class="pill"><span class="value">${toText(proj.next_50)}</span></span>
+          <span class="pill"><span class="value">${toText(proj.next_100)}</span></span>
+          <span class="pill"><span class="value">${toText(proj.to_1000)}</span></span>
         </div>
       </div>`;
-    const css = document.createElement('style');
-    css.textContent = `
-  .yt-eta{max-width:1100px;margin:12px auto 20px}
-  .yt-eta-card{border-radius:12px;padding:12px 14px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.05);color:#111}
-  .yt-eta-title{font-weight:700;margin-bottom:6px}
-  .yt-eta-items{display:flex;flex-wrap:wrap;gap:10px}
-  .yt-eta-items span{padding:6px 10px;border-radius:999px;background:#f1f3f5;border:1px solid rgba(0,0,0,.06)}
-  @media (prefers-color-scheme: dark){
-    .yt-eta-card{background:#141417;border:1px solid rgba(255,255,255,.08);color:#eaeaea}
-    .yt-eta-items span{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.08)}
-  }`;
-    document.head.appendChild(css);
+    const style = document.createElement('style');
+    style.textContent = `
+  .yt-eta-card{background:transparent;border:0;padding:0}
+  .yt-eta-title{font-weight:700;margin-bottom:8px}
+`;
+    document.head.appendChild(style);
 
-    const anchor = document.querySelector('#growthChart')?.parentElement || document.querySelector('main') || document.body;
-    anchor.appendChild(wrap);
+    const slot = document.querySelector('#milestonesMount') || document.querySelector('#chartCard') || document.body;
+    slot.innerHTML = '';
+    slot.appendChild(wrap);
   } catch (e) {
     console.debug('yt-overlays: summary JSON unavailable (ok):', e?.message || e);
   }

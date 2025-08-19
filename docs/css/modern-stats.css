@@ -1,0 +1,40 @@
+/* Design tokens */
+:root{
+  --bg:#f6f8fb;
+  --fg:#0f172a;
+  --muted:#6b7280;
+  --card:#ffffff;
+  --border:rgba(15,23,42,.08);
+  --shadow:0 10px 30px rgba(2,6,23,.06);
+  --pill:#f1f5f9;
+  --radius:16px;
+  --gap:16px;
+  --container:1100px;
+}
+
+html,body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+.container{max-width:var(--container);margin:0 auto;padding:0 12px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+.card h3{margin:0 0 10px;font-size:1.05rem}
+.stack>*+*{margin-top:var(--gap)} /* vertical rhythm */
+
+/* Grid for analytics cards (responsive) */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+@media (max-width: 900px){ .grid-2{grid-template-columns:1fr} }
+
+/* Table polish */
+#statsTable{border-radius:12px;overflow:hidden}
+#statsTable thead th{background:#f1f5f9}
+#statsTable tbody tr:last-child{background:#edf6ff;font-weight:700}
+
+/* Pills used by both cards */
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--border)}
+.pill .label{opacity:.7;font-size:.9rem}
+.pill .value{font-weight:700}
+
+/* Slots (mount points) keep spacing consistent */
+.section{padding:0} /* the chart/table already sit in cards */
+.controls{display:flex;align-items:center;gap:10px}
