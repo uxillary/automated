@@ -1,0 +1,29 @@
+/* Site tokens */
+:root{
+  --bg:#f5f7fa;
+  --fg:#111;
+  --muted:#6b7280;
+  --card-bg:#fff;
+  --card-fg:#111;
+  --pill-bg:#f1f3f5;
+  --pill-fg:#111;
+  --border:rgba(0,0,0,.08);
+  --shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+/* Force light look for cards regardless of OS dark mode */
+html,body{background:var(--bg)}
+body{color:var(--fg); color-scheme: light;}
+
+/* Layout helpers */
+.container{max-width:1100px;margin:0 auto;}
+.section{background:var(--card-bg);color:var(--card-fg);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px;margin:20px auto}
+
+/* Override styles injected by JS components */
+.im-card,.yt-eta-card{background:var(--card-bg)!important;color:var(--card-fg)!important;border:1px solid var(--border)!important}
+.im-title{color:var(--card-fg)!important}
+.im-pill,.yt-eta-items span{background:var(--pill-bg)!important;color:var(--pill-fg)!important;border:1px solid var(--border)!important}
+.im-muted{color:var(--muted)!important}
+
+/* Nice table framing on wide screens */
+#statsTable{border-radius:12px;overflow:hidden}
