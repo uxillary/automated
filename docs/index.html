@@ -3,6 +3,7 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
+  <link rel="stylesheet" href="css/stats.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -46,9 +47,16 @@
   </style>
 </head>
 <body>
+<div class="container">
   <h1>YouTube Stats</h1>
 
   <!-- Chart canvas -->
+  <div class="section" style="display:flex;align-items:center;gap:12px;margin-top:0">
+    <label style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="maToggle" checked>
+      <span>Show 7‑day averages</span>
+    </label>
+  </div>
   <canvas id="growthChart" width="600" height="300"></canvas>
 
   <!-- Stats table -->
@@ -220,5 +228,33 @@ drawChart();
   <script src="/automated/js/yt-overlays.js"></script>
   <script src="/js/yt-overlays.js"></script>
 
+  <script>
+    // If ytChart and overlays are present, allow toggling the two averaged datasets
+    (function(){
+      const cb = document.getElementById('maToggle');
+      if (!cb) return;
+      const findAvgIdx = () => {
+        const c = window.ytChart;
+        if (!c) return [];
+        const isAvg = d => /7-day avg/i.test(d.label||'');
+        const idx = [];
+        c.data.datasets.forEach((d,i)=>{ if(isAvg(d)) idx.push(i); });
+        return idx;
+      };
+      cb.addEventListener('change', () => {
+        const c = window.ytChart; if (!c) return;
+        const idx = findAvgIdx();
+        idx.forEach(i => { c.getDatasetMeta(i).hidden = !cb.checked; });
+        c.update('none');
+      });
+      // If datasets were added after load, auto-enable
+      const iv = setInterval(() => {
+        if (findAvgIdx().length){ cb.dispatchEvent(new Event('change')); clearInterval(iv); }
+      }, 500);
+      setTimeout(()=>clearInterval(iv), 5000);
+    })();
+  </script>
+
+</div>
 </body>
 </html>
