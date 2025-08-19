@@ -23,6 +23,16 @@
     return Number(n).toLocaleString(undefined, { maximumFractionDigits: digits, minimumFractionDigits: digits });
   }
 
+  function fmtDate(d) {
+    return new Date(d).toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+
   async function fetchSummary() {
     let lastErr;
     for (const u of tryUrls) {
@@ -48,7 +58,7 @@
 
     const etaText = (obj) => {
       if (!obj || obj.eta_days == null) return '—';
-      return `${fmt(obj.eta_days, 1)}d (${new Date(obj.eta_date).toUTCString().replace(' GMT', '')})`;
+      return `${fmt(obj.eta_days, 1)}d (${fmtDate(obj.eta_date)})`;
     };
 
     const root = el('section', { class: 'im-card' }, [
@@ -70,7 +80,7 @@
         pill('ETA 1000', etaText(proj.to_1000)),
       ]),
       el('div', { class: 'im-foot' }, [
-        el('span', { class: 'im-muted' }, `Last updated: ${new Date(s.last_updated).toUTCString().replace(' GMT','')}`)
+        el('span', { class: 'im-muted' }, `Last updated: ${fmtDate(s.last_updated)}`)
       ])
     ]);
 
