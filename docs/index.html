@@ -140,7 +140,7 @@ async function drawChart() {
   const { labels, subsData, vidsData, viewsData } = await fetchData();
 
   const ctx = document.getElementById('growthChart').getContext('2d');
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels,
@@ -206,6 +206,7 @@ async function drawChart() {
       }
     }
   });
+  window.ytChart = chart; // expose for overlays
 
 }
 
@@ -215,6 +216,9 @@ drawChart();
   <!-- Metrics Card (safe, additive) -->
   <script src="/automated/js/yt-metrics-card.js"></script>
   <script src="/js/yt-metrics-card.js"></script>
+
+  <script src="/automated/js/yt-overlays.js"></script>
+  <script src="/js/yt-overlays.js"></script>
 
 </body>
 </html>
