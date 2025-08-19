@@ -4,6 +4,7 @@
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="css/stats.css">
+  <link rel="stylesheet" href="css/modern-stats.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -47,20 +48,31 @@
   </style>
 </head>
 <body>
-<div class="container">
+<div class="container stack">
   <h1>YouTube Stats</h1>
-
-  <!-- Chart canvas -->
-  <div class="section" style="display:flex;align-items:center;gap:12px;margin-top:0">
-    <label style="display:flex;align-items:center;gap:8px">
-      <input type="checkbox" id="maToggle" checked>
-      <span>Show 7‑day averages</span>
-    </label>
+  <div class="card section">
+    <div class="controls">
+      <label style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="maToggle" checked> <span>Show 7‑day averages</span>
+      </label>
+    </div>
   </div>
-  <canvas id="growthChart" width="600" height="300"></canvas>
 
-  <!-- Stats table -->
-  <table id="statsTable">
+  <div class="card section" id="chartCard">
+    <canvas id="growthChart" width="600" height="300"></canvas>
+  </div>
+
+  <div class="grid-2 section" id="analyticsGrid">
+    <div class="card" id="milestonesMount">
+      <!-- Will be replaced by Next Milestones JS; left here as a slot -->
+    </div>
+    <div class="card" id="metricsMount">
+      <!-- Will be replaced by Metrics Card JS; left here as a slot -->
+    </div>
+  </div>
+
+  <div class="card section" id="tableCard">
+    <table id="statsTable">
     <thead>
       <tr>
         <th>Channel</th>
@@ -74,6 +86,7 @@
       <tr><td colspan="5">Loading...</td></tr>
     </tbody>
   </table>
+  </div>
 
   <!-- Table JS -->
   <script>

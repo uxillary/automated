@@ -76,6 +76,8 @@
 
     // Attach near the existing chart if possible
     const anchors = [
+      document.querySelector('#metricsMount'),
+      document.querySelector('#chartCard'),
       document.querySelector('#youtube-chart'),
       document.querySelector('#chart'),
       document.querySelector('.chart-container'),
@@ -84,12 +86,16 @@
     ].filter(Boolean);
 
     const anchor = anchors[0] || document.body;
-    anchor.parentNode.insertBefore(root, anchor.nextSibling);
+    if (anchor.id === 'metricsMount') {
+      anchor.replaceWith(root);
+    } else {
+      anchor.parentNode.insertBefore(root, anchor.nextSibling);
+    }
   }
 
   // Inject minimal styles (scoped names)
   const css = `
-.im-card{margin:20px auto;max-width:1100px;background:#fff;border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,0,0,.06);color:#111}
+.im-card{margin:0;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 24px rgba(0,0,0,.06);color:#111}
 @media (prefers-color-scheme: dark){
   .im-card{background:#141417;border:1px solid rgba(255,255,255,.08);color:#eaeaea}
   .im-pill{background:rgba(255,255,255,.08);color:#eaeaea}
