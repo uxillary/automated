@@ -84,7 +84,14 @@
   try {
     const s = await getJSON(jsonUrls);
     const proj = s?.projection || {};
-    const toText = (o)=>!o||o.eta_days==null ? '—' : `${o.target}: ${o.eta_days.toFixed(1)}d (${new Date(o.eta_date).toUTCString().replace(' GMT','')})`;
+    const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+    const toText = (o)=>!o||o.eta_days==null ? '—' : `${o.target}: ${o.eta_days.toFixed(1)}d (${fmtDate(o.eta_date)})`;
 
     const wrap = document.createElement('div');
     wrap.className = 'yt-eta';
