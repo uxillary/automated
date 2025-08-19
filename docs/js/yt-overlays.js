@@ -43,9 +43,33 @@
       const subsColor  = (chart.data.datasets[0]?.borderColor) || 'rgba(30,144,255,.8)';
       const viewsColor = (chart.data.datasets.find(d=>d.yAxisID==='y_views')?.borderColor) || 'rgba(50,205,50,.8)';
 
+      // Add compact axes for moving averages if not present
+      chart.options.scales = chart.options.scales || {};
+      chart.options.scales.y_subs_avg = chart.options.scales.y_subs_avg || {
+        type: 'linear',
+        position: 'left',
+        display: true,
+        grid: { drawOnChartArea: false },
+        ticks: { stepSize: 1 },
+        min: 0,
+        suggestedMax: 3,
+        title: { display: false }
+      };
+      chart.options.scales.y_views_avg = chart.options.scales.y_views_avg || {
+        type: 'linear',
+        position: 'right',
+        display: true,
+        offset: true,
+        grid: { drawOnChartArea: false },
+        ticks: { stepSize: 500 },
+        min: 0,
+        suggestedMax: 3000,
+        title: { display: false }
+      };
+
       chart.data.datasets.push(
-        { label:'Subs (7-day avg)',  data:subsAvg7,  yAxisID:'y_subs', borderWidth:1, borderDash:[6,6], pointRadius:0, tension:.2, borderColor:subsColor,  fill:false },
-        { label:'Views (7-day avg)', data:viewsAvg7, yAxisID:'y_views', borderWidth:1, borderDash:[6,6], pointRadius:0, tension:.2, borderColor:viewsColor, fill:false }
+        { label:'Subs (7-day avg)',  data:subsAvg7,  yAxisID:'y_subs_avg',  borderWidth:1, borderDash:[6,6], pointRadius:0, tension:.2, borderColor:subsColor,  fill:false },
+        { label:'Views (7-day avg)', data:viewsAvg7, yAxisID:'y_views_avg', borderWidth:1, borderDash:[6,6], pointRadius:0, tension:.2, borderColor:viewsColor, fill:false }
       );
       chart.update('none');
     }
@@ -72,15 +96,15 @@
       </div>`;
     const css = document.createElement('style');
     css.textContent = `
-      .yt-eta{max-width:1100px;margin:10px auto 20px}
-      .yt-eta-card{border-radius:12px;padding:10px 12px;background:#f6f7fb}
-      .yt-eta-title{font-weight:600;margin-bottom:6px}
-      .yt-eta-items{display:flex;flex-wrap:wrap;gap:10px}
-      .yt-eta-items span{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid rgba(0,0,0,.06)}
-      @media (prefers-color-scheme: dark){
-        .yt-eta-card{background:#141414;border:1px solid rgba(255,255,255,.08)}
-        .yt-eta-items span{background:#0d0d0d;border-color:rgba(255,255,255,.08)}
-      }`;
+  .yt-eta{max-width:1100px;margin:12px auto 20px}
+  .yt-eta-card{border-radius:12px;padding:12px 14px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.05);color:#111}
+  .yt-eta-title{font-weight:700;margin-bottom:6px}
+  .yt-eta-items{display:flex;flex-wrap:wrap;gap:10px}
+  .yt-eta-items span{padding:6px 10px;border-radius:999px;background:#f1f3f5;border:1px solid rgba(0,0,0,.06)}
+  @media (prefers-color-scheme: dark){
+    .yt-eta-card{background:#141417;border:1px solid rgba(255,255,255,.08);color:#eaeaea}
+    .yt-eta-items span{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.08)}
+  }`;
     document.head.appendChild(css);
 
     const anchor = document.querySelector('#growthChart')?.parentElement || document.querySelector('main') || document.body;
