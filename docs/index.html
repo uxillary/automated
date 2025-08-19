@@ -121,31 +121,35 @@
   <!-- Chart JS -->
   <script>
 async function fetchData() {
-  const text = await (await fetch('youtube/youtube-history-summed.csv')).text();
+  const text = await (await fetch('metrics/youtube_enriched.csv')).text();
   const rows = text.trim().split('\n');
-  const headers = rows.shift().split(',');
+  rows.shift(); // drop header
 
   const labels = [];
   const subsData = [];
   const vidsData = [];
   const viewsData = [];
+  const subsAvg = [];
+  const viewsAvg = [];
 
   rows.forEach(row => {
-    if (!row.trim()) return; // Skip empty lines
-
-    const [date, subscribers, videos, views] = row.split(',');
-
-    labels.push(date);
-    subsData.push(Number(subscribers));
-    vidsData.push(Number(videos));
+    if (!row.trim()) return;
+    const parts = row.split(',');
+    const [date, subs, vids, views, , , , subs7, views7] = parts;
+    const d = new Date(date);
+    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    subsData.push(Number(subs));
+    vidsData.push(Number(vids));
     viewsData.push(Number(views));
+    subsAvg.push(subs7 === '' ? null : Number(subs7));
+    viewsAvg.push(views7 === '' ? null : Number(views7));
   });
 
-  return { labels, subsData, vidsData, viewsData };
+  return { labels, subsData, vidsData, viewsData, subsAvg, viewsAvg };
 }
 
 async function drawChart() {
-  const { labels, subsData, vidsData, viewsData } = await fetchData();
+  const { labels, subsData, vidsData, viewsData, subsAvg, viewsAvg } = await fetchData();
 
   const ctx = document.getElementById('growthChart').getContext('2d');
   const chart = new Chart(ctx, {
@@ -179,6 +183,26 @@ async function drawChart() {
           tension: 0.3,
           pointRadius: 4,
           yAxisID: 'y_views'
+        },
+        {
+          label: 'Subs (7-day avg)',
+          data: subsAvg,
+          borderColor: '#1e90ff',
+          borderDash: [6,6],
+          pointRadius: 0,
+          tension: 0.2,
+          yAxisID: 'y_subs_avg',
+          fill: false
+        },
+        {
+          label: 'Views (7-day avg)',
+          data: viewsAvg,
+          borderColor: '#32cd32',
+          borderDash: [6,6],
+          pointRadius: 0,
+          tension: 0.2,
+          yAxisID: 'y_views_avg',
+          fill: false
         }
       ]
     },
@@ -206,7 +230,31 @@ async function drawChart() {
           beginAtZero: false,
           grid: { drawOnChartArea: false }
         },
-        x: { title: { display: true, text: 'Date' } }
+        y_subs_avg: {
+          type: 'linear',
+          position: 'left',
+          display: true,
+          grid: { drawOnChartArea: false },
+          ticks: { stepSize: 1 },
+          min: 0,
+          suggestedMax: 3,
+          title: { display: false }
+        },
+        y_views_avg: {
+          type: 'linear',
+          position: 'right',
+          display: true,
+          offset: true,
+          grid: { drawOnChartArea: false },
+          ticks: { stepSize: 500 },
+          min: 0,
+          suggestedMax: 3000,
+          title: { display: false }
+        },
+        x: {
+          title: { display: true, text: 'Date' },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 15 }
+        }
       },
       plugins: {
         title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
@@ -247,11 +295,7 @@ drawChart();
         idx.forEach(i => { c.getDatasetMeta(i).hidden = !cb.checked; });
         c.update('none');
       });
-      // If datasets were added after load, auto-enable
-      const iv = setInterval(() => {
-        if (findAvgIdx().length){ cb.dispatchEvent(new Event('change')); clearInterval(iv); }
-      }, 500);
-      setTimeout(()=>clearInterval(iv), 5000);
+      cb.dispatchEvent(new Event('change'));
     })();
   </script>
 
