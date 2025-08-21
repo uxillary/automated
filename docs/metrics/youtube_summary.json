@@ -34,7 +34,7 @@
       "eta_date": "2027-07-26T19:11:28.390547890+00:00"
     }
   },
-  "source_csv": "data/metrics/youtube_enriched.csv",
+  "source_csv": "docs/metrics/youtube_enriched.csv",
   "outputs": {
     "enriched_csv": "data/metrics/youtube_enriched.csv",
     "summary_json": "data/metrics/youtube_summary.json"
