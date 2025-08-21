@@ -80,41 +80,63 @@
     }
   }
 
-  // Add “Next Milestones” badge (if JSON exists)
-  try {
-    const s = await getJSON(jsonUrls);
-    const proj = s?.projection || {};
-    const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      timeZone: 'UTC'
-    });
-    const toText = (o)=>!o||o.eta_days==null ? '—' : `${o.target}: ${o.eta_days.toFixed(1)}d (${fmtDate(o.eta_date)})`;
+  
+// --- milestone ETA card (emoji + table) ---
+try {
+  const summary = await getJSON(jsonUrls);
+  const proj = summary?.projection || {};
 
-    const wrap = document.createElement('div');
-    wrap.className = 'yt-eta';
-    wrap.innerHTML = `
-      <div class="yt-eta-card">
-        <div class="yt-eta-title">Next Milestones</div>
-        <div class="yt-eta-items pills">
-          <span class="pill"><span class="value">${toText(proj.next_50)}</span></span>
-          <span class="pill"><span class="value">${toText(proj.next_100)}</span></span>
-          <span class="pill"><span class="value">${toText(proj.to_1000)}</span></span>
-        </div>
-      </div>`;
-    const style = document.createElement('style');
-    style.textContent = `
-  .yt-eta-card{background:transparent;border:0;padding:0}
-  .yt-eta-title{font-weight:700;margin-bottom:8px}
-`;
-    document.head.appendChild(style);
+  const roundDays = (d) => (d == null ? '—' : Math.round(d).toString());
+  const monYear = (iso) => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+  };
+  const rows = [
+    { target: proj.next_50?.target ?? 750,  obj: proj.next_50 },
+    { target: proj.next_100?.target ?? 800, obj: proj.next_100 },
+    { target: 1000,                          obj: proj.to_1000 },
+  ];
 
-    const slot = document.querySelector('#milestonesMount') || document.querySelector('#chartCard') || document.body;
-    slot.innerHTML = '';
-    slot.appendChild(wrap);
-  } catch (e) {
-    console.debug('yt-overlays: summary JSON unavailable (ok):', e?.message || e);
-  }
+  const wrap = document.createElement('div');
+  wrap.className = 'yt-eta';
+  wrap.innerHTML = `
+    <div class="yt-eta-card">
+      <div class="yt-eta-title">Next Milestones</div>
+      <table class="mini-table">
+        <thead>
+          <tr>
+            <th>🎯 Target</th>
+            <th>⏱ Days</th>
+            <th>📅 ETA (Subs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr>
+              <td>${r.target.toLocaleString()}</td>
+              <td>${roundDays(r.obj?.eta_days)}</td>
+              <td>${monYear(r.obj?.eta_date)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  // lean styles (let global CSS do most of the work)
+  const style = document.createElement('style');
+  style.textContent = `
+    .yt-eta-title{font-weight:700;margin-bottom:10px}
+  `;
+  document.head.appendChild(style);
+
+  const slot = document.querySelector('#milestonesMount')
+            || document.querySelector('#chartCard')
+            || document.body;
+  slot.innerHTML = '';
+  slot.appendChild(wrap);
+} catch (e) {
+  console.debug('yt-overlays: milestone badge unavailable:', e?.message || e);
+}
+
 })();
