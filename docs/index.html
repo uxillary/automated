@@ -164,6 +164,11 @@ async function fetchData() {
 async function drawChart() {
   const { labels, subsData, vidsData, viewsData, subsAvg, viewsAvg } = await fetchData();
 
+  // Determine minimum values for each main dataset so axes don't start at zero
+  const subsMin  = Math.min(...subsData);
+  const vidsMin  = Math.min(...vidsData);
+  const viewsMin = Math.min(...viewsData);
+
   const ctx = document.getElementById('growthChart').getContext('2d');
   const chart = new Chart(ctx, {
     type: 'line',
@@ -226,13 +231,15 @@ async function drawChart() {
           type: 'linear',
           position: 'left',
           title: { display: true, text: 'Subscribers' },
-          beginAtZero: false
+          beginAtZero: false,
+          suggestedMin: subsMin
         },
         y_vids: {
           type: 'linear',
           position: 'right',
           title: { display: true, text: 'Videos' },
           beginAtZero: false,
+          suggestedMin: vidsMin,
           grid: { drawOnChartArea: false }
         },
         y_views: {
@@ -241,6 +248,7 @@ async function drawChart() {
           offset: true,
           title: { display: true, text: 'Views' },
           beginAtZero: false,
+          suggestedMin: viewsMin,
           grid: { drawOnChartArea: false }
         },
         y_subs_avg: {
