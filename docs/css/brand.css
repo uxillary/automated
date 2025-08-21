@@ -1,0 +1,26 @@
+:root{
+  --accent:#6366f1;         /* indigo */
+  --accent-2:#10b981;       /* emerald */
+  --accent-3:#f59e0b;       /* amber */
+  --border:rgba(2,6,23,.10);
+  --pill:#f1f5f9;
+}
+
+/* Pills – shared look + color variants */
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      background:var(--pill);border:1px solid var(--border);font-weight:600}
+.pill .label{opacity:.7;font-weight:500}
+.pill--sub{background:rgba(99,102,241,.10);border-color:rgba(99,102,241,.25)}
+.pill--view{background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.25)}
+.pill--ratio{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.25)}
+.pill .emoji{font-size:1.05rem}
+
+/* Milestones mini table */
+.mini-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;background:#fff}
+.mini-table thead th{background:#f8fafc;text-align:left;padding:10px 12px;font-weight:700}
+.mini-table td{padding:10px 12px;border-top:1px solid var(--border)}
+.mini-table td:nth-child(2){font-weight:700}
+.mini-table td:first-child{white-space:nowrap}
+

@@ -33,6 +33,15 @@
     });
   }
 
+
+  // replace the pill helper
+  const pill = (emoji, label, value, cls='') =>
+    el('div', { class: `pill ${cls}` }, [
+      el('span', { class: 'emoji' }, emoji + ' '),
+      el('span', { class: 'label' }, label + ' '),
+      el('span', { class: 'value' }, value)
+    ]);
+
   async function fetchSummary() {
     let lastErr;
     for (const u of tryUrls) {
@@ -45,42 +54,40 @@
     throw lastErr || new Error('Unable to load metrics summary');
   }
 
+  
   function renderCard(s) {
     const proj = s.projection || {};
     const roll = s.rolling || {};
     const ratios = s.ratios || {};
 
-    const pill = (label, value) =>
-      el('div', { class: 'im-pill' }, [
-        el('span', { class: 'im-pill-label' }, label),
-        el('span', { class: 'im-pill-value' }, value)
-      ]);
+    const row1 = el('div', { class: 'pills' }, [
+      pill('📈','Subs/day (7d)',  fmt(roll.subs_per_day_7, 2), 'pill--sub'),
+      pill('📈','Subs/day (30d)', fmt(roll.subs_per_day_30, 2), 'pill--sub'),
+      pill('👀','Views/day (7d)', fmt(roll.views_per_day_7, 0), 'pill--view'),
+      pill('👀','Views/day (30d)',fmt(roll.views_per_day_30, 0), 'pill--view')
+    ]);
 
-    const etaText = (obj) => {
-      if (!obj || obj.eta_days == null) return '—';
-      return `${fmt(obj.eta_days, 1)}d (${fmtDate(obj.eta_date)})`;
-    };
+    const row2 = el('div', { class: 'pills' }, [
+      pill('▶️','Views/Video', fmt(ratios.views_per_video, 0), 'pill--ratio'),
+      pill('🙋','Views/Sub',   fmt(ratios.views_per_sub, 0),   'pill--ratio'),
+      pill('➕','Subs/Video',  fmt(ratios.subs_per_video, 2),  'pill--ratio')
+    ]);
+
+    // Reformat ETAs: integer days + Month Year
+    const etaDays = o => (o && o.eta_days != null) ? Math.round(o.eta_days).toString() : '—';
+    const etaMY   = o => (o && o.eta_date) ? new Date(o.eta_date).toLocaleDateString(undefined,{month:'short',year:'numeric'}) : '—';
+
+    const row3 = el('div', { class: 'pills' }, [
+      pill('🚀','ETA 750',  `${etaDays(proj.next_50)} days · ${etaMY(proj.next_50)}`, 'pill--sub'),
+      pill('🎯','ETA 800',  `${etaDays(proj.next_100)} days · ${etaMY(proj.next_100)}`, 'pill--sub'),
+      pill('🏁','ETA 1000', `${etaDays(proj.to_1000)} days · ${etaMY(proj.to_1000)}`, 'pill--sub')
+    ]);
 
     const root = el('section', { class: 'im-card' }, [
       el('h3', { class: 'im-title' }, 'Metrics'),
-      el('div', { class: 'im-row' }, [
-        pill('Subs/day (7d)', fmt(roll.subs_per_day_7, 2)),
-        pill('Subs/day (30d)', fmt(roll.subs_per_day_30, 2)),
-        pill('Views/day (7d)', fmt(roll.views_per_day_7, 0)),
-        pill('Views/day (30d)', fmt(roll.views_per_day_30, 0)),
-      ]),
-      el('div', { class: 'im-row' }, [
-        pill('Views/Video', fmt(ratios.views_per_video, 0)),
-        pill('Views/Sub', fmt(ratios.views_per_sub, 0)),
-        pill('Subs/Video', fmt(ratios.subs_per_video, 2)),
-      ]),
-      el('div', { class: 'im-row' }, [
-        pill(`ETA ${proj.next_50?.target || 'next 50'}`, etaText(proj.next_50)),
-        pill(`ETA ${proj.next_100?.target || 'next 100'}`, etaText(proj.next_100)),
-        pill('ETA 1000', etaText(proj.to_1000)),
-      ]),
+      row1, row2, row3,
       el('div', { class: 'im-foot' }, [
-        el('span', { class: 'im-muted' }, `Last updated: ${fmtDate(s.last_updated)}`)
+        el('span', { class: 'im-muted' }, `Last updated: ${new Date(s.last_updated).toUTCString().replace(' GMT','')}`)
       ])
     ]);
 
@@ -104,19 +111,10 @@
   }
 
   // Inject minimal styles (scoped names)
-  const css = `
-.im-card{margin:0;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 24px rgba(0,0,0,.06);color:#111}
-@media (prefers-color-scheme: dark){
-  .im-card{background:#141417;border:1px solid rgba(255,255,255,.08);color:#eaeaea}
-  .im-pill{background:rgba(255,255,255,.08);color:#eaeaea}
-  .im-title{color:#eaeaea}
-  .im-muted{color:#9aa0a6}
-}
-.im-title{margin:0 0 10px;font-size:1.1rem;font-weight:700}
-.im-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
-.im-pill{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:#f1f3f5}
-.im-pill-label{font-size:.85rem;opacity:.8}
-.im-pill-value{font-weight:700}
+  
+const css = `
+.im-card{margin:0;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 24px rgba(0,0,0,.06);border:1px solid rgba(2,6,23,.10)}
+.im-title{margin:0 0 10px;font-size:1.05rem;font-weight:700}
 .im-foot{margin-top:8px}
 .im-muted{font-size:.85rem;opacity:.8}
 `;
