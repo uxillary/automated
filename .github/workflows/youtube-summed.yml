@@ -87,7 +87,7 @@ jobs:
           echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> docs/youtube/youtube-history-summed.csv
 
       - name: Update total subscribers text
-        run: echo "$TOTAL_SUBS" > docs/total-subscribers.txt
+        run: python3 scripts/update_total_subscribers.py
 
       - name: Commit and push changes
         run: |
