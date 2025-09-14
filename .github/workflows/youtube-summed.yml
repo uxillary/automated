@@ -86,6 +86,9 @@ jobs:
 
           echo "$DATE,$TOTAL_SUBS,$TOTAL_VIDEOS,$TOTAL_VIEWS" >> docs/youtube/youtube-history-summed.csv
 
+      - name: Update total subscribers text
+        run: echo "$TOTAL_SUBS" > total-subscribers.txt
+
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
@@ -93,6 +96,6 @@ jobs:
           git stash --include-untracked
           git pull origin main --rebase
           git stash pop || true
-          git add docs/youtube/ docs/youtube-sum.json
+          git add docs/youtube/ docs/youtube-sum.json total-subscribers.txt
           git commit -m "📊 YouTube summed stats update (safe files)" || echo "No changes"
           git push
