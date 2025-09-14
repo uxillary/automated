@@ -18,23 +18,8 @@ jobs:
 
       - name: Count YouTube Videos
         run: |
-          mkdir -p data
-          CHANNELS=(
-            "UCSBP35Fbo5Ka4XB4k1q8lAA:Main"
-            "UCQ1vRrmmQtjAjWV1Xa0cCrg:Fortnite"
-            "UClLdLKAF2G5M5zSmM3XMkOg:Troubleshooting"
-            "UC5qhdHzN2qOhlgJ8XfqBEYg:Adamsmr"
-            "UCtCdgJ40L_jdFUAZR2MiYzg:AJ_Studios"
-          )
-
-          TOTAL=0
-          for entry in "${CHANNELS[@]}"; do
-            IFS=":" read -r ID NAME <<< "$entry"
-            COUNT=$(curl -s "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=$ID&key=${{ secrets.YOUTUBE_API_KEY }}" | jq -r '.items[0].statistics.videoCount')
-            TOTAL=$((TOTAL + COUNT))
-          done
-
-          echo "$TOTAL" > docs/video-count.txt
+          LAST_DATE=$(tail -n 1 youtube/youtube-history.csv | cut -d',' -f1)
+          awk -F',' -v d="$LAST_DATE" '$1==d{sum+=$3} END{print sum}' youtube/youtube-history.csv > docs/video-count.txt
 
       - name: Commit and push
         run: |
