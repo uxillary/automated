@@ -2,7 +2,7 @@ import urllib.request, urllib.error, time
 from datetime import datetime
 
 SITES = [
-    "https://infinitecurios.blog/posts-count.txt",
+    "https://404cache.net/posts-count.txt",
     "https://ajstudios.dev/posts-count.txt",
     "https://aspartameawareness.org/posts-count.txt",
 ]
