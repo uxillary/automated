@@ -1,5 +1,20 @@
-/* Design tokens */
+/* Design tokens (dark by default) */
 :root{
+  --bg:#0b1220;
+  --fg:#e5e7eb;
+  --muted:#9ca3af;
+  --card:#111827;
+  --border:rgba(148,163,184,.24);
+  --shadow:0 16px 36px rgba(0,0,0,.45);
+  --pill:#1f2937;
+  --table-head:#1e293b;
+  --table-total:#1b314f;
+  --radius:16px;
+  --gap:16px;
+  --container:1100px;
+}
+
+:root[data-theme='light']{
   --bg:#f6f8fb;
   --fg:#0f172a;
   --muted:#6b7280;
@@ -7,9 +22,8 @@
   --border:rgba(15,23,42,.08);
   --shadow:0 10px 30px rgba(2,6,23,.06);
   --pill:#f1f5f9;
-  --radius:16px;
-  --gap:16px;
-  --container:1100px;
+  --table-head:#f1f5f9;
+  --table-total:#edf6ff;
 }
 
 html,body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
@@ -26,8 +40,8 @@ html,body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif, system
 
 /* Table polish */
 #statsTable{border-radius:12px;overflow:hidden}
-#statsTable thead th{background:#f1f5f9}
-#statsTable tbody tr:last-child{background:#edf6ff;font-weight:700}
+#statsTable thead th{background:var(--table-head)}
+#statsTable tbody tr:last-child{background:var(--table-total);font-weight:700}
 
 /* Pills used by both cards */
 .pills{display:flex;flex-wrap:wrap;gap:10px}

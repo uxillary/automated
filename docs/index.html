@@ -10,9 +10,9 @@
   <style>
     body {
       font-family: system-ui, sans-serif;
-      background: #f5f7fa;
+      background: var(--bg);
       padding: 2rem;
-      color: #222;
+      color: var(--fg);
     }
     h1 {
       text-align: center;
@@ -21,17 +21,17 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
       margin-top: 3rem;
     }
     th, td {
       padding: 1rem;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--border);
     }
     th {
-      background: #f0f0f0;
+      background: var(--table-head);
     }
     .channel {
       font-weight: bold;
@@ -41,7 +41,18 @@
     }
     .totals {
       font-weight: bold;
-      background: #e8f4ff;
+      background: var(--table-total);
+    }
+    .spacer {
+      flex: 1;
+    }
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--pill-bg);
+      color: var(--fg);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
     }
     canvas {
       max-width: 100%;
@@ -56,6 +67,8 @@
       <label style="display:flex;align-items:center;gap:8px">
         <input type="checkbox" id="maToggle" checked> <span>Show 7‑day averages</span>
       </label>
+      <span class="spacer"></span>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">☀️ Light mode</button>
     </div>
   </div>
 
@@ -171,6 +184,16 @@ async function drawChart() {
   const viewsMin = Math.min(...viewsData);
 
   const ctx = document.getElementById('growthChart').getContext('2d');
+  const getChartColors = () => {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      fg: style.getPropertyValue('--fg').trim() || '#e5e7eb',
+      muted: style.getPropertyValue('--muted').trim() || '#9ca3af',
+      border: style.getPropertyValue('--border').trim() || 'rgba(148,163,184,.24)'
+    };
+  };
+  const chartColors = getChartColors();
+
   const chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -227,11 +250,14 @@ async function drawChart() {
     },
     options: {
       responsive: true,
+      color: chartColors.fg,
       scales: {
         y_subs: {
           type: 'linear',
           position: 'left',
           title: { display: true, text: 'Subscribers' },
+          ticks: { color: chartColors.muted },
+          grid: { color: chartColors.border },
           beginAtZero: false,
           suggestedMin: subsMin
         },
@@ -239,25 +265,27 @@ async function drawChart() {
           type: 'linear',
           position: 'right',
           title: { display: true, text: 'Videos' },
+          ticks: { color: chartColors.muted },
           beginAtZero: false,
           suggestedMin: vidsMin,
-          grid: { drawOnChartArea: false }
+          grid: { drawOnChartArea: false, color: chartColors.border }
         },
         y_views: {
           type: 'linear',
           position: 'right',
           offset: true,
           title: { display: true, text: 'Views' },
+          ticks: { color: chartColors.muted },
           beginAtZero: false,
           suggestedMin: viewsMin,
-          grid: { drawOnChartArea: false }
+          grid: { drawOnChartArea: false, color: chartColors.border }
         },
         y_subs_avg: {
           type: 'linear',
           position: 'left',
           display: true,
-          grid: { drawOnChartArea: false },
-          ticks: { stepSize: 1 },
+          grid: { drawOnChartArea: false, color: chartColors.border },
+          ticks: { stepSize: 1, color: chartColors.muted },
           min: 0,
           suggestedMax: 3,
           title: { display: false }
@@ -267,15 +295,16 @@ async function drawChart() {
           position: 'right',
           display: true,
           offset: true,
-          grid: { drawOnChartArea: false },
-          ticks: { stepSize: 500 },
+          grid: { drawOnChartArea: false, color: chartColors.border },
+          ticks: { stepSize: 500, color: chartColors.muted },
           min: 0,
           suggestedMax: 3000,
           title: { display: false }
         },
         x: {
           title: { display: true, text: 'Date' },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 15 }
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 15, color: chartColors.muted },
+          grid: { color: chartColors.border }
         }
       },
       plugins: {
@@ -299,6 +328,42 @@ drawChart();
   <script src="/js/yt-overlays.js"></script>
 
   <script>
+    (function() {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+
+      const setTheme = (theme) => {
+        root.setAttribute('data-theme', theme);
+        btn.textContent = theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
+      };
+
+      const updateChartTheme = () => {
+        const c = window.ytChart;
+        if (!c) return;
+        const style = getComputedStyle(root);
+        const fg = style.getPropertyValue('--fg').trim();
+        const muted = style.getPropertyValue('--muted').trim();
+        const border = style.getPropertyValue('--border').trim();
+        c.options.color = fg;
+        Object.values(c.options.scales || {}).forEach(scale => {
+          if (scale.ticks) scale.ticks.color = muted;
+          if (scale.grid) scale.grid.color = border;
+        });
+        c.update('none');
+      };
+
+      setTheme('dark');
+      btn.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        updateChartTheme();
+      });
+
+      // Chart builds asynchronously.
+      setTimeout(updateChartTheme, 250);
+    })();
+
     // If ytChart and overlays are present, allow toggling the two averaged datasets
     (function(){
       const cb = document.getElementById('maToggle');

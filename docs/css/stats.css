@@ -1,5 +1,17 @@
 /* Site tokens */
 :root{
+  --bg:#0b1220;
+  --fg:#e5e7eb;
+  --muted:#9ca3af;
+  --card-bg:#111827;
+  --card-fg:#e5e7eb;
+  --pill-bg:#1f2937;
+  --pill-fg:#e5e7eb;
+  --border:rgba(148,163,184,.24);
+  --shadow:0 16px 36px rgba(0,0,0,.45);
+}
+
+:root[data-theme='light']{
   --bg:#f5f7fa;
   --fg:#111;
   --muted:#6b7280;
@@ -11,9 +23,9 @@
   --shadow:0 8px 24px rgba(0,0,0,.06);
 }
 
-/* Force light look for cards regardless of OS dark mode */
+/* Theme look driven by data-theme attribute */
 html,body{background:var(--bg)}
-body{color:var(--fg); color-scheme: light;}
+body{color:var(--fg);}
 
 /* Layout helpers */
 .container{max-width:1100px;margin:0 auto;}
