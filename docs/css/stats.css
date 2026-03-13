@@ -7,6 +7,9 @@
   --card-fg:#e5e7eb;
   --pill-bg:#1f2937;
   --pill-fg:#e5e7eb;
+  --mini-table-bg:#0f172a;
+  --mini-table-head-bg:#1e293b;
+  --mini-table-text:#e5e7eb;
   --border:rgba(148,163,184,.24);
   --shadow:0 16px 36px rgba(0,0,0,.45);
 }
@@ -19,6 +22,9 @@
   --card-fg:#111;
   --pill-bg:#f1f3f5;
   --pill-fg:#111;
+  --mini-table-bg:#fff;
+  --mini-table-head-bg:#f8fafc;
+  --mini-table-text:#111827;
   --border:rgba(0,0,0,.08);
   --shadow:0 8px 24px rgba(0,0,0,.06);
 }
