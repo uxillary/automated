@@ -1,54 +1,40 @@
 /* Design tokens (dark by default) */
 :root{
-  --bg:#0b1220;
-  --fg:#e5e7eb;
-  --muted:#9ca3af;
-  --card:#111827;
-  --border:rgba(148,163,184,.24);
-  --shadow:0 16px 36px rgba(0,0,0,.45);
-  --pill:#1f2937;
-  --table-head:#1e293b;
-  --table-total:#1b314f;
+  --bg:#090d18;
+  --fg:#e5e9f1;
+  --muted:#9ba7bc;
+  --card:#111726;
+  --card-bg:var(--card);
+  --surface-soft:#151d2f;
+  --border:rgba(148,163,184,.22);
+  --shadow:0 14px 34px rgba(0,0,0,.36);
+  --pill:#1b253a;
+  --table-head:#192236;
+  --table-total:#172740;
   --radius:16px;
   --gap:16px;
-  --container:1100px;
+  --container:1240px;
 }
 
 :root[data-theme='light']{
-  --bg:#f6f8fb;
+  --bg:#f4f7fb;
   --fg:#0f172a;
-  --muted:#6b7280;
+  --muted:#5b6679;
   --card:#ffffff;
-  --border:rgba(15,23,42,.08);
-  --shadow:0 10px 30px rgba(2,6,23,.06);
-  --pill:#f1f5f9;
-  --table-head:#f1f5f9;
-  --table-total:#edf6ff;
+  --card-bg:var(--card);
+  --surface-soft:#f6f9ff;
+  --border:rgba(15,23,42,.10);
+  --shadow:0 10px 24px rgba(15,23,42,.08);
+  --pill:#eef4ff;
+  --table-head:#f1f5fb;
+  --table-total:#e9f2ff;
 }
 
-html,body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
-.container{max-width:var(--container);margin:0 auto;padding:0 12px}
-
-/* Cards */
+html,body{background:var(--bg);color:var(--fg)}
+.container{max-width:var(--container);margin:0 auto}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
-.card h3{margin:0 0 10px;font-size:1.05rem}
-.stack>*+*{margin-top:var(--gap)} /* vertical rhythm */
+.stack>*+*{margin-top:var(--gap)}
+.section{padding:16px 18px}
 
-/* Grid for analytics cards (responsive) */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
-@media (max-width: 900px){ .grid-2{grid-template-columns:1fr} }
-
-/* Table polish */
-#statsTable{border-radius:12px;overflow:hidden}
-#statsTable thead th{background:var(--table-head)}
-#statsTable tbody tr:last-child{background:var(--table-total);font-weight:700}
-
-/* Pills used by both cards */
-.pills{display:flex;flex-wrap:wrap;gap:10px}
-.pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--border)}
-.pill .label{opacity:.7;font-size:.9rem}
-.pill .value{font-weight:700}
-
-/* Slots (mount points) keep spacing consistent */
-.section{padding:0} /* the chart/table already sit in cards */
-.controls{display:flex;align-items:center;gap:10px}
+.grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--gap)}
+@media (max-width: 1040px){ .grid-2{grid-template-columns:1fr} }
