@@ -252,6 +252,15 @@
     </div>
   </div>
 
+  <div class="grid-2 section" id="insightGrid">
+    <div class="card" id="channelHighlightsMount">
+      <!-- Channel highlights injected by JS -->
+    </div>
+    <div class="card" id="insightsMount">
+      <!-- Insight summary injected by JS -->
+    </div>
+  </div>
+
   <div class="card section" id="tableCard">
     <div class="table-header">
       <h2 class="section-title">Channel Breakdown</h2>
@@ -264,11 +273,14 @@
         <th>Subscribers</th>
         <th>Videos</th>
         <th>Views</th>
+        <th>Views/Video</th>
+        <th>Subs/Video</th>
+        <th>Views/Sub</th>
         <th>Last Updated</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td colspan="5">Loading...</td></tr>
+      <tr><td colspan="8">Loading...</td></tr>
     </tbody>
   </table>
   </div>
@@ -280,6 +292,14 @@
       minimumFractionDigits: digits
     });
     const kpiGrid = document.getElementById('kpiGrid');
+    const ratio = (a, b) => (b > 0 ? a / b : null);
+    const momentumState = (delta, baseline = 1) => {
+      if (delta == null || Number.isNaN(delta)) return { label: 'insufficient data', tone: 'Neutral' };
+      const threshold = Math.max(Math.abs(baseline) * 0.05, 0.1);
+      if (delta > threshold) return { label: 'accelerating', tone: 'Accelerating' };
+      if (delta < -threshold) return { label: 'cooling', tone: 'Cooling' };
+      return { label: 'steady', tone: 'Steady' };
+    };
     const renderKpis = (items) => {
       kpiGrid.innerHTML = items.map((item) => `
         <article class="kpi-card">
@@ -303,13 +323,32 @@
         const ratios = summary?.ratios || {};
         const lastUpdated = summary?.last_updated ? new Date(summary.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Latest pull';
 
+        const subsMomentum = roll.subs_per_day_7 != null && roll.subs_per_day_30 != null
+          ? Number(roll.subs_per_day_7) - Number(roll.subs_per_day_30)
+          : null;
+        const viewsMomentum = roll.views_per_day_7 != null && roll.views_per_day_30 != null
+          ? Number(roll.views_per_day_7) - Number(roll.views_per_day_30)
+          : null;
+        const subsMomentumState = momentumState(subsMomentum, Number(roll.subs_per_day_30 || 1));
+        const viewsMomentumState = momentumState(viewsMomentum, Number(roll.views_per_day_30 || 1));
+
         renderKpis([
           { label: 'Total Subscribers', value: fmtNum(totalSubs), sub: 'All channels combined' },
           { label: 'Total Views', value: fmtNum(totalViews), sub: 'Lifetime cumulative views' },
           { label: 'Total Videos', value: fmtNum(totalVids), sub: 'Published videos' },
           { label: '7-day Subs/day', value: roll.subs_per_day_7 != null ? fmtNum(roll.subs_per_day_7, 2) : '—', sub: 'Rolling growth velocity' },
           { label: '7-day Views/day', value: roll.views_per_day_7 != null ? fmtNum(roll.views_per_day_7, 0) : '—', sub: 'Rolling audience activity' },
-          { label: 'Views per Video', value: ratios.views_per_video != null ? fmtNum(ratios.views_per_video, 0) : '—', sub: `Updated ${lastUpdated}` }
+          { label: 'Views per Video', value: ratios.views_per_video != null ? fmtNum(ratios.views_per_video, 0) : '—', sub: `Updated ${lastUpdated}` },
+          {
+            label: 'Subscriber Momentum',
+            value: subsMomentum != null ? `${subsMomentum > 0 ? '+' : ''}${fmtNum(subsMomentum, 2)}/day` : '—',
+            sub: `7d vs 30d: ${subsMomentumState.label}`
+          },
+          {
+            label: 'View Momentum',
+            value: viewsMomentum != null ? `${viewsMomentum > 0 ? '+' : ''}${fmtNum(viewsMomentum, 0)}/day` : '—',
+            sub: `7d vs 30d: ${viewsMomentumState.label}`
+          }
         ]);
       })
       .catch(() => {
@@ -319,7 +358,9 @@
           { label: 'Total Videos', value: '—', sub: 'Unable to load' },
           { label: '7-day Subs/day', value: '—', sub: 'Unable to load' },
           { label: '7-day Views/day', value: '—', sub: 'Unable to load' },
-          { label: 'Views per Video', value: '—', sub: 'Unable to load' }
+          { label: 'Views per Video', value: '—', sub: 'Unable to load' },
+          { label: 'Subscriber Momentum', value: '—', sub: 'Unable to load' },
+          { label: 'View Momentum', value: '—', sub: 'Unable to load' }
         ]);
       });
 
@@ -336,12 +377,19 @@
           totalVids += Number(stats.videos);
           totalViews += Number(stats.views);
 
+          const viewsPerVideo = ratio(Number(stats.views), Number(stats.videos));
+          const subsPerVideo = ratio(Number(stats.subscribers), Number(stats.videos));
+          const viewsPerSub = ratio(Number(stats.views), Number(stats.subscribers));
+
           const row = document.createElement('tr');
           row.innerHTML = `
             <td class="channel">${channel.replace(/_/g, ' ')}</td>
             <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
             <td class="right">${Number(stats.videos).toLocaleString()}</td>
             <td class="right">${Number(stats.views).toLocaleString()}</td>
+            <td class="right">${viewsPerVideo == null ? '—' : fmtNum(viewsPerVideo, 0)}</td>
+            <td class="right">${subsPerVideo == null ? '—' : fmtNum(subsPerVideo, 2)}</td>
+            <td class="right">${viewsPerSub == null ? '—' : fmtNum(viewsPerSub, 0)}</td>
             <td class="right">${stats.date}</td>
           `;
           tbody.appendChild(row);
@@ -354,13 +402,16 @@
           <td class="right">${totalSubs.toLocaleString()}</td>
           <td class="right">${totalVids.toLocaleString()}</td>
           <td class="right">${totalViews.toLocaleString()}</td>
+          <td class="right">${totalVids > 0 ? fmtNum(totalViews / totalVids, 0) : '—'}</td>
+          <td class="right">${totalVids > 0 ? fmtNum(totalSubs / totalVids, 2) : '—'}</td>
+          <td class="right">${totalSubs > 0 ? fmtNum(totalViews / totalSubs, 0) : '—'}</td>
           <td></td>
         `;
         tbody.appendChild(totalsRow);
       })
       .catch(err => {
         console.error('Error loading data:', err);
-        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="8">Error loading data.</td></tr>';
       });
   </script>
 
@@ -555,6 +606,8 @@ drawChart();
 
   <script src="/automated/js/yt-overlays.js"></script>
   <script src="/js/yt-overlays.js"></script>
+  <script src="/automated/js/yt-insights.js"></script>
+  <script src="/js/yt-insights.js"></script>
 
   <script>
     (function() {

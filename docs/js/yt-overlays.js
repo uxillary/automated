@@ -85,17 +85,33 @@
 try {
   const summary = await getJSON(jsonUrls);
   const proj = summary?.projection || {};
+  const roll = summary?.rolling || {};
+  const currentSubs = Number(summary?.current?.subscribers || 0);
 
-  const roundDays = (d) => (d == null ? '—' : Math.round(d).toString());
   const monYear = (iso) => {
     if (!iso) return '—';
     const d = new Date(iso);
     return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
   };
+  const calcEta = (target, pace) => {
+    if (!Number.isFinite(target) || !Number.isFinite(pace) || pace <= 0 || target <= currentSubs) return null;
+    const days = (target - currentSubs) / pace;
+    if (!Number.isFinite(days) || days <= 0) return null;
+    const eta = new Date(Date.now() + days * 86400000);
+    return { days, date: eta.toISOString() };
+  };
+  const scenario = (target) => ({
+    conservative: calcEta(target, Number(roll.subs_per_day_30)),
+    current: calcEta(target, Number(roll.subs_per_day_7))
+  });
+  const fmtEta = (eta) => {
+    if (!eta) return 'Unavailable';
+    return `${Math.round(eta.days)}d · ${monYear(eta.date)}`;
+  };
   const rows = [
-    { target: proj.next_50?.target ?? 750,  obj: proj.next_50 },
-    { target: proj.next_100?.target ?? 800, obj: proj.next_100 },
-    { target: 1000,                          obj: proj.to_1000 },
+    { target: proj.next_50?.target ?? 750, scenarios: scenario(proj.next_50?.target ?? 750) },
+    { target: proj.next_100?.target ?? 800, scenarios: scenario(proj.next_100?.target ?? 800) },
+    { target: 1000, scenarios: scenario(1000) },
   ];
 
   const wrap = document.createElement('div');
@@ -107,26 +123,32 @@ try {
         <thead>
           <tr>
             <th>🎯 Target</th>
-            <th>⏱ Days</th>
-            <th>📅 ETA (Subs)</th>
+            <th>🐢 30d pace</th>
+            <th>⚡ 7d pace</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           ${rows.map(r => `
             <tr>
               <td>${r.target.toLocaleString()}</td>
-              <td>${roundDays(r.obj?.eta_days)}</td>
-              <td>${monYear(r.obj?.eta_date)}</td>
+              <td>${fmtEta(r.scenarios.conservative)}</td>
+              <td>${fmtEta(r.scenarios.current)}</td>
+              <td>${r.scenarios.current && r.scenarios.conservative
+                ? (r.scenarios.current.days < r.scenarios.conservative.days ? 'On current pace' : 'Long-range target')
+                : 'Based on available pace'}</td>
             </tr>
           `).join('')}
         </tbody>
       </table>
+      <div class="yt-eta-foot">Conservative = 30-day subscriber pace. Current = 7-day pace.</div>
     </div>`;
 
   // lean styles (let global CSS do most of the work)
   const style = document.createElement('style');
   style.textContent = `
     .yt-eta-title{font-weight:700;margin-bottom:10px}
+    .yt-eta-foot{margin-top:8px;color:var(--muted);font-size:.8rem}
   `;
   document.head.appendChild(style);
 
