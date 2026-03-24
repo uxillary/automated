@@ -4,6 +4,8 @@
     { key: '7', label: '7 days', days: 7 },
     { key: '30', label: '30 days', days: 30 },
     { key: '90', label: '90 days', days: 90 },
+    { key: '180', label: '180 days', days: 180 },
+    { key: '365', label: '365 days', days: 365 },
     { key: 'all', label: 'All time', days: null }
   ];
   const DATASETS = [
@@ -198,10 +200,10 @@
       { label: 'Total Subscribers', value: fmt(lastSubs), sub: `${state.selectedChannels.size} selected channels` },
       { label: 'Total Views', value: fmt(lastViews), sub: 'Lifetime cumulative views' },
       { label: 'Total Videos', value: fmt(lastVideos), sub: 'Published videos' },
-      { label: '7-day Subs/day', value: fmt(subs7, 2), sub: 'From visible date range' },
+      { label: '7-day Subs/day', value: fmt(subs7, 0), sub: 'From visible date range' },
       { label: '7-day Views/day', value: fmt(views7, 0), sub: 'From visible date range' },
       { label: 'Views per Video', value: fmt(ratio(lastViews, lastVideos), 0), sub: `Range: ${TIME_RANGES.find((r) => r.key === state.timeRange)?.label}` },
-      { label: 'Subscriber Momentum', value: subsMomentum == null ? '—' : `${subsMomentum > 0 ? '+' : ''}${fmt(subsMomentum, 2)}/day`, sub: `7d vs 30d: ${momentumLabel(subsMomentum, subs30 || 1)}` },
+      { label: 'Subscriber Momentum', value: subsMomentum == null ? '—' : `${subsMomentum > 0 ? '+' : ''}${fmt(subsMomentum, 0)}/day`, sub: `7d vs 30d: ${momentumLabel(subsMomentum, subs30 || 1)}` },
       { label: 'View Momentum', value: viewsMomentum == null ? '—' : `${viewsMomentum > 0 ? '+' : ''}${fmt(viewsMomentum, 0)}/day`, sub: `7d vs 30d: ${momentumLabel(viewsMomentum, views30 || 1)}` }
     ];
 
@@ -248,7 +250,7 @@
         <td class="right">${fmt(rowData.videos)}</td>
         <td class="right">${fmt(rowData.views)}</td>
         <td class="right">${fmt(rowData.viewsPerVideo, 0)}</td>
-        <td class="right">${fmt(rowData.subsPerVideo, 2)}</td>
+        <td class="right">${fmt(rowData.subsPerVideo, 0)}</td>
         <td class="right">${fmt(rowData.viewsPerSub, 0)}</td>
         <td class="right">${rowData.date || '—'}</td>
       `;
@@ -263,7 +265,7 @@
       <td class="right">${fmt(totalVideos)}</td>
       <td class="right">${fmt(totalViews)}</td>
       <td class="right">${fmt(ratio(totalViews, totalVideos), 0)}</td>
-      <td class="right">${fmt(ratio(totalSubs, totalVideos), 2)}</td>
+      <td class="right">${fmt(ratio(totalSubs, totalVideos), 0)}</td>
       <td class="right">${fmt(ratio(totalViews, totalSubs), 0)}</td>
       <td></td>
     `;
