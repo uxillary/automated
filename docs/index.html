@@ -66,6 +66,50 @@
       color: var(--fg);
       font-size: .9rem;
     }
+    .control-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .chip-btn {
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--fg);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: .84rem;
+      cursor: pointer;
+    }
+    .chip-btn.active {
+      border-color: rgba(99, 102, 241, .8);
+      background: rgba(99, 102, 241, .14);
+    }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card-bg);
+      font-size: .82rem;
+    }
+    .selection-badge {
+      color: var(--muted);
+      font-size: .82rem;
+    }
 
     #kpiGrid {
       display: grid;
@@ -151,7 +195,12 @@
       letter-spacing: .05em;
       color: var(--muted);
       font-weight: 700;
+      cursor: pointer;
     }
+    th.sortable.active {
+      color: var(--fg);
+    }
+    .sort-arrow { margin-left: 5px; opacity: .75; }
 
     .channel {
       font-weight: 650;
@@ -169,6 +218,12 @@
 
     #statsTable tbody tr:not(.totals):hover {
       background: var(--surface-soft);
+    }
+    #statsTable tbody tr.is-dimmed {
+      opacity: .48;
+    }
+    #statsTable tbody tr.is-highlight {
+      background: rgba(99, 102, 241, .15);
     }
 
     .theme-toggle {
@@ -195,6 +250,9 @@
       .container {
         padding: 18px 10px 32px;
       }
+      .control-row {
+        align-items: flex-start;
+      }
       .dashboard-header {
         margin-bottom: 12px;
       }
@@ -219,15 +277,27 @@
         <p>Combined channel performance snapshot and growth trend.</p>
       </div>
       <div class="controls">
-        <label class="control-toggle">
-          <input type="checkbox" id="maToggle" checked> <span>Show 7‑day averages</span>
-        </label>
         <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">☀️ Light mode</button>
+      </div>
+    </div>
+    <div class="control-stack">
+      <div class="control-row">
+        <div class="control-group" id="timeRangeControls" aria-label="Time range controls"></div>
+        <span class="selection-badge" id="selectionBadge">All channels selected</span>
+      </div>
+      <div class="control-row">
+        <div class="control-group" id="focusModeControls" aria-label="Metric focus mode"></div>
+      </div>
+      <div class="control-row">
+        <div class="control-group" id="datasetToggleControls" aria-label="Dataset toggles"></div>
+      </div>
+      <div class="control-row">
+        <div class="control-group" id="channelFilterControls" aria-label="Channel filters"></div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="kpiGrid">
+  <div class="section" id="kpiGrid" data-focus-group="overview growth efficiency">
     <div class="kpi-card">
       <span class="kpi-label">Total Subscribers</span>
       <div class="kpi-value">—</div>
@@ -235,7 +305,7 @@
     </div>
   </div>
 
-  <div class="card section" id="chartCard">
+  <div class="card section" id="chartCard" data-focus-group="overview growth">
     <div class="chart-header">
       <h2 class="section-title">Growth Overview</h2>
       <p class="chart-subtitle">Subscribers, views, videos, and moving averages</p>
@@ -243,7 +313,7 @@
     <canvas id="growthChart" width="600" height="300"></canvas>
   </div>
 
-  <div class="grid-2 section" id="analyticsGrid">
+  <div class="grid-2 section" id="analyticsGrid" data-focus-group="overview growth milestones">
     <div class="card" id="milestonesMount">
       <!-- Will be replaced by Next Milestones JS; left here as a slot -->
     </div>
@@ -252,7 +322,7 @@
     </div>
   </div>
 
-  <div class="grid-2 section" id="insightGrid">
+  <div class="grid-2 section" id="insightGrid" data-focus-group="overview growth efficiency milestones">
     <div class="card" id="channelHighlightsMount">
       <!-- Channel highlights injected by JS -->
     </div>
@@ -261,7 +331,7 @@
     </div>
   </div>
 
-  <div class="card section" id="tableCard">
+  <div class="card section" id="tableCard" data-focus-group="overview efficiency">
     <div class="table-header">
       <h2 class="section-title">Channel Breakdown</h2>
       <p class="table-subtitle">Latest per-channel totals</p>
@@ -270,11 +340,11 @@
     <thead>
       <tr>
         <th>Channel</th>
-        <th>Subscribers</th>
-        <th>Videos</th>
-        <th>Views</th>
-        <th>Views/Video</th>
-        <th>Subs/Video</th>
+        <th class="sortable" data-sort-key="subscribers">Subscribers<span class="sort-arrow"></span></th>
+        <th class="sortable" data-sort-key="videos">Videos<span class="sort-arrow"></span></th>
+        <th class="sortable" data-sort-key="views">Views<span class="sort-arrow"></span></th>
+        <th class="sortable" data-sort-key="viewsPerVideo">Views/Video<span class="sort-arrow"></span></th>
+        <th class="sortable" data-sort-key="subsPerVideo">Subs/Video<span class="sort-arrow"></span></th>
         <th>Views/Sub</th>
         <th>Last Updated</th>
       </tr>
@@ -285,320 +355,8 @@
   </table>
   </div>
 
-  <!-- Table JS -->
-  <script>
-    const fmtNum = (n, digits = 0) => Number(n).toLocaleString(undefined, {
-      maximumFractionDigits: digits,
-      minimumFractionDigits: digits
-    });
-    const kpiGrid = document.getElementById('kpiGrid');
-    const ratio = (a, b) => (b > 0 ? a / b : null);
-    const momentumState = (delta, baseline = 1) => {
-      if (delta == null || Number.isNaN(delta)) return { label: 'insufficient data', tone: 'Neutral' };
-      const threshold = Math.max(Math.abs(baseline) * 0.05, 0.1);
-      if (delta > threshold) return { label: 'accelerating', tone: 'Accelerating' };
-      if (delta < -threshold) return { label: 'cooling', tone: 'Cooling' };
-      return { label: 'steady', tone: 'Steady' };
-    };
-    const renderKpis = (items) => {
-      kpiGrid.innerHTML = items.map((item) => `
-        <article class="kpi-card">
-          <span class="kpi-label">${item.label}</span>
-          <div class="kpi-value">${item.value}</div>
-          <div class="kpi-sub">${item.sub || ''}</div>
-        </article>
-      `).join('');
-    };
-
-    Promise.all([
-      fetch('youtube.json').then(res => res.json()),
-      fetch('metrics/youtube_summary.json').then(res => res.ok ? res.json() : null).catch(() => null)
-    ])
-      .then(([data, summary]) => {
-        const rows = Object.values(data || {});
-        const totalSubs = rows.reduce((acc, stats) => acc + Number(stats.subscribers || 0), 0);
-        const totalVids = rows.reduce((acc, stats) => acc + Number(stats.videos || 0), 0);
-        const totalViews = rows.reduce((acc, stats) => acc + Number(stats.views || 0), 0);
-        const roll = summary?.rolling || {};
-        const ratios = summary?.ratios || {};
-        const lastUpdated = summary?.last_updated ? new Date(summary.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Latest pull';
-
-        const subsMomentum = roll.subs_per_day_7 != null && roll.subs_per_day_30 != null
-          ? Number(roll.subs_per_day_7) - Number(roll.subs_per_day_30)
-          : null;
-        const viewsMomentum = roll.views_per_day_7 != null && roll.views_per_day_30 != null
-          ? Number(roll.views_per_day_7) - Number(roll.views_per_day_30)
-          : null;
-        const subsMomentumState = momentumState(subsMomentum, Number(roll.subs_per_day_30 || 1));
-        const viewsMomentumState = momentumState(viewsMomentum, Number(roll.views_per_day_30 || 1));
-
-        renderKpis([
-          { label: 'Total Subscribers', value: fmtNum(totalSubs), sub: 'All channels combined' },
-          { label: 'Total Views', value: fmtNum(totalViews), sub: 'Lifetime cumulative views' },
-          { label: 'Total Videos', value: fmtNum(totalVids), sub: 'Published videos' },
-          { label: '7-day Subs/day', value: roll.subs_per_day_7 != null ? fmtNum(roll.subs_per_day_7, 2) : '—', sub: 'Rolling growth velocity' },
-          { label: '7-day Views/day', value: roll.views_per_day_7 != null ? fmtNum(roll.views_per_day_7, 0) : '—', sub: 'Rolling audience activity' },
-          { label: 'Views per Video', value: ratios.views_per_video != null ? fmtNum(ratios.views_per_video, 0) : '—', sub: `Updated ${lastUpdated}` },
-          {
-            label: 'Subscriber Momentum',
-            value: subsMomentum != null ? `${subsMomentum > 0 ? '+' : ''}${fmtNum(subsMomentum, 2)}/day` : '—',
-            sub: `7d vs 30d: ${subsMomentumState.label}`
-          },
-          {
-            label: 'View Momentum',
-            value: viewsMomentum != null ? `${viewsMomentum > 0 ? '+' : ''}${fmtNum(viewsMomentum, 0)}/day` : '—',
-            sub: `7d vs 30d: ${viewsMomentumState.label}`
-          }
-        ]);
-      })
-      .catch(() => {
-        renderKpis([
-          { label: 'Total Subscribers', value: '—', sub: 'Unable to load' },
-          { label: 'Total Views', value: '—', sub: 'Unable to load' },
-          { label: 'Total Videos', value: '—', sub: 'Unable to load' },
-          { label: '7-day Subs/day', value: '—', sub: 'Unable to load' },
-          { label: '7-day Views/day', value: '—', sub: 'Unable to load' },
-          { label: 'Views per Video', value: '—', sub: 'Unable to load' },
-          { label: 'Subscriber Momentum', value: '—', sub: 'Unable to load' },
-          { label: 'View Momentum', value: '—', sub: 'Unable to load' }
-        ]);
-      });
-
-    fetch('youtube.json')
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.querySelector('#statsTable tbody');
-        tbody.innerHTML = '';
-
-        let totalSubs = 0, totalVids = 0, totalViews = 0;
-
-        Object.entries(data).forEach(([channel, stats]) => {
-          totalSubs += Number(stats.subscribers);
-          totalVids += Number(stats.videos);
-          totalViews += Number(stats.views);
-
-          const viewsPerVideo = ratio(Number(stats.views), Number(stats.videos));
-          const subsPerVideo = ratio(Number(stats.subscribers), Number(stats.videos));
-          const viewsPerSub = ratio(Number(stats.views), Number(stats.subscribers));
-
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="channel">${channel.replace(/_/g, ' ')}</td>
-            <td class="right">${Number(stats.subscribers).toLocaleString()}</td>
-            <td class="right">${Number(stats.videos).toLocaleString()}</td>
-            <td class="right">${Number(stats.views).toLocaleString()}</td>
-            <td class="right">${viewsPerVideo == null ? '—' : fmtNum(viewsPerVideo, 0)}</td>
-            <td class="right">${subsPerVideo == null ? '—' : fmtNum(subsPerVideo, 2)}</td>
-            <td class="right">${viewsPerSub == null ? '—' : fmtNum(viewsPerSub, 0)}</td>
-            <td class="right">${stats.date}</td>
-          `;
-          tbody.appendChild(row);
-        });
-
-        const totalsRow = document.createElement('tr');
-        totalsRow.className = 'totals';
-        totalsRow.innerHTML = `
-          <td class="right">Total</td>
-          <td class="right">${totalSubs.toLocaleString()}</td>
-          <td class="right">${totalVids.toLocaleString()}</td>
-          <td class="right">${totalViews.toLocaleString()}</td>
-          <td class="right">${totalVids > 0 ? fmtNum(totalViews / totalVids, 0) : '—'}</td>
-          <td class="right">${totalVids > 0 ? fmtNum(totalSubs / totalVids, 2) : '—'}</td>
-          <td class="right">${totalSubs > 0 ? fmtNum(totalViews / totalSubs, 0) : '—'}</td>
-          <td></td>
-        `;
-        tbody.appendChild(totalsRow);
-      })
-      .catch(err => {
-        console.error('Error loading data:', err);
-        document.querySelector('#statsTable tbody').innerHTML = '<tr><td colspan="8">Error loading data.</td></tr>';
-      });
-  </script>
-
-  <!-- Chart JS -->
-  <script>
-async function fetchData() {
-  const text = await (await fetch('metrics/youtube_enriched.csv')).text();
-  const rows = text.trim().split('\n');
-  rows.shift(); // drop header
-
-  const labels = [];
-  const subsData = [];
-  const vidsData = [];
-  const viewsData = [];
-  const subsAvg = [];
-  const viewsAvg = [];
-
-  rows.forEach(row => {
-    if (!row.trim()) return;
-    const parts = row.split(',');
-    const [date, subs, vids, views, , , , subs7, views7] = parts;
-    const d = new Date(date);
-    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-    subsData.push(Number(subs));
-    vidsData.push(Number(vids));
-    viewsData.push(Number(views));
-    subsAvg.push(subs7 === '' ? null : Number(subs7));
-    viewsAvg.push(views7 === '' ? null : Number(views7));
-  });
-
-  return { labels, subsData, vidsData, viewsData, subsAvg, viewsAvg };
-}
-
-async function drawChart() {
-  const { labels, subsData, vidsData, viewsData, subsAvg, viewsAvg } = await fetchData();
-
-  // Determine minimum values for each main dataset so axes don't start at zero
-  const subsMin  = Math.min(...subsData);
-  const vidsMin  = Math.min(...vidsData);
-  const viewsMin = Math.min(...viewsData);
-
-  const ctx = document.getElementById('growthChart').getContext('2d');
-  const getChartColors = () => {
-    const style = getComputedStyle(document.documentElement);
-    return {
-      fg: style.getPropertyValue('--fg').trim() || '#e5e7eb',
-      muted: style.getPropertyValue('--muted').trim() || '#9ca3af',
-      border: style.getPropertyValue('--border').trim() || 'rgba(148,163,184,.24)'
-    };
-  };
-  const chartColors = getChartColors();
-
-  const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Total Subscribers',
-          data: subsData,
-          borderColor: '#1e90ff',
-          backgroundColor: 'rgba(30,144,255,0.2)',
-          tension: 0.3,
-          pointRadius: 4,
-          yAxisID: 'y_subs'
-        },
-        {
-          label: 'Total Videos',
-          data: vidsData,
-          borderColor: '#ff6347',
-          backgroundColor: 'rgba(255,99,71,0.2)',
-          tension: 0.3,
-          pointRadius: 4,
-          yAxisID: 'y_vids'
-        },
-        {
-          label: 'Total Views',
-          data: viewsData,
-          borderColor: '#32cd32',
-          backgroundColor: 'rgba(50,205,50,0.2)',
-          tension: 0.3,
-          pointRadius: 4,
-          yAxisID: 'y_views'
-        },
-        {
-          label: 'Subs (7-day avg)',
-          data: subsAvg,
-          borderColor: '#1e90ff',
-          borderDash: [6,6],
-          pointRadius: 0,
-          tension: 0.2,
-          yAxisID: 'y_subs_avg',
-          fill: false
-        },
-        {
-          label: 'Views (7-day avg)',
-          data: viewsAvg,
-          borderColor: '#32cd32',
-          borderDash: [6,6],
-          pointRadius: 0,
-          tension: 0.2,
-          yAxisID: 'y_views_avg',
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      color: chartColors.fg,
-      scales: {
-        y_subs: {
-          type: 'linear',
-          position: 'left',
-          title: { display: true, text: 'Subscribers' },
-          ticks: { color: chartColors.muted },
-          grid: { color: chartColors.border },
-          beginAtZero: false,
-          suggestedMin: subsMin
-        },
-        y_vids: {
-          type: 'linear',
-          position: 'right',
-          title: { display: true, text: 'Videos' },
-          ticks: { color: chartColors.muted },
-          beginAtZero: false,
-          suggestedMin: vidsMin,
-          grid: { drawOnChartArea: false, color: chartColors.border }
-        },
-        y_views: {
-          type: 'linear',
-          position: 'right',
-          offset: true,
-          title: { display: true, text: 'Views' },
-          ticks: { color: chartColors.muted },
-          beginAtZero: false,
-          suggestedMin: viewsMin,
-          grid: { drawOnChartArea: false, color: chartColors.border }
-        },
-        y_subs_avg: {
-          type: 'linear',
-          position: 'left',
-          display: true,
-          grid: { drawOnChartArea: false, color: chartColors.border },
-          ticks: { stepSize: 1, color: chartColors.muted },
-          min: 0,
-          suggestedMax: 3,
-          title: { display: false }
-        },
-        y_views_avg: {
-          type: 'linear',
-          position: 'right',
-          display: true,
-          offset: true,
-          grid: { drawOnChartArea: false, color: chartColors.border },
-          ticks: { stepSize: 500, color: chartColors.muted },
-          min: 0,
-          suggestedMax: 3000,
-          title: { display: false }
-        },
-        x: {
-          title: { display: true, text: 'Date' },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 15, color: chartColors.muted },
-          grid: { color: chartColors.border }
-        }
-      },
-      plugins: {
-        title: { display: false },
-        legend: {
-          labels: {
-            usePointStyle: true,
-            pointStyle: 'line',
-            boxWidth: 36,
-            boxHeight: 3,
-            color: chartColors.muted,
-            padding: 16
-          }
-        },
-        tooltip: { mode: 'index', intersect: false }
-      }
-    }
-  });
-  window.ytChart = chart; // expose for overlays
-
-}
-
-drawChart();
-  </script>
+  <script src="/automated/js/dashboard-controls.js"></script>
+  <script src="/js/dashboard-controls.js"></script>
 
   <!-- Metrics Card (safe, additive) -->
   <script src="/automated/js/yt-metrics-card.js"></script>
@@ -618,6 +376,7 @@ drawChart();
       const setTheme = (theme) => {
         root.setAttribute('data-theme', theme);
         btn.textContent = theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
+        window.dispatchEvent(new Event('themechange'));
       };
 
       const updateChartTheme = () => {
@@ -646,26 +405,6 @@ drawChart();
       setTimeout(updateChartTheme, 250);
     })();
 
-    // If ytChart and overlays are present, allow toggling the two averaged datasets
-    (function(){
-      const cb = document.getElementById('maToggle');
-      if (!cb) return;
-      const findAvgIdx = () => {
-        const c = window.ytChart;
-        if (!c) return [];
-        const isAvg = d => /7-day avg/i.test(d.label||'');
-        const idx = [];
-        c.data.datasets.forEach((d,i)=>{ if(isAvg(d)) idx.push(i); });
-        return idx;
-      };
-      cb.addEventListener('change', () => {
-        const c = window.ytChart; if (!c) return;
-        const idx = findAvgIdx();
-        idx.forEach(i => { c.getDatasetMeta(i).hidden = !cb.checked; });
-        c.update('none');
-      });
-      cb.dispatchEvent(new Event('change'));
-    })();
   </script>
 
 </div>
