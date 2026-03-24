@@ -17,7 +17,7 @@ This repo uses GitHub Actions to automatically:
 
 ## 📺 YouTube Stats Tracker
 
-- Pulls stats from 5 YouTube channels
+- Pulls stats from 6 YouTube channels
 - Appends to a `youtube.csv` for long-term tracking
 - Updates a current snapshot in `docs/youtube.json`
 - Outputs hosted live via GitHub Pages
@@ -96,4 +96,3 @@ Optional (for commit stats, crypto, and streaks):
 Inspired by automation, powered by caffeine, sustained by daily commits ☕
 
 ---
-
