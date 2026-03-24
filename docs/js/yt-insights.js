@@ -155,9 +155,31 @@
   try {
     renderStyles();
     const [summary, channels] = await Promise.all([fetchAnyJSON(summaryUrls), fetchAnyJSON(channelsUrls)]);
-    const rows = asRows(channels);
-    renderHighlights(buildHighlights(rows));
-    renderInsights(buildInsights(summary, rows));
+    const allRows = asRows(channels);
+
+    const renderFromSelection = (selection) => {
+      if (!selection?.selectedChannels?.length) {
+        renderHighlights([]);
+        renderInsights(['No channels selected. Enable at least one channel to see highlights and insights.']);
+        return;
+      }
+      const selectedSet = new Set(selection.selectedChannels);
+      const rows = allRows.filter((row) => selectedSet.has(row.name));
+      const insights = buildInsights(summary, rows);
+      const rangeLabelMap = { '7': '7 days', '30': '30 days', '90': '90 days', all: 'all time' };
+      insights.unshift(`Insights based on ${selection.selectedChannels.length} selected channel(s) over ${rangeLabelMap[selection.timeRange] || 'selected range'}.`);
+      renderHighlights(buildHighlights(rows));
+      renderInsights(insights);
+    };
+
+    renderFromSelection(window.dashboardSelection || {
+      timeRange: '30',
+      selectedChannels: allRows.map((r) => r.name)
+    });
+
+    window.addEventListener('dashboard:selectionchange', (event) => {
+      renderFromSelection(event.detail || {});
+    });
   } catch (err) {
     console.debug('yt-insights unavailable:', err?.message || err);
   }
