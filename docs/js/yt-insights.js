@@ -166,7 +166,14 @@
       const selectedSet = new Set(selection.selectedChannels);
       const rows = allRows.filter((row) => selectedSet.has(row.name));
       const insights = buildInsights(summary, rows);
-      const rangeLabelMap = { '7': '7 days', '30': '30 days', '90': '90 days', all: 'all time' };
+      const rangeLabelMap = {
+        '7': '7 days',
+        '30': '30 days',
+        '90': '90 days',
+        '180': '180 days',
+        '365': '365 days',
+        all: 'all time'
+      };
       insights.unshift(`Insights based on ${selection.selectedChannels.length} selected channel(s) over ${rangeLabelMap[selection.timeRange] || 'selected range'}.`);
       renderHighlights(buildHighlights(rows));
       renderInsights(insights);
