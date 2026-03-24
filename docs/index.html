@@ -3,76 +3,243 @@
 <head>
   <title>YouTube Stats Viewer</title>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/modern-stats.css">
   <link rel="stylesheet" href="css/brand.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: system-ui, sans-serif;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
-      padding: 2rem;
       color: var(--fg);
+      line-height: 1.4;
+      letter-spacing: .01em;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
+
+    .container {
+      max-width: 1240px;
+      padding: 28px 16px 46px;
     }
+
+    .dashboard-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .title-block h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.5rem, 1.9vw, 2rem);
+      font-weight: 760;
+      letter-spacing: .01em;
+    }
+
+    .title-block p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 10px;
+    }
+
+    .control-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      background: var(--card-bg);
+      color: var(--fg);
+      font-size: .9rem;
+    }
+
+    #kpiGrid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi-card {
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--surface-soft), var(--card-bg));
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+    }
+
+    .kpi-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 650;
+    }
+
+    .kpi-value {
+      font-size: clamp(1.15rem, 1.6vw, 1.55rem);
+      font-weight: 780;
+      letter-spacing: .01em;
+    }
+
+    .kpi-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.03rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .chart-header, .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chart-subtitle, .table-subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    #chartCard {
+      padding: 18px 18px 12px;
+    }
+
+    #tableCard {
+      padding: 14px 16px 8px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
-      margin-top: 3rem;
+      background: transparent;
     }
+
     th, td {
-      padding: 1rem;
+      padding: .88rem .9rem;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
+
     th {
       background: var(--table-head);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      font-weight: 700;
     }
+
     .channel {
-      font-weight: bold;
+      font-weight: 650;
     }
+
     .right {
       text-align: right;
+      font-variant-numeric: tabular-nums;
     }
+
     .totals {
-      font-weight: bold;
+      font-weight: 700;
       background: var(--table-total);
     }
-    .spacer {
-      flex: 1;
+
+    #statsTable tbody tr:not(.totals):hover {
+      background: var(--surface-soft);
     }
+
     .theme-toggle {
       border: 1px solid var(--border);
-      background: var(--pill-bg);
+      background: var(--card-bg);
       color: var(--fg);
-      border-radius: 999px;
-      padding: 8px 12px;
+      border-radius: 10px;
+      padding: 7px 11px;
       cursor: pointer;
+      font-weight: 600;
     }
+
     canvas {
       max-width: 100%;
+    }
+
+    @media (max-width: 1140px) {
+      #kpiGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        padding: 18px 10px 32px;
+      }
+      .dashboard-header {
+        margin-bottom: 12px;
+      }
+      #kpiGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .card {
+        border-radius: 14px;
+      }
+      th, td {
+        padding: .72rem .68rem;
+      }
     }
   </style>
 </head>
 <body>
 <div class="container stack">
-  <h1>YouTube Stats</h1>
   <div class="card section">
-    <div class="controls">
-      <label style="display:flex;align-items:center;gap:8px">
-        <input type="checkbox" id="maToggle" checked> <span>Show 7‑day averages</span>
-      </label>
-      <span class="spacer"></span>
-      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">☀️ Light mode</button>
+    <div class="dashboard-header">
+      <div class="title-block">
+        <h1>YouTube Creator Dashboard</h1>
+        <p>Combined channel performance snapshot and growth trend.</p>
+      </div>
+      <div class="controls">
+        <label class="control-toggle">
+          <input type="checkbox" id="maToggle" checked> <span>Show 7‑day averages</span>
+        </label>
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">☀️ Light mode</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="kpiGrid">
+    <div class="kpi-card">
+      <span class="kpi-label">Total Subscribers</span>
+      <div class="kpi-value">—</div>
+      <div class="kpi-sub">Across all tracked channels</div>
     </div>
   </div>
 
   <div class="card section" id="chartCard">
+    <div class="chart-header">
+      <h2 class="section-title">Growth Overview</h2>
+      <p class="chart-subtitle">Subscribers, views, videos, and moving averages</p>
+    </div>
     <canvas id="growthChart" width="600" height="300"></canvas>
   </div>
 
@@ -86,6 +253,10 @@
   </div>
 
   <div class="card section" id="tableCard">
+    <div class="table-header">
+      <h2 class="section-title">Channel Breakdown</h2>
+      <p class="table-subtitle">Latest per-channel totals</p>
+    </div>
     <table id="statsTable">
     <thead>
       <tr>
@@ -104,6 +275,54 @@
 
   <!-- Table JS -->
   <script>
+    const fmtNum = (n, digits = 0) => Number(n).toLocaleString(undefined, {
+      maximumFractionDigits: digits,
+      minimumFractionDigits: digits
+    });
+    const kpiGrid = document.getElementById('kpiGrid');
+    const renderKpis = (items) => {
+      kpiGrid.innerHTML = items.map((item) => `
+        <article class="kpi-card">
+          <span class="kpi-label">${item.label}</span>
+          <div class="kpi-value">${item.value}</div>
+          <div class="kpi-sub">${item.sub || ''}</div>
+        </article>
+      `).join('');
+    };
+
+    Promise.all([
+      fetch('youtube.json').then(res => res.json()),
+      fetch('metrics/youtube_summary.json').then(res => res.ok ? res.json() : null).catch(() => null)
+    ])
+      .then(([data, summary]) => {
+        const rows = Object.values(data || {});
+        const totalSubs = rows.reduce((acc, stats) => acc + Number(stats.subscribers || 0), 0);
+        const totalVids = rows.reduce((acc, stats) => acc + Number(stats.videos || 0), 0);
+        const totalViews = rows.reduce((acc, stats) => acc + Number(stats.views || 0), 0);
+        const roll = summary?.rolling || {};
+        const ratios = summary?.ratios || {};
+        const lastUpdated = summary?.last_updated ? new Date(summary.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Latest pull';
+
+        renderKpis([
+          { label: 'Total Subscribers', value: fmtNum(totalSubs), sub: 'All channels combined' },
+          { label: 'Total Views', value: fmtNum(totalViews), sub: 'Lifetime cumulative views' },
+          { label: 'Total Videos', value: fmtNum(totalVids), sub: 'Published videos' },
+          { label: '7-day Subs/day', value: roll.subs_per_day_7 != null ? fmtNum(roll.subs_per_day_7, 2) : '—', sub: 'Rolling growth velocity' },
+          { label: '7-day Views/day', value: roll.views_per_day_7 != null ? fmtNum(roll.views_per_day_7, 0) : '—', sub: 'Rolling audience activity' },
+          { label: 'Views per Video', value: ratios.views_per_video != null ? fmtNum(ratios.views_per_video, 0) : '—', sub: `Updated ${lastUpdated}` }
+        ]);
+      })
+      .catch(() => {
+        renderKpis([
+          { label: 'Total Subscribers', value: '—', sub: 'Unable to load' },
+          { label: 'Total Views', value: '—', sub: 'Unable to load' },
+          { label: 'Total Videos', value: '—', sub: 'Unable to load' },
+          { label: '7-day Subs/day', value: '—', sub: 'Unable to load' },
+          { label: '7-day Views/day', value: '—', sub: 'Unable to load' },
+          { label: 'Views per Video', value: '—', sub: 'Unable to load' }
+        ]);
+      });
+
     fetch('youtube.json')
       .then(res => res.json())
       .then(data => {
@@ -308,7 +527,17 @@ async function drawChart() {
         }
       },
       plugins: {
-        title: { display: true, text: 'YouTube Channel Combined Growth Over Time' },
+        title: { display: false },
+        legend: {
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'line',
+            boxWidth: 36,
+            boxHeight: 3,
+            color: chartColors.muted,
+            padding: 16
+          }
+        },
         tooltip: { mode: 'index', intersect: false }
       }
     }
