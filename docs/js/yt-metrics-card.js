@@ -59,6 +59,30 @@
     const proj = s.projection || {};
     const roll = s.rolling || {};
     const ratios = s.ratios || {};
+    const currentSubs = Number(s?.current?.subscribers || 0);
+    const momentum = (a, b) => (a != null && b != null ? Number(a) - Number(b) : null);
+    const classifyMomentum = (delta, baseline = 1) => {
+      if (delta == null || Number.isNaN(delta)) return 'insufficient data';
+      const threshold = Math.max(Math.abs(baseline) * 0.05, 0.1);
+      if (delta > threshold) return 'accelerating';
+      if (delta < -threshold) return 'cooling';
+      return 'steady';
+    };
+    const calcEta = (target, pace) => {
+      if (!Number.isFinite(target) || !Number.isFinite(pace) || pace <= 0 || target <= currentSubs) return null;
+      const days = (target - currentSubs) / pace;
+      if (!Number.isFinite(days) || days <= 0) return null;
+      const eta = new Date(Date.now() + days * 86400000);
+      return { days, eta };
+    };
+    const fmtEta = (target) => {
+      const c = calcEta(target, Number(roll.subs_per_day_7));
+      const l = calcEta(target, Number(roll.subs_per_day_30));
+      const fmtScenario = (obj) => obj ? `${Math.round(obj.days)}d · ${obj.eta.toLocaleDateString(undefined,{ month:'short', year:'numeric' })}` : 'Unavailable';
+      return `7d: ${fmtScenario(c)} · 30d: ${fmtScenario(l)}`;
+    };
+    const subsMomentum = momentum(roll.subs_per_day_7, roll.subs_per_day_30);
+    const viewsMomentum = momentum(roll.views_per_day_7, roll.views_per_day_30);
 
     const row1 = el('div', { class: 'pills' }, [
       pill('📈','Subs/day (7d)',  fmt(roll.subs_per_day_7, 2), 'pill--sub'),
@@ -70,17 +94,15 @@
     const row2 = el('div', { class: 'pills' }, [
       pill('▶️','Views/Video', fmt(ratios.views_per_video, 0), 'pill--ratio'),
       pill('🙋','Views/Sub',   fmt(ratios.views_per_sub, 0),   'pill--ratio'),
-      pill('➕','Subs/Video',  fmt(ratios.subs_per_video, 2),  'pill--ratio')
+      pill('➕','Subs/Video',  fmt(ratios.subs_per_video, 2),  'pill--ratio'),
+      pill('🧭','Sub momentum', subsMomentum == null ? '—' : `${subsMomentum > 0 ? '+' : ''}${fmt(subsMomentum, 2)}/d · ${classifyMomentum(subsMomentum, Number(roll.subs_per_day_30 || 1))}`, 'pill--ratio'),
+      pill('🧭','View momentum', viewsMomentum == null ? '—' : `${viewsMomentum > 0 ? '+' : ''}${fmt(viewsMomentum, 0)}/d · ${classifyMomentum(viewsMomentum, Number(roll.views_per_day_30 || 1))}`, 'pill--ratio')
     ]);
 
-    // Reformat ETAs: integer days + Month Year
-    const etaDays = o => (o && o.eta_days != null) ? Math.round(o.eta_days).toString() : '—';
-    const etaMY   = o => (o && o.eta_date) ? new Date(o.eta_date).toLocaleDateString(undefined,{month:'short',year:'numeric'}) : '—';
-
     const row3 = el('div', { class: 'pills' }, [
-      pill('🚀','ETA 750',  `${etaDays(proj.next_50)} days · ${etaMY(proj.next_50)}`, 'pill--sub'),
-      pill('🎯','ETA 800',  `${etaDays(proj.next_100)} days · ${etaMY(proj.next_100)}`, 'pill--sub'),
-      pill('🏁','ETA 1000', `${etaDays(proj.to_1000)} days · ${etaMY(proj.to_1000)}`, 'pill--sub')
+      pill('🚀','ETA 750', fmtEta(proj.next_50?.target ?? 750), 'pill--sub'),
+      pill('🎯','ETA 800', fmtEta(proj.next_100?.target ?? 800), 'pill--sub'),
+      pill('🏁','ETA 1000', fmtEta(1000), 'pill--sub')
     ]);
 
     const root = el('section', { class: 'im-card' }, [
