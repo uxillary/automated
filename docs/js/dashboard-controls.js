@@ -12,14 +12,15 @@
     { key: 'subscribers', label: 'Subscribers' },
     { key: 'views', label: 'Views' },
     { key: 'videos', label: 'Videos' },
-    { key: 'averages', label: 'Averages (7d)' }
+    { key: 'averages', label: 'Averages (7d)' },
+    { key: 'markers', label: 'Upload markers' }
   ];
   const FOCUS_MODES = ['overview', 'growth', 'efficiency', 'milestones'];
 
   const state = {
     timeRange: '30',
     selectedChannels: new Set(),
-    datasetToggles: { subscribers: true, views: true, videos: true, averages: true },
+    datasetToggles: { subscribers: true, views: true, videos: true, averages: true, markers: true },
     sortKey: 'subscribers',
     sortDir: 'desc',
     selectedChannel: null,
@@ -131,7 +132,7 @@
 
   const aggregateHistory = () => {
     if (!state.selectedChannels.size) {
-      return { labels: [], subscribers: [], views: [], videos: [], subsAvg7: [], viewsAvg7: [] };
+      return { labels: [], subscribers: [], views: [], videos: [], subsAvg7: [], viewsAvg7: [], uploadMarkers: [], uploadCounts: [] };
     }
     const byDate = new Map();
     for (const row of ctx.historyRows) {
@@ -167,13 +168,18 @@
     const subsDelta = subscribers.map((v, i) => i === 0 ? null : v - subscribers[i - 1]);
     const viewsDelta = views.map((v, i) => i === 0 ? null : v - views[i - 1]);
 
+    const uploadCounts = videos.map((v, i) => (i === 0 ? 0 : Math.max(0, v - videos[i - 1])));
+    const uploadMarkers = videos.map((v, i) => (uploadCounts[i] > 0 ? v : null));
+
     return {
       labels,
       subscribers,
       views,
       videos,
       subsAvg7: rollingAverage(subsDelta, 7),
-      viewsAvg7: rollingAverage(viewsDelta, 7)
+      viewsAvg7: rollingAverage(viewsDelta, 7),
+      uploadMarkers,
+      uploadCounts
     };
   };
 
@@ -301,7 +307,8 @@
             { key: 'videos', label: 'Total Videos', data: [], borderColor: '#ff6347', tension: 0.3, pointRadius: 3, yAxisID: 'y_vids' },
             { key: 'views', label: 'Total Views', data: [], borderColor: '#32cd32', tension: 0.3, pointRadius: 3, yAxisID: 'y_views' },
             { key: 'subsAvg', label: 'Subs (7-day avg)', data: [], borderColor: '#1e90ff', borderDash: [6, 6], pointRadius: 0, tension: 0.2, yAxisID: 'y_subs_avg' },
-            { key: 'viewsAvg', label: 'Views (7-day avg)', data: [], borderColor: '#32cd32', borderDash: [6, 6], pointRadius: 0, tension: 0.2, yAxisID: 'y_views_avg' }
+            { key: 'viewsAvg', label: 'Views (7-day avg)', data: [], borderColor: '#32cd32', borderDash: [6, 6], pointRadius: 0, tension: 0.2, yAxisID: 'y_views_avg' },
+            { key: 'uploadMarkers', label: 'Upload events (inferred)', data: [], borderColor: '#f59e0b', backgroundColor: '#f59e0b', showLine: false, pointRadius: 4, pointHoverRadius: 5, pointStyle: 'triangle', yAxisID: 'y_vids' }
           ]
         },
         options: {
@@ -330,13 +337,16 @@
       views: computed.views,
       videos: computed.videos,
       subsAvg: computed.subsAvg7,
-      viewsAvg: computed.viewsAvg7
+      viewsAvg: computed.viewsAvg7,
+      uploadMarkers: computed.uploadMarkers
     };
 
     ctx.chart.data.datasets.forEach((d) => {
       d.data = map[d.key] || [];
       if (d.key.endsWith('Avg')) {
         ctx.chart.getDatasetMeta(ctx.chart.data.datasets.indexOf(d)).hidden = !state.datasetToggles.averages;
+      } else if (d.key === 'uploadMarkers') {
+        ctx.chart.getDatasetMeta(ctx.chart.data.datasets.indexOf(d)).hidden = !state.datasetToggles.markers;
       } else {
         ctx.chart.getDatasetMeta(ctx.chart.data.datasets.indexOf(d)).hidden = !state.datasetToggles[d.key];
       }
