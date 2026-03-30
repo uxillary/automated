@@ -134,14 +134,26 @@
     if (!state.selectedChannels.size) {
       return { labels: [], subscribers: [], views: [], videos: [], subsAvg7: [], viewsAvg7: [], uploadMarkers: [], uploadCounts: [] };
     }
-    const byDate = new Map();
+    // Some days can contain multiple snapshots for the same channel.
+    // Keep only the latest snapshot per (channel, day) so daily totals are not double-counted.
+    const latestPerChannelDay = new Map();
     for (const row of ctx.historyRows) {
       if (!state.selectedChannels.has(row.channel)) continue;
+      const key = `${row.channel}__${row.dateKey}`;
+      const existing = latestPerChannelDay.get(key);
+      if (!existing || row.dateObj > existing.dateObj) {
+        latestPerChannelDay.set(key, row);
+      }
+    }
+
+    const byDate = new Map();
+    for (const row of latestPerChannelDay.values()) {
       const key = row.dateKey;
       if (!byDate.has(key)) {
         byDate.set(key, { dateObj: row.dateObj, subscribers: 0, videos: 0, views: 0 });
       }
       const d = byDate.get(key);
+      if (row.dateObj > d.dateObj) d.dateObj = row.dateObj;
       d.subscribers += row.subscribers;
       d.videos += row.videos;
       d.views += row.views;
