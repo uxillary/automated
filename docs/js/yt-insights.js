@@ -76,15 +76,23 @@
       .rank-item{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft)}
       .rank-label{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:640}
       .rank-value{font-weight:700;text-align:right}
-      .insight-group{margin-top:12px}
-      .insight-group h4{margin:0 0 8px;font-size:.88rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-      .insight-list{margin:0;padding-left:18px;display:grid;gap:8px}
-      .chip-list{display:grid;gap:8px;margin-top:10px}
-      .signal-chip{border:1px solid var(--border);border-radius:12px;padding:9px 11px;background:var(--surface-soft)}
-      .signal-chip.warning{border-color:rgba(248,113,113,.45)}
-      .signal-chip.opportunity{border-color:rgba(52,211,153,.45)}
-      .micro{font-size:.8rem;color:var(--muted)}
-      .focus-card{margin-top:12px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft)}
+      .insight-group{margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+      .insight-group h4{margin:0 0 8px;font-size:.86rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+      .insight-list{margin:0;padding-left:20px;display:grid;gap:10px}
+      .insight-list li{line-height:1.45}
+      .chip-list{display:grid;gap:10px;margin-top:12px}
+      .signal-chip{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--surface-soft);line-height:1.4}
+      .signal-chip strong{display:block;font-size:1.05rem;color:var(--fg);margin-bottom:4px}
+      .signal-chip.warning{border-color:rgba(248,113,113,.55);background:linear-gradient(0deg,rgba(248,113,113,.08),rgba(248,113,113,.08)),var(--surface-soft)}
+      .signal-chip.opportunity{border-color:rgba(52,211,153,.58);background:linear-gradient(0deg,rgba(45,212,191,.09),rgba(45,212,191,.09)),var(--surface-soft)}
+      .status-pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;border:1px solid var(--border);color:var(--muted)}
+      .status-pill.good{color:#5eead4;border-color:rgba(45,212,191,.45)}
+      .status-pill.warn{color:#fca5a5;border-color:rgba(248,113,113,.45)}
+      .micro{font-size:.86rem;color:var(--muted);line-height:1.45}
+      .focus-card{margin-top:12px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface-soft);line-height:1.45}
+      .focus-lines{display:grid;gap:8px;margin:0}
+      .focus-line{display:block}
+      .narrative-lead{margin-top:12px;padding:10px 12px;border-left:3px solid rgba(147,197,253,.6);background:rgba(59,130,246,.08);border-radius:10px;font-size:.92rem;line-height:1.45;color:#c6d4ef}
     `;
     document.head.appendChild(style);
   };
@@ -232,8 +240,8 @@
       .slice(0, 2);
 
     const focusText = focusCandidates.length
-      ? focusCandidates.map((c) => `${c.name}: ${fmt(c.efficiency, 0)} views/video${c.momentum > 0 ? ', improving during upload-active periods' : ''}${c.inactive > 30 ? ', currently inactive' : ''}.`).join(' ')
-      : 'Confidence is low due to sparse activity history in the selected set.';
+      ? focusCandidates.map((c) => `${c.name}: ${fmt(c.efficiency, 0)} views/video${c.momentum > 0 ? ' · momentum rises when uploads are active' : ''}${c.inactive > 30 ? ' · currently in an idle season' : ''}`).join(' | ')
+      : 'Signal confidence is low because activity history is still sparse in the selected set.';
 
     return {
       positives,
@@ -281,7 +289,8 @@
 
     mount.innerHTML = `
       <h3 class="section-title">Creator Insight Narrative</h3>
-      <p class="table-subtitle">Grouped, rule-based signals from current and historical snapshots.</p>
+      <p class="table-subtitle">A quick-reading map: think runway (wins), weather (risks), and fuel (next bets).</p>
+      <div class="narrative-lead">Metaphor view: this dashboard is a cockpit. Green signals are lift, red signals are drag, and opportunities are the clearest flight path.</div>
       <div class="insight-group">
         <h4>What’s going well</h4>
         ${listOrFallback(narrative.positives, 'No strong positive pattern in the selected slice yet.')}
@@ -304,14 +313,20 @@
     const byRecent = [...selectedActivity].sort((a, b) => (a.activity?.daysSinceLastUpload ?? 999) - (b.activity?.daysSinceLastUpload ?? 999));
     const chips = byRecent.slice(0, 5).map((row) => {
       const a = row.activity;
-      if (!a) return `<div class="signal-chip warning"><strong>${row.name}</strong><div class="micro">Insufficient upload history.</div></div>`;
+      if (!a) return `<div class="signal-chip warning"><span class="status-pill warn">Low signal</span><strong>${row.name}</strong><div class="micro">Insufficient upload history.</div></div>`;
       const status = a.daysSinceLastUpload == null ? 'unknown' : (a.daysSinceLastUpload <= 30 ? 'active' : 'inactive');
-      return `<div class="signal-chip ${status === 'inactive' ? 'warning' : ''}"><strong>${row.name}</strong><div class="micro">${fmt(a.recent7)} uploads (7d) · ${fmt(a.recent30)} uploads (30d) · ${a.daysSinceLastUpload == null ? 'last upload unknown' : `${fmt(a.daysSinceLastUpload)} days since last upload`} ${a.reliableStreak && a.streak != null ? `· streak ${fmt(a.streak)} day(s)` : '· streak hidden (sparse snapshots)'}</div></div>`;
+      return `<div class="signal-chip ${status === 'inactive' ? 'warning' : ''}">
+        <span class="status-pill ${status === 'inactive' ? 'warn' : 'good'}">${status === 'inactive' ? 'Cooling down' : 'Active rhythm'}</span>
+        <strong>${row.name}</strong>
+        <div class="micro"><b>7d:</b> ${fmt(a.recent7)} uploads · <b>30d:</b> ${fmt(a.recent30)} uploads</div>
+        <div class="micro"><b>Recency:</b> ${a.daysSinceLastUpload == null ? 'Last upload unknown' : `${fmt(a.daysSinceLastUpload)} days since last upload`}</div>
+        <div class="micro"><b>Consistency:</b> ${a.reliableStreak && a.streak != null ? `${fmt(a.streak)}-day streak` : 'Streak hidden (sparse snapshots)'}</div>
+      </div>`;
     }).join('');
 
     mount.innerHTML = `
       <h3 class="section-title">Activity & Consistency</h3>
-      <p class="table-subtitle">Upload signals are inferred from day-over-day video-count changes in tracked snapshots.</p>
+      <p class="table-subtitle">This is your publishing heartbeat — each card separates rhythm, recency, and reliability for fast scanning.</p>
       <div class="chip-list">${chips || '<div class="micro">No activity data available for selected channels.</div>'}</div>
       <div class="insight-group">
         <h4>Dashboard health</h4>
@@ -329,11 +344,13 @@
       ...narrative.opportunities.slice(0, 2).map((text) => `<div class="signal-chip opportunity">Opportunity: ${text}</div>`),
       ...narrative.watchouts.slice(0, 2).map((text) => `<div class="signal-chip warning">Warning: ${text}</div>`)
     ].slice(0, 4);
+    const focusLines = narrative.focusText.split(' | ').filter(Boolean)
+      .map((line) => `<span class="focus-line">${line}</span>`).join('');
 
     mount.innerHTML = `
       <h3 class="section-title">Where to Focus Next</h3>
-      <p class="table-subtitle">Rule-based recommendation from efficiency, momentum alignment, and activity recency.</p>
-      <div class="focus-card">${narrative.focusText}</div>
+      <p class="table-subtitle">Think of this as lane guidance: stay where traction is strongest, pause where momentum is fading.</p>
+      <div class="focus-card"><div class="focus-lines">${focusLines || narrative.focusText}</div></div>
       <div class="chip-list">${cards.join('') || '<div class="micro">Not enough reliable signals for opportunity/warning cards yet.</div>'}</div>
     `;
   };
