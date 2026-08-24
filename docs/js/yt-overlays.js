@@ -113,6 +113,10 @@ try {
     { target: proj.next_100?.target ?? 800, scenarios: scenario(proj.next_100?.target ?? 800) },
     { target: 1000, scenarios: scenario(1000) },
   ];
+  const progress = (target) => {
+    const previous = target <= 750 ? Math.max(0, target - 50) : target <= 800 ? 750 : 800;
+    return Math.max(0, Math.min(100, ((currentSubs - previous) / (target - previous)) * 100));
+  };
 
   const wrap = document.createElement('div');
   wrap.className = 'yt-eta';
@@ -131,7 +135,7 @@ try {
         <tbody>
           ${rows.map(r => `
             <tr>
-              <td>${r.target.toLocaleString()}</td>
+              <td><strong>${r.target.toLocaleString()}</strong><div class="milestone-progress" aria-label="${Math.round(progress(r.target))}% progress toward ${r.target.toLocaleString()} subscribers"><span style="width:${progress(r.target)}%"></span></div><small>${Math.max(0, r.target - currentSubs).toLocaleString()} subscribers to go</small></td>
               <td>${fmtEta(r.scenarios.conservative)}</td>
               <td>${fmtEta(r.scenarios.current)}</td>
               <td>${r.scenarios.current && r.scenarios.conservative
@@ -149,6 +153,9 @@ try {
   style.textContent = `
     .yt-eta-title{font-weight:700;margin-bottom:10px}
     .yt-eta-foot{margin-top:8px;color:var(--muted);font-size:.8rem}
+    .milestone-progress{width:150px;max-width:100%;height:6px;margin:7px 0 5px;border-radius:999px;background:var(--surface-soft);overflow:hidden}
+    .milestone-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+    .mini-table small{color:var(--muted);white-space:nowrap}
   `;
   document.head.appendChild(style);
 

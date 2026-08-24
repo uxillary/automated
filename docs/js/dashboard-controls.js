@@ -214,21 +214,19 @@
     const subsMomentum = subs7 != null && subs30 != null ? subs7 - subs30 : null;
     const viewsMomentum = views7 != null && views30 != null ? views7 - views30 : null;
 
+    const rangeLabel = TIME_RANGES.find((r) => r.key === state.timeRange)?.label || 'visible range';
     const items = [
-      { label: 'Total Subscribers', value: fmt(lastSubs), sub: `${state.selectedChannels.size} selected channels` },
-      { label: 'Total Views', value: fmt(lastViews), sub: 'Lifetime cumulative views' },
-      { label: 'Total Videos', value: fmt(lastVideos), sub: 'Published videos' },
-      { label: '7-day Subs/day', value: fmt(subs7, 0), sub: 'From visible date range' },
-      { label: '7-day Views/day', value: fmt(views7, 0), sub: 'From visible date range' },
-      { label: 'Views per Video', value: fmt(ratio(lastViews, lastVideos), 0), sub: `Range: ${TIME_RANGES.find((r) => r.key === state.timeRange)?.label}` },
-      { label: 'Subscriber Momentum', value: subsMomentum == null ? '—' : `${subsMomentum > 0 ? '+' : ''}${fmt(subsMomentum, 0)}/day`, sub: `7d vs 30d: ${momentumLabel(subsMomentum, subs30 || 1)}` },
-      { label: 'View Momentum', value: viewsMomentum == null ? '—' : `${viewsMomentum > 0 ? '+' : ''}${fmt(viewsMomentum, 0)}/day`, sub: `7d vs 30d: ${momentumLabel(viewsMomentum, views30 || 1)}` }
+      { label: 'Total Subscribers', value: fmt(lastSubs), primary: true, delta: `${lastSubs - (subscribers[0] ?? lastSubs) >= 0 ? '+' : ''}${fmt(lastSubs - (subscribers[0] ?? lastSubs))} in ${rangeLabel}`, sub: `${state.selectedChannels.size} selected channels · ${fmt(subs7, 0)}/day recent pace` },
+      { label: 'Total Views', value: fmt(lastViews), primary: true, delta: `${lastViews - (views[0] ?? lastViews) >= 0 ? '+' : ''}${fmt(lastViews - (views[0] ?? lastViews))} in ${rangeLabel}`, sub: `Lifetime total · ${fmt(views7, 0)}/day recent pace` },
+      { label: 'Published Videos', value: fmt(lastVideos), sub: 'Across selected channels' },
+      { label: 'Views per Video', value: fmt(ratio(lastViews, lastVideos), 0), sub: `Subscriber momentum: ${momentumLabel(subsMomentum, subs30 || 1)}` }
     ];
 
     kpiGrid.innerHTML = items.map((item) => `
-      <article class="kpi-card">
+      <article class="kpi-card ${item.primary ? 'kpi-primary' : ''}">
         <span class="kpi-label">${item.label}</span>
         <div class="kpi-value">${item.value}</div>
+        ${item.delta ? `<div class="kpi-delta">${item.delta}</div>` : ''}
         <div class="kpi-sub">${item.sub}</div>
       </article>
     `).join('');
