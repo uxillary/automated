@@ -68,8 +68,8 @@
     }
     .control-stack {
       display: grid;
-      gap: 12px;
-      margin-top: 10px;
+      gap: 14px;
+      margin-top: 14px;
     }
     .control-row {
       display: flex;
@@ -114,15 +114,23 @@
     #kpiGrid {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
+      padding: 0;
     }
 
     .kpi-card {
-      border-radius: 14px;
-      padding: 14px 14px 12px;
+      grid-column: span 1;
+      border-radius: 16px;
+      padding: 18px;
       border: 1px solid var(--border);
       background: linear-gradient(160deg, var(--surface-soft), var(--card-bg));
       box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+    }
+    .kpi-card.kpi-primary {
+      grid-column: span 2;
+      padding: 22px;
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+      background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 13%, var(--card-bg)), var(--card-bg));
     }
 
     .kpi-label {
@@ -140,6 +148,8 @@
       font-weight: 780;
       letter-spacing: .01em;
     }
+    .kpi-primary .kpi-value { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.035em; }
+    .kpi-delta { display:inline-flex; margin-top:10px; padding:4px 8px; border-radius:999px; background:color-mix(in srgb,var(--accent-2) 14%,transparent); color:var(--accent-2); font-size:.8rem; font-weight:700; }
 
     .kpi-sub {
       margin-top: 4px;
@@ -169,8 +179,11 @@
     }
 
     #chartCard {
-      padding: 18px 18px 12px;
+      padding: 24px 24px 18px;
+      border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
     }
+    #chartCard .section-title { font-size:1.28rem; }
+    #growthChart { min-height:390px; }
 
     #tableCard {
       padding: 14px 16px 8px;
@@ -225,6 +238,18 @@
     #statsTable tbody tr.is-highlight {
       background: rgba(99, 102, 241, .15);
     }
+    .table-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:12px; }
+    .table-scroll table { min-width:920px; }
+    #statsTable th:first-child, #statsTable td:first-child { position:sticky; left:0; z-index:1; background:var(--card-bg); }
+    #statsTable th:first-child { background:var(--table-head); z-index:2; }
+    #statsTable .totals td:first-child { background:var(--table-total); }
+    .primary-controls { padding-bottom:14px; border-bottom:1px solid var(--border); }
+    .control-label { color:var(--muted); font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; min-width:64px; }
+    .secondary-controls { color:var(--muted); }
+    .secondary-controls summary, .secondary-insights summary { cursor:pointer; font-size:.84rem; font-weight:650; }
+    .secondary-controls[open] summary, .secondary-insights[open] summary { margin-bottom:12px; }
+    .secondary-insights { padding:2px 4px; }
+    .secondary-insights > summary { color:var(--muted); text-align:center; list-style-position:inside; }
 
     .theme-toggle {
       border: 1px solid var(--border);
@@ -259,6 +284,8 @@
       #kpiGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .kpi-card.kpi-primary { grid-column:span 1; }
+      #growthChart { min-height:320px; }
       .card {
         border-radius: 14px;
       }
@@ -281,22 +308,21 @@
       </div>
     </div>
     <div class="control-stack">
-      <div class="control-row">
+      <div class="control-row primary-controls">
+        <span class="control-label">Range</span>
         <div class="control-group" id="timeRangeControls" aria-label="Time range controls"></div>
         <span class="selection-badge" id="selectionBadge">All channels selected</span>
       </div>
       <div class="control-row">
-        <div class="control-group" id="focusModeControls" aria-label="Metric focus mode"></div>
-      </div>
-      <div class="control-row">
-        <div class="control-group" id="datasetToggleControls" aria-label="Dataset toggles"></div>
-      </div>
-      <div class="control-row">
-        <span class="selection-badge">Upload markers are inferred from observed video-count increases.</span>
-      </div>
-      <div class="control-row">
+        <span class="control-label">Channels</span>
         <div class="control-group" id="channelFilterControls" aria-label="Channel filters"></div>
       </div>
+      <details class="secondary-controls">
+        <summary>Chart display options</summary>
+        <div class="control-row"><span class="control-label">Focus</span><div class="control-group" id="focusModeControls" aria-label="Metric focus mode"></div></div>
+        <div class="control-row"><span class="control-label">Series</span><div class="control-group" id="datasetToggleControls" aria-label="Dataset toggles"></div></div>
+        <p class="selection-badge">Upload markers are inferred from observed video-count increases.</p>
+      </details>
     </div>
   </div>
 
@@ -316,15 +342,14 @@
     <canvas id="growthChart" width="600" height="300"></canvas>
   </div>
 
-  <div class="grid-2 section" id="analyticsGrid" data-focus-group="overview growth milestones">
+  <div class="section" id="analyticsGrid" data-focus-group="overview growth milestones">
     <div class="card" id="milestonesMount">
       <!-- Will be replaced by Next Milestones JS; left here as a slot -->
     </div>
-    <div class="card" id="metricsMount">
-      <!-- Will be replaced by Metrics Card JS; left here as a slot -->
-    </div>
   </div>
 
+  <details class="secondary-insights">
+    <summary>View creator insights and activity</summary>
   <div class="grid-2 section" id="insightGrid" data-focus-group="overview growth efficiency milestones">
     <div class="card" id="channelHighlightsMount">
       <!-- Channel highlights injected by JS -->
@@ -338,13 +363,14 @@
     <div class="card" id="activityMount"></div>
     <div class="card" id="focusMount"></div>
   </div>
+  </details>
 
   <div class="card section" id="tableCard" data-focus-group="overview efficiency">
     <div class="table-header">
       <h2 class="section-title">Channel Breakdown</h2>
       <p class="table-subtitle">Latest per-channel totals</p>
     </div>
-    <table id="statsTable">
+    <div class="table-scroll" role="region" aria-label="Scrollable channel breakdown" tabindex="0"><table id="statsTable">
     <thead>
       <tr>
         <th>Channel</th>
@@ -360,20 +386,13 @@
     <tbody>
       <tr><td colspan="8">Loading...</td></tr>
     </tbody>
-  </table>
+  </table></div>
   </div>
 
-  <script src="/automated/js/dashboard-controls.js"></script>
-  <script src="/js/dashboard-controls.js"></script>
+  <script src="js/dashboard-controls.js"></script>
 
-  <!-- Metrics Card (safe, additive) -->
-  <script src="/automated/js/yt-metrics-card.js"></script>
-  <script src="/js/yt-metrics-card.js"></script>
-
-  <script src="/automated/js/yt-overlays.js"></script>
-  <script src="/js/yt-overlays.js"></script>
-  <script src="/automated/js/yt-insights.js"></script>
-  <script src="/js/yt-insights.js"></script>
+  <script src="js/yt-overlays.js"></script>
+  <script src="js/yt-insights.js"></script>
 
   <script>
     (function() {
