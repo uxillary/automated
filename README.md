@@ -67,6 +67,38 @@ This renders the data visually with JavaScript. JSON is used for live stats disp
 
 ---
 
+## GitHub Lifetime Statistics
+
+The `GitHub Lifetime Stats` workflow runs daily at **02:23 UTC** and can also be
+started manually with `workflow_dispatch`. It publishes two plain-integer files:
+
+- `docs/lifetime-contributions.txt` is the authenticated contribution-calendar
+  total from account creation through the time of the run. The script fetches the
+  account creation timestamp, splits the UTC range into consecutive windows of at
+  most one calendar year, and sums the GraphQL `totalContributions` values.
+- `docs/release-downloads.txt` is the live sum of download counts for uploaded
+  assets that still exist on published releases, including prereleases, in
+  repositories owned by `uxillary`. Draft releases are excluded. GitHub's
+  generated source-code ZIP and tar archives, clones, packages, workflow
+  artifacts, GitHub Pages traffic, externally hosted downloads, and deleted
+  releases or assets are not included.
+
+The workflow supplies the existing `API_GITHUB` repository secret to the script
+as `GH_TOKEN`. To run it locally, set the token only in your shell environment
+(do not put it in the repository):
+
+```sh
+GH_TOKEN="..." node scripts/github_lifetime_stats.js
+```
+
+The mocked test suite never contacts GitHub and does not need a token:
+
+```sh
+node --test tests/github_lifetime_stats.test.js
+```
+
+---
+
 ## 🛠️ Setup Guide
 
 To fork and use this yourself:
