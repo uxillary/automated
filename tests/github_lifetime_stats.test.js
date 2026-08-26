@@ -42,8 +42,8 @@ test('REST pagination follows repository and release next links and sums assets'
   const calls = [];
   const fetchImpl = async (url) => {
     calls.push(url);
-    if (url.includes('/users/uxillary/repos') && !url.includes('page=2')) return response([{ name: 'one', full_name: 'uxillary/one', owner: { login: 'uxillary' } }], { link: '<https://api.github.com/users/uxillary/repos?type=owner&per_page=100&page=2>; rel="next"' });
-    if (url.includes('/users/uxillary/repos') && url.includes('page=2')) return response([{ name: 'two', full_name: 'uxillary/two', owner: { login: 'uxillary' } }]);
+    if (url.includes('/users/uxillary/repos') && !url.includes('page=2')) return response([{ name: 'one', full_name: 'uxillary/one', fork: false, owner: { login: 'uxillary' } }], { link: '<https://api.github.com/users/uxillary/repos?type=owner&per_page=100&page=2>; rel="next"' });
+    if (url.includes('/users/uxillary/repos') && url.includes('page=2')) return response([{ name: 'two', full_name: 'uxillary/two', fork: false, owner: { login: 'uxillary' } }]);
     if (url.includes('/one/releases') && !url.includes('page=2')) return response([{ draft: false, prerelease: false, assets: [{ download_count: 2 }] }], { link: '<https://api.github.com/repos/uxillary/one/releases?per_page=100&page=2>; rel="next"' });
     if (url.includes('/one/releases')) return response([{ draft: false, prerelease: true, assets: [{ download_count: 3 }, { download_count: 4 }] }]);
     return response([{ draft: true, prerelease: false, assets: [{ download_count: 1000 }] }, { draft: false, prerelease: false, assets: [{ download_count: 5 }] }]);
@@ -58,12 +58,32 @@ test('release lookup does not depend on which account owns the token', async () 
   const fetchImpl = async (url) => {
     calls.push(url);
     if (url.includes('/users/target/repos')) return response([
-      { name: 'app', full_name: 'target/app', owner: { login: 'target' } },
+      { name: 'app', full_name: 'target/app', fork: false, owner: { login: 'target' } },
     ]);
     return response([{ draft: false, assets: [{ download_count: 12 }] }]);
   };
   assert.equal(await stats.calculateReleaseDownloads(fetchImpl, 'token', 'target'), 12);
   assert.equal(calls[0], 'https://api.github.com/users/target/repos?type=owner&per_page=100');
+});
+
+test('all forks are excluded before release lookup', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    if (url.includes('/users/uxillary/repos')) return response([
+      { name: 'created-here', full_name: 'uxillary/created-here', fork: false, owner: { login: 'uxillary' } },
+      { name: 'unavailable-upstream', full_name: 'uxillary/unavailable-upstream', fork: true, owner: { login: 'uxillary' } },
+      { name: 'another-fork', full_name: 'uxillary/another-fork', fork: true, owner: { login: 'uxillary' } },
+    ]);
+    if (url.includes('/created-here/releases')) return response([
+      { draft: false, assets: [{ download_count: 8 }] },
+    ]);
+    throw new Error(`A fork release endpoint must not be requested: ${url}`);
+  };
+
+  assert.equal(await stats.calculateReleaseDownloads(fetchImpl, 'token'), 8);
+  assert.equal(calls.length, 2);
+  assert.match(calls[1], /\/created-here\/releases/);
 });
 
 test('invalid release asset counts fail', () => {

@@ -173,9 +173,14 @@ async function calculateReleaseDownloads(fetchImpl, token, username = USERNAME) 
   for (const repository of repositories) {
     const fullName = repository?.full_name;
     if (typeof fullName !== 'string' || typeof repository?.name !== 'string' ||
-        repository?.owner?.login?.toLowerCase() !== username.toLowerCase()) {
+        repository?.owner?.login?.toLowerCase() !== username.toLowerCase() ||
+        typeof repository?.fork !== 'boolean') {
       throw new Error(`Fetching repositories owned by ${username}: malformed or unexpected repository`);
     }
+    // The owner filter also returns repositories that the user forked. Only
+    // query original repositories, both to count releases created here and to
+    // avoid failures when an upstream fork has been removed or disabled.
+    if (repository.fork) continue;
     const releases = await getPaginatedRest(fetchImpl, token,
       `${REST_URL}/repos/${encodeURIComponent(repository.owner.login)}/${encodeURIComponent(repository.name)}/releases?per_page=100`,
       `Fetching releases for ${fullName}`);
