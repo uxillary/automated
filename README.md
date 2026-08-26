@@ -83,6 +83,13 @@ started manually with `workflow_dispatch`. It publishes two plain-integer files:
   artifacts, GitHub Pages traffic, externally hosted downloads, and deleted
   releases or assets are not included.
 
+The release scan uses the public owner endpoint for `uxillary`, rather than the
+authenticated `/user/repos` endpoint. This is important for fine-grained tokens:
+the latter only returns repositories visible to that token and can silently
+produce an incomplete (or empty) repository list. A zero lifetime contribution
+result is treated as an API/token visibility error and leaves both existing
+files untouched instead of publishing misleading zeroes.
+
 The workflow supplies the existing `API_GITHUB` repository secret to the script
 as `GH_TOKEN`. To run it locally, set the token only in your shell environment
 (do not put it in the repository):

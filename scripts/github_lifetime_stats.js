@@ -167,7 +167,8 @@ function sumReleaseAssetDownloads(releases, context = 'releases') {
 
 async function calculateReleaseDownloads(fetchImpl, token, username = USERNAME) {
   const repositories = await getPaginatedRest(fetchImpl, token,
-    `${REST_URL}/user/repos?affiliation=owner&per_page=100`, `Fetching repositories owned by ${username}`);
+    `${REST_URL}/users/${encodeURIComponent(username)}/repos?type=owner&per_page=100`,
+    `Fetching public repositories owned by ${username}`);
   let total = 0;
   for (const repository of repositories) {
     const fullName = repository?.full_name;
@@ -203,8 +204,12 @@ async function run({ fetchImpl = globalThis.fetch, token = process.env.GH_TOKEN,
   // Complete and validate both remote calculations before touching either file.
   const lifetime = await calculateLifetimeContributions(fetchImpl, token, USERNAME, now);
   const downloads = await calculateReleaseDownloads(fetchImpl, token, USERNAME);
+  // A zero lifetime total indicates an authentication/API visibility problem
+  // for this established account, not valid statistics. Never replace known
+  // values with a silently empty API result.
+  if (lifetime === 0) throw new Error(`GitHub returned zero lifetime contributions for ${USERNAME}; check API_GITHUB token visibility`);
   writeIntegerOutputs(outputDirectory, lifetime, downloads);
-  console.log(`GitHub lifetime statistics updated for ${USERNAME}.`);
+  console.log(`GitHub lifetime statistics updated for ${USERNAME}: ${lifetime} contributions, ${downloads} release downloads.`);
   return { lifetime, downloads };
 }
 
