@@ -42,14 +42,28 @@ test('REST pagination follows repository and release next links and sums assets'
   const calls = [];
   const fetchImpl = async (url) => {
     calls.push(url);
-    if (url.includes('/user/repos') && !url.includes('page=2')) return response([{ name: 'one', full_name: 'uxillary/one', owner: { login: 'uxillary' } }], { link: '<https://api.github.com/user/repos?affiliation=owner&per_page=100&page=2>; rel="next"' });
-    if (url.includes('/user/repos') && url.includes('page=2')) return response([{ name: 'two', full_name: 'uxillary/two', owner: { login: 'uxillary' } }]);
+    if (url.includes('/users/uxillary/repos') && !url.includes('page=2')) return response([{ name: 'one', full_name: 'uxillary/one', owner: { login: 'uxillary' } }], { link: '<https://api.github.com/users/uxillary/repos?type=owner&per_page=100&page=2>; rel="next"' });
+    if (url.includes('/users/uxillary/repos') && url.includes('page=2')) return response([{ name: 'two', full_name: 'uxillary/two', owner: { login: 'uxillary' } }]);
     if (url.includes('/one/releases') && !url.includes('page=2')) return response([{ draft: false, prerelease: false, assets: [{ download_count: 2 }] }], { link: '<https://api.github.com/repos/uxillary/one/releases?per_page=100&page=2>; rel="next"' });
     if (url.includes('/one/releases')) return response([{ draft: false, prerelease: true, assets: [{ download_count: 3 }, { download_count: 4 }] }]);
     return response([{ draft: true, prerelease: false, assets: [{ download_count: 1000 }] }, { draft: false, prerelease: false, assets: [{ download_count: 5 }] }]);
   };
   assert.equal(await stats.calculateReleaseDownloads(fetchImpl, 'token'), 14);
   assert.equal(calls.length, 5);
+  assert.match(calls[0], /\/users\/uxillary\/repos\?type=owner/);
+});
+
+test('release lookup does not depend on which account owns the token', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    if (url.includes('/users/target/repos')) return response([
+      { name: 'app', full_name: 'target/app', owner: { login: 'target' } },
+    ]);
+    return response([{ draft: false, assets: [{ download_count: 12 }] }]);
+  };
+  assert.equal(await stats.calculateReleaseDownloads(fetchImpl, 'token', 'target'), 12);
+  assert.equal(calls[0], 'https://api.github.com/users/target/repos?type=owner&per_page=100');
 });
 
 test('invalid release asset counts fail', () => {
@@ -66,6 +80,24 @@ test('an API failure leaves both existing output files untouched', async () => {
     return response({}, { status: 500 });
   };
   await assert.rejects(() => stats.run({ fetchImpl, token: 'token', outputDirectory: directory, now: new Date('2024-02-01T00:00:00Z') }), /HTTP 500/);
+  assert.equal(fs.readFileSync(path.join(directory, 'lifetime-contributions.txt'), 'utf8'), '10\n');
+  assert.equal(fs.readFileSync(path.join(directory, 'release-downloads.txt'), 'utf8'), '20\n');
+});
+
+test('a zero lifetime result does not overwrite existing output files', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'github-stats-zero-'));
+  fs.writeFileSync(path.join(directory, 'lifetime-contributions.txt'), '10\n');
+  fs.writeFileSync(path.join(directory, 'release-downloads.txt'), '20\n');
+  const fetchImpl = async (url, options) => {
+    if (url.includes('/users/uxillary/repos')) return response([]);
+    const request = JSON.parse(options.body);
+    if (request.query.includes('createdAt')) return response({ data: { user: { createdAt: '2024-01-01T00:00:00Z' } } });
+    return response({ data: { user: { contributionsCollection: { contributionCalendar: { totalContributions: 0 } } } } });
+  };
+  await assert.rejects(
+    () => stats.run({ fetchImpl, token: 'token', outputDirectory: directory, now: new Date('2024-02-01T00:00:00Z') }),
+    /zero lifetime contributions.*token visibility/,
+  );
   assert.equal(fs.readFileSync(path.join(directory, 'lifetime-contributions.txt'), 'utf8'), '10\n');
   assert.equal(fs.readFileSync(path.join(directory, 'release-downloads.txt'), 'utf8'), '20\n');
 });
