@@ -1,0 +1,52 @@
+name: GitHub Lifetime Stats
+
+on:
+  schedule:
+    - cron: '23 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-generated-stats
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update lifetime statistics
+        env:
+          GH_TOKEN: ${{ secrets.API_GITHUB }}
+        run: node scripts/github_lifetime_stats.js
+
+      - name: Validate generated files
+        run: |
+          for file in docs/lifetime-contributions.txt docs/release-downloads.txt; do
+            test "$(wc -l < "$file")" -eq 1
+            grep -Eq '^[0-9]+$' "$file"
+          done
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "uxillary"
+          git config user.email "adam@ajstudios.dev"
+          git add docs/lifetime-contributions.txt docs/release-downloads.txt
+          if git diff --cached --quiet; then
+            echo "No GitHub lifetime statistics changes to commit."
+            exit 0
+          fi
+          git commit -m "Update GitHub stats [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
