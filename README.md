@@ -78,13 +78,16 @@ started manually with `workflow_dispatch`. It publishes two plain-integer files:
   most one calendar year, and sums the GraphQL `totalContributions` values.
 - `docs/release-downloads.txt` is the live sum of download counts for uploaded
   assets that still exist on published releases, including prereleases, in
-  repositories owned by `uxillary`. Draft releases are excluded. GitHub's
+  original (non-fork) repositories owned by `uxillary`. All forks and draft
+  releases are excluded. GitHub's
   generated source-code ZIP and tar archives, clones, packages, workflow
   artifacts, GitHub Pages traffic, externally hosted downloads, and deleted
   releases or assets are not included.
 
-The release scan uses the public owner endpoint for `uxillary`, rather than the
-authenticated `/user/repos` endpoint. This is important for fine-grained tokens:
+The release scan uses the public owner endpoint for `uxillary`, then filters out
+every repository whose GitHub `fork` flag is set, rather than querying releases
+from forks. It also avoids the authenticated `/user/repos` endpoint. This is
+important for fine-grained tokens:
 the latter only returns repositories visible to that token and can silently
 produce an incomplete (or empty) repository list. A zero lifetime contribution
 result is treated as an API/token visibility error and leaves both existing
