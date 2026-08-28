@@ -1,37 +1,37 @@
 {
-  "last_updated": "2026-08-27T05:56:30+00:00",
+  "last_updated": "2026-08-28T08:08:16+00:00",
   "current": {
     "subscribers": 809,
-    "views": 909728,
+    "views": 908881,
     "videos": 570
   },
   "rolling": {
     "subs_per_day_7": 0.14285714285714285,
     "subs_per_day_30": 0.1,
-    "views_per_day_7": 206.0,
-    "views_per_day_30": 147.53333333333333
+    "views_per_day_7": 64.28571428571429,
+    "views_per_day_30": 117.0
   },
   "ratios": {
-    "views_per_video": 1596.0140350877193,
-    "views_per_sub": 1124.5092707045735,
+    "views_per_video": 1594.5280701754386,
+    "views_per_sub": 1123.4622991347342,
     "subs_per_video": 1.419298245614035
   },
   "projection": {
-    "slope_subs_per_day": 0.12241108356184455,
+    "slope_subs_per_day": 0.12279802663514883,
     "next_50": {
       "target": 850,
-      "eta_days": 334.9369910551112,
-      "eta_date": "2027-07-28T04:25:46.027161607+00:00"
+      "eta_days": 333.88158689078193,
+      "eta_date": "2027-07-28T05:17:45.107363556+00:00"
     },
     "next_100": {
       "target": 900,
-      "eta_days": 743.3967362442712,
-      "eta_date": "2028-09-08T15:27:48.011505031+00:00"
+      "eta_days": 741.05425383076,
+      "eta_date": "2028-09-07T09:26:23.530977664+00:00"
     },
     "to_1000": {
       "target": 1000,
-      "eta_days": 1560.3162266225913,
-      "eta_date": "2030-12-04T13:31:51.980191888+00:00"
+      "eta_days": 1555.3995877107159,
+      "eta_date": "2030-11-30T17:43:40.378205853+00:00"
     }
   },
   "source_csv": "docs/youtube/youtube-history-summed.csv",
