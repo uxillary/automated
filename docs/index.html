@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/modern-stats.css">
   <link rel="stylesheet" href="css/brand.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -37,6 +38,27 @@
       font-size: clamp(1.5rem, 1.9vw, 2rem);
       font-weight: 760;
       letter-spacing: .01em;
+    }
+
+    .title-block h1 i {
+      margin-right: 10px;
+      color: #ff3945;
+      filter: drop-shadow(0 4px 10px rgba(255, 0, 32, .28));
+    }
+
+    .section-title i, .control-label i, summary i {
+      margin-right: 7px;
+      color: var(--accent);
+    }
+
+    .control-label i {
+      width: 14px;
+      text-align: center;
+    }
+
+    .icon-heading {
+      display: inline-flex;
+      align-items: center;
     }
 
     .title-block p {
@@ -125,7 +147,15 @@
       border: 1px solid var(--border);
       background: linear-gradient(160deg, var(--surface-soft), var(--card-bg));
       box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+      position: relative;
+      overflow: hidden;
     }
+    .kpi-icon { display:grid; place-items:center; width:34px; height:34px; margin-bottom:14px; border-radius:10px; background:color-mix(in srgb,var(--kpi-color,var(--accent)) 16%,transparent); color:var(--kpi-color,var(--accent)); font-size:1rem; }
+    .kpi-card::after { content:""; position:absolute; width:90px; height:90px; right:-38px; top:-42px; border-radius:50%; background:color-mix(in srgb,var(--kpi-color,var(--accent)) 10%,transparent); pointer-events:none; }
+    .kpi-card[data-metric="subscribers"] { --kpi-color:#ff4d5a; }
+    .kpi-card[data-metric="views"] { --kpi-color:#36c9a0; }
+    .kpi-card[data-metric="videos"] { --kpi-color:#f5b44c; }
+    .kpi-card[data-metric="efficiency"] { --kpi-color:#a78bfa; }
     .kpi-card.kpi-primary {
       grid-column: span 2;
       padding: 22px;
@@ -300,27 +330,27 @@
   <div class="card section">
     <div class="dashboard-header">
       <div class="title-block">
-        <h1>YouTube Creator Dashboard</h1>
+        <h1><i class="fa-brands fa-youtube" aria-hidden="true"></i>YouTube Creator Dashboard</h1>
         <p>Combined channel performance snapshot and growth trend.</p>
       </div>
       <div class="controls">
-        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">☀️ Light mode</button>
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light color theme"><i class="fa-solid fa-sun" aria-hidden="true"></i> Light mode</button>
       </div>
     </div>
     <div class="control-stack">
       <div class="control-row primary-controls">
-        <span class="control-label">Range</span>
+        <span class="control-label"><i class="fa-regular fa-calendar" aria-hidden="true"></i>Range</span>
         <div class="control-group" id="timeRangeControls" aria-label="Time range controls"></div>
         <span class="selection-badge" id="selectionBadge">All channels selected</span>
       </div>
       <div class="control-row">
-        <span class="control-label">Channels</span>
+        <span class="control-label"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Channels</span>
         <div class="control-group" id="channelFilterControls" aria-label="Channel filters"></div>
       </div>
       <details class="secondary-controls">
-        <summary>Chart display options</summary>
-        <div class="control-row"><span class="control-label">Focus</span><div class="control-group" id="focusModeControls" aria-label="Metric focus mode"></div></div>
-        <div class="control-row"><span class="control-label">Series</span><div class="control-group" id="datasetToggleControls" aria-label="Dataset toggles"></div></div>
+        <summary><i class="fa-solid fa-sliders" aria-hidden="true"></i>Chart display options</summary>
+        <div class="control-row"><span class="control-label"><i class="fa-solid fa-crosshairs" aria-hidden="true"></i>Focus</span><div class="control-group" id="focusModeControls" aria-label="Metric focus mode"></div></div>
+        <div class="control-row"><span class="control-label"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Series</span><div class="control-group" id="datasetToggleControls" aria-label="Dataset toggles"></div></div>
         <p class="selection-badge">Upload markers are inferred from observed video-count increases.</p>
       </details>
     </div>
@@ -336,7 +366,7 @@
 
   <div class="card section" id="chartCard" data-focus-group="overview growth">
     <div class="chart-header">
-      <h2 class="section-title">Growth Overview</h2>
+      <h2 class="section-title icon-heading"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i>Growth Overview</h2>
       <p class="chart-subtitle">Subscribers, views, videos, and moving averages</p>
     </div>
     <canvas id="growthChart" width="600" height="300"></canvas>
@@ -349,7 +379,7 @@
   </div>
 
   <details class="secondary-insights">
-    <summary>View creator insights and activity</summary>
+    <summary><i class="fa-regular fa-lightbulb" aria-hidden="true"></i>View creator insights and activity</summary>
   <div class="grid-2 section" id="insightGrid" data-focus-group="overview growth efficiency milestones">
     <div class="card" id="channelHighlightsMount">
       <!-- Channel highlights injected by JS -->
@@ -367,7 +397,7 @@
 
   <div class="card section" id="tableCard" data-focus-group="overview efficiency">
     <div class="table-header">
-      <h2 class="section-title">Channel Breakdown</h2>
+      <h2 class="section-title icon-heading"><i class="fa-solid fa-table-list" aria-hidden="true"></i>Channel Breakdown</h2>
       <p class="table-subtitle">Latest per-channel totals</p>
     </div>
     <div class="table-scroll" role="region" aria-label="Scrollable channel breakdown" tabindex="0"><table id="statsTable">
@@ -402,7 +432,9 @@
 
       const setTheme = (theme) => {
         root.setAttribute('data-theme', theme);
-        btn.textContent = theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
+        const isDark = theme === 'dark';
+        btn.innerHTML = `<i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}" aria-hidden="true"></i> ${isDark ? 'Light' : 'Dark'} mode`;
+        btn.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} color theme`);
         window.dispatchEvent(new Event('themechange'));
       };
 
