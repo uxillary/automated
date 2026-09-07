@@ -122,14 +122,14 @@ try {
   wrap.className = 'yt-eta';
   wrap.innerHTML = `
     <div class="yt-eta-card">
-      <div class="yt-eta-title">Next Milestones</div>
+      <div class="yt-eta-title"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Next Milestones</div>
       <table class="mini-table">
         <thead>
           <tr>
-            <th>🎯 Target</th>
-            <th>🐢 30d pace</th>
-            <th>⚡ 7d pace</th>
-            <th>Status</th>
+            <th><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Target</th>
+            <th><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> 30d pace</th>
+            <th><i class="fa-solid fa-bolt" aria-hidden="true"></i> 7d pace</th>
+            <th><i class="fa-solid fa-signal" aria-hidden="true"></i> Status</th>
           </tr>
         </thead>
         <tbody>

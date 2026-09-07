@@ -216,14 +216,15 @@
 
     const rangeLabel = TIME_RANGES.find((r) => r.key === state.timeRange)?.label || 'visible range';
     const items = [
-      { label: 'Total Subscribers', value: fmt(lastSubs), primary: true, delta: `${lastSubs - (subscribers[0] ?? lastSubs) >= 0 ? '+' : ''}${fmt(lastSubs - (subscribers[0] ?? lastSubs))} in ${rangeLabel}`, sub: `${state.selectedChannels.size} selected channels · ${fmt(subs7, 0)}/day recent pace` },
-      { label: 'Total Views', value: fmt(lastViews), primary: true, delta: `${lastViews - (views[0] ?? lastViews) >= 0 ? '+' : ''}${fmt(lastViews - (views[0] ?? lastViews))} in ${rangeLabel}`, sub: `Lifetime total · ${fmt(views7, 0)}/day recent pace` },
-      { label: 'Published Videos', value: fmt(lastVideos), sub: 'Across selected channels' },
-      { label: 'Views per Video', value: fmt(ratio(lastViews, lastVideos), 0), sub: `Subscriber momentum: ${momentumLabel(subsMomentum, subs30 || 1)}` }
+      { metric: 'subscribers', icon: 'fa-solid fa-users', label: 'Total Subscribers', value: fmt(lastSubs), primary: true, delta: `${lastSubs - (subscribers[0] ?? lastSubs) >= 0 ? '+' : ''}${fmt(lastSubs - (subscribers[0] ?? lastSubs))} in ${rangeLabel}`, sub: `${state.selectedChannels.size} selected channels · ${fmt(subs7, 0)}/day recent pace` },
+      { metric: 'views', icon: 'fa-solid fa-eye', label: 'Total Views', value: fmt(lastViews), primary: true, delta: `${lastViews - (views[0] ?? lastViews) >= 0 ? '+' : ''}${fmt(lastViews - (views[0] ?? lastViews))} in ${rangeLabel}`, sub: `Lifetime total · ${fmt(views7, 0)}/day recent pace` },
+      { metric: 'videos', icon: 'fa-solid fa-circle-play', label: 'Published Videos', value: fmt(lastVideos), sub: 'Across selected channels' },
+      { metric: 'efficiency', icon: 'fa-solid fa-gauge-high', label: 'Views per Video', value: fmt(ratio(lastViews, lastVideos), 0), sub: `Subscriber momentum: ${momentumLabel(subsMomentum, subs30 || 1)}` }
     ];
 
     kpiGrid.innerHTML = items.map((item) => `
-      <article class="kpi-card ${item.primary ? 'kpi-primary' : ''}">
+      <article class="kpi-card ${item.primary ? 'kpi-primary' : ''}" data-metric="${item.metric}">
+        <span class="kpi-icon"><i class="${item.icon}" aria-hidden="true"></i></span>
         <span class="kpi-label">${item.label}</span>
         <div class="kpi-value">${item.value}</div>
         ${item.delta ? `<div class="kpi-delta">${item.delta}</div>` : ''}

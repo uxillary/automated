@@ -266,7 +266,7 @@
     ];
 
     mount.innerHTML = `
-      <h3 class="section-title">Channel Highlights</h3>
+      <h3 class="section-title icon-heading"><i class="fa-solid fa-ranking-star" aria-hidden="true"></i>Channel Highlights</h3>
       <p class="table-subtitle">Latest snapshot rankings for selected channels.</p>
       <div class="rank-list">
         ${highlights.map(([label, value]) => `
@@ -288,7 +288,7 @@
       : `<div class="micro">${fallback}</div>`;
 
     mount.innerHTML = `
-      <h3 class="section-title">Creator Insight Narrative</h3>
+      <h3 class="section-title icon-heading"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Creator Insight Narrative</h3>
       <p class="table-subtitle">A quick-reading map: think runway (wins), weather (risks), and fuel (next bets).</p>
       <div class="narrative-lead">Metaphor view: this dashboard is a cockpit. Green signals are lift, red signals are drag, and opportunities are the clearest flight path.</div>
       <div class="insight-group">
@@ -325,7 +325,7 @@
     }).join('');
 
     mount.innerHTML = `
-      <h3 class="section-title">Activity & Consistency</h3>
+      <h3 class="section-title icon-heading"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i>Activity &amp; Consistency</h3>
       <p class="table-subtitle">This is your publishing heartbeat — each card separates rhythm, recency, and reliability for fast scanning.</p>
       <div class="chip-list">${chips || '<div class="micro">No activity data available for selected channels.</div>'}</div>
       <div class="insight-group">
@@ -348,7 +348,7 @@
       .map((line) => `<span class="focus-line">${line}</span>`).join('');
 
     mount.innerHTML = `
-      <h3 class="section-title">Where to Focus Next</h3>
+      <h3 class="section-title icon-heading"><i class="fa-solid fa-compass" aria-hidden="true"></i>Where to Focus Next</h3>
       <p class="table-subtitle">Think of this as lane guidance: stay where traction is strongest, pause where momentum is fading.</p>
       <div class="focus-card"><div class="focus-lines">${focusLines || narrative.focusText}</div></div>
       <div class="chip-list">${cards.join('') || '<div class="micro">Not enough reliable signals for opportunity/warning cards yet.</div>'}</div>
