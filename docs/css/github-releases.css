@@ -1,0 +1,16 @@
+.site-header{margin-bottom:28px}.site-header .title-block h1 i{color:var(--accent)}
+.platform-title,.platform-heading h2{margin:0 0 6px;font-size:clamp(1.35rem,2vw,1.75rem);font-weight:760}
+.platform-title i{margin-right:10px;color:#ff3945}.platform-heading{padding:34px 4px 2px;border-top:1px solid var(--border)}
+.platform-heading h2 i{margin-right:10px;color:var(--fg)}.platform-heading p{margin:0;color:var(--muted)}
+.github-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0;background:transparent;box-shadow:none}
+.github-kpi-grid .kpi-card:first-child{border-color:color-mix(in srgb,var(--accent-2) 45%,var(--border))}
+.github-chart-card{padding:24px}.github-chart-wrap{height:360px;position:relative}.github-view-toggle{display:flex;gap:6px;flex-wrap:wrap}
+.github-performance-grid .card{padding:20px}.github-state{color:var(--muted)}
+.app-list{display:grid;gap:16px;margin-top:18px}.app-row-header{display:flex;justify-content:space-between;gap:12px}.app-row-meta{color:var(--muted);font-size:.82rem;margin-top:3px}
+.metric-track,.milestone-track{height:8px;background:var(--surface-soft);border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:8px}
+.metric-fill,.milestone-fill{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:inherit}
+.highlight-pill{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);font-size:.68rem;font-weight:700;text-transform:uppercase}
+.milestone-value{font-size:clamp(1.6rem,3vw,2.35rem);font-weight:780;margin:20px 0 4px}.milestone-copy{color:var(--muted);margin:0}.milestone-percent{text-align:right;color:var(--muted);font-size:.82rem;margin-top:6px}
+.github-insights{padding:16px 20px}.github-insight-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.github-insight{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft);min-width:0}.github-insight strong{display:block;margin-top:5px;overflow-wrap:anywhere}.github-insight span{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:900px){.github-kpi-grid,.github-insight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.github-kpi-grid,.github-insight-grid{grid-template-columns:1fr}.github-chart-card{padding:16px 12px}.github-chart-wrap{height:290px}.github-chart-card .chart-header{align-items:flex-start;flex-direction:column}.platform-heading{padding-top:28px}.app-row-header{align-items:flex-start}.site-header{align-items:flex-start}}

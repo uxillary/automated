@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>YouTube Stats Viewer</title>
+  <title>Automated Metrics Tracker</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Automated snapshots of my projects, platforms and growth over time." />
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/modern-stats.css">
   <link rel="stylesheet" href="css/brand.css">
+  <link rel="stylesheet" href="css/github-releases.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -327,14 +329,21 @@
 </head>
 <body>
 <div class="container stack">
+  <header class="card section dashboard-header site-header">
+    <div class="title-block">
+      <h1><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>Automated Metrics Tracker</h1>
+      <p>Automated snapshots of my projects, platforms and growth over time.</p>
+    </div>
+    <div class="controls">
+      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light color theme"><i class="fa-solid fa-sun" aria-hidden="true"></i> Light mode</button>
+    </div>
+  </header>
+
   <div class="card section">
     <div class="dashboard-header">
       <div class="title-block">
-        <h1><i class="fa-brands fa-youtube" aria-hidden="true"></i>YouTube Creator Dashboard</h1>
-        <p>Combined channel performance snapshot and growth trend.</p>
-      </div>
-      <div class="controls">
-        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light color theme"><i class="fa-solid fa-sun" aria-hidden="true"></i> Light mode</button>
+        <h2 class="platform-title"><i class="fa-brands fa-youtube" aria-hidden="true"></i>YouTube</h2>
+        <p>Creator performance and channel growth.</p>
       </div>
     </div>
     <div class="control-stack">
@@ -419,10 +428,43 @@
   </table></div>
   </div>
 
+  <section class="github-section stack" id="githubReleases" aria-labelledby="githubReleasesTitle">
+    <header class="platform-heading">
+      <h2 id="githubReleasesTitle"><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub Releases</h2>
+      <p>Download growth and release performance across my published apps.</p>
+    </header>
+
+    <div class="section github-kpi-grid" id="githubKpis" aria-live="polite">
+      <article class="kpi-card"><span class="kpi-label">Total Downloads</span><div class="kpi-value">Loading…</div></article>
+    </div>
+
+    <div class="card section github-chart-card">
+      <div class="chart-header">
+        <div><h3 class="section-title icon-heading"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>Download Growth</h3><p class="chart-subtitle" id="githubChartStatus">Loading snapshots…</p></div>
+        <div class="github-view-toggle" role="group" aria-label="Download chart view">
+          <button type="button" class="chip-btn active" data-github-view="cumulative" aria-pressed="true">Cumulative</button>
+          <button type="button" class="chip-btn" data-github-view="daily" aria-pressed="false">Daily downloads</button>
+        </div>
+      </div>
+      <div class="github-chart-wrap"><canvas id="githubDownloadsChart" aria-label="GitHub release download history" role="img"></canvas></div>
+    </div>
+
+    <div class="grid-2 github-performance-grid">
+      <div class="card" id="githubApps"><h3 class="section-title">App Performance</h3><p class="github-state">Loading app totals…</p></div>
+      <div class="card" id="githubMilestone"><h3 class="section-title">Next Milestone</h3><p class="github-state">Loading progress…</p></div>
+    </div>
+
+    <details class="secondary-insights card github-insights">
+      <summary><i class="fa-regular fa-lightbulb" aria-hidden="true"></i>View release insights</summary>
+      <div id="githubReleaseInsights" class="github-insight-grid"><p class="github-state">Loading release details…</p></div>
+    </details>
+  </section>
+
   <script src="js/dashboard-controls.js"></script>
 
   <script src="js/yt-overlays.js"></script>
   <script src="js/yt-insights.js"></script>
+  <script src="js/github-releases.js"></script>
 
   <script>
     (function() {
