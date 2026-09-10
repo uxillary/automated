@@ -1,9 +1,112 @@
 {
   "version": 1,
   "metadata": {
-    "repositories": {},
-    "releases": {},
-    "assets": {}
+    "repositories": {
+      "uxillary/font-size-tweak": {
+        "label": "FontSize Tweak"
+      },
+      "uxillary/maintenance-goblin": {
+        "label": "Maintenance Goblin"
+      }
+    },
+    "releases": {
+      "uxillary/font-size-tweak#376794812": {
+        "repository": "uxillary/font-size-tweak",
+        "name": "Font Size Tweak v1.1.0 - Quick Font Resizer for Windows ",
+        "tag": "v1.1.0",
+        "publishedAt": "2026-08-26T00:35:59Z",
+        "prerelease": false
+      },
+      "uxillary/font-size-tweak#233617246": {
+        "repository": "uxillary/font-size-tweak",
+        "name": "Font Size Tweak v1.0.0 – Quick Font Resizer for Windows",
+        "tag": "v1.0.0",
+        "publishedAt": "2025-07-18T20:45:30Z",
+        "prerelease": false
+      },
+      "uxillary/maintenance-goblin#375299671": {
+        "repository": "uxillary/maintenance-goblin",
+        "name": "Maintenance Goblin v0.2.0",
+        "tag": "v0.2.0",
+        "publishedAt": "2026-08-23T19:04:38Z",
+        "prerelease": false
+      },
+      "uxillary/maintenance-goblin#247813517": {
+        "repository": "uxillary/maintenance-goblin",
+        "name": "Maintenance Goblin v0.1.0",
+        "tag": "v0.1.0",
+        "publishedAt": "2025-09-17T00:20:58Z",
+        "prerelease": false
+      }
+    },
+    "assets": {
+      "uxillary/font-size-tweak#376794812#529999169": {
+        "repository": "uxillary/font-size-tweak",
+        "release": "uxillary/font-size-tweak#376794812",
+        "name": "FontSizeTweak-v1.1.0.sha256",
+        "size": 92
+      },
+      "uxillary/font-size-tweak#376794812#529999176": {
+        "repository": "uxillary/font-size-tweak",
+        "release": "uxillary/font-size-tweak#376794812",
+        "name": "FontSizeTweak-v1.1.0.zip",
+        "size": 19470290
+      },
+      "uxillary/font-size-tweak#376794812#529998977": {
+        "repository": "uxillary/font-size-tweak",
+        "release": "uxillary/font-size-tweak#376794812",
+        "name": "FontSizeTweak.exe",
+        "size": 19864943
+      },
+      "uxillary/font-size-tweak#233617246#274204651": {
+        "repository": "uxillary/font-size-tweak",
+        "release": "uxillary/font-size-tweak#233617246",
+        "name": "FontSizeTweak-v1.0.zip",
+        "size": 28181316
+      },
+      "uxillary/maintenance-goblin#375299671#526542692": {
+        "repository": "uxillary/maintenance-goblin",
+        "release": "uxillary/maintenance-goblin#375299671",
+        "name": "MaintenanceGoblin.exe",
+        "size": 15103757
+      },
+      "uxillary/maintenance-goblin#375299671#526542691": {
+        "repository": "uxillary/maintenance-goblin",
+        "release": "uxillary/maintenance-goblin#375299671",
+        "name": "MaintenanceGoblin.exe.sha256",
+        "size": 89
+      },
+      "uxillary/maintenance-goblin#247813517#294023669": {
+        "repository": "uxillary/maintenance-goblin",
+        "release": "uxillary/maintenance-goblin#247813517",
+        "name": "MaintenanceGoblin.exe",
+        "size": 28890618
+      }
+    }
   },
-  "snapshots": []
+  "snapshots": [
+    {
+      "date": "2026-09-10",
+      "total": 0,
+      "repositories": {
+        "uxillary/font-size-tweak": 0,
+        "uxillary/maintenance-goblin": 0
+      },
+      "releases": {
+        "uxillary/font-size-tweak#376794812": 0,
+        "uxillary/font-size-tweak#233617246": 0,
+        "uxillary/maintenance-goblin#375299671": 0,
+        "uxillary/maintenance-goblin#247813517": 0
+      },
+      "assets": {
+        "uxillary/font-size-tweak#376794812#529999169": 4,
+        "uxillary/font-size-tweak#376794812#529999176": 29,
+        "uxillary/font-size-tweak#376794812#529998977": 109,
+        "uxillary/font-size-tweak#233617246#274204651": 1057,
+        "uxillary/maintenance-goblin#375299671#526542692": 4,
+        "uxillary/maintenance-goblin#375299671#526542691": 0,
+        "uxillary/maintenance-goblin#247813517#294023669": 10
+      }
+    }
+  ]
 }
