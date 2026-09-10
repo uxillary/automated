@@ -72,6 +72,25 @@ test('same-day snapshot is replaced while all other history is preserved', () =>
   assert.equal(result.metadata.releases.old.name, 'Removed release');
 });
 
+test('repairs stale aggregate totals from the authoritative asset counts', () => {
+  const broken = {
+    date: '2026-01-01', total: 0,
+    repositories: { 'ux/app': 0 }, releases: { 'ux/app#1': 0 },
+    assets: { 'ux/app#1#10': 1000, 'ux/app#1#11': 57 }
+  };
+  const metadata = {
+    releases: { 'ux/app#1': { repository: 'ux/app' } },
+    assets: {
+      'ux/app#1#10': { repository: 'ux/app', release: 'ux/app#1' },
+      'ux/app#1#11': { repository: 'ux/app', release: 'ux/app#1' }
+    }
+  };
+  const repaired = metrics.reconcileSnapshotAggregates(broken, metadata);
+  assert.equal(repaired.total, 1057);
+  assert.deepEqual(repaired.repositories, { 'ux/app': 1057 });
+  assert.deepEqual(repaired.releases, { 'ux/app#1': 1057 });
+});
+
 test('daily deltas leave the baseline unavailable and calculate later changes', () => {
   assert.deepEqual(metrics.dailyDeltas([snapshot('2026-01-01', 10), snapshot('2026-01-03', 16)]), [
     { date: '2026-01-01', downloads: null }, { date: '2026-01-03', downloads: 6 }

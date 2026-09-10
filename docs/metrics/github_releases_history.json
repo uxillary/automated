@@ -87,16 +87,16 @@
   "snapshots": [
     {
       "date": "2026-09-10",
-      "total": 0,
+      "total": 1213,
       "repositories": {
-        "uxillary/font-size-tweak": 0,
-        "uxillary/maintenance-goblin": 0
+        "uxillary/font-size-tweak": 1199,
+        "uxillary/maintenance-goblin": 14
       },
       "releases": {
-        "uxillary/font-size-tweak#376794812": 0,
-        "uxillary/font-size-tweak#233617246": 0,
-        "uxillary/maintenance-goblin#375299671": 0,
-        "uxillary/maintenance-goblin#247813517": 0
+        "uxillary/font-size-tweak#376794812": 142,
+        "uxillary/font-size-tweak#233617246": 1057,
+        "uxillary/maintenance-goblin#375299671": 4,
+        "uxillary/maintenance-goblin#247813517": 10
       },
       "assets": {
         "uxillary/font-size-tweak#376794812#529999169": 4,
