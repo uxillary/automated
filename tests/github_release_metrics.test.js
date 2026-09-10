@@ -10,8 +10,59 @@ const metrics = require('../scripts/github_release_metrics');
 const snapshot = (date, total, repo = total) => ({ date, total, repositories: { 'ux/app': repo }, releases: {}, assets: {} });
 
 test('sums only valid release asset downloads', () => {
-  assert.equal(metrics.sumAssetDownloads([{ download_count: 4 }, { download_count: 6 }, { download_count: -1 }, null]), 10);
+  assert.equal(metrics.sumAssetDownloads([{ downloads: 1057 }, { downloads: 6 }, { downloads: -1 }, null]), 1063);
   assert.equal(metrics.sumAssetDownloads('malformed'), 0);
+});
+
+test('normalised downloads propagate through every aggregate and replace a broken same-day snapshot', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release-metrics-'));
+  const historyPath = path.join(directory, 'github_releases_history.json');
+  const brokenSnapshot = {
+    date: '2026-09-10', total: 0,
+    repositories: { 'ux/font': 0, 'ux/goblin': 0 },
+    releases: { 'ux/font#11': 0, 'ux/font#10': 0, 'ux/goblin#20': 0 },
+    assets: { 'ux/font#10#101': 1057 }
+  };
+  fs.writeFileSync(historyPath, `${JSON.stringify({ version: 1, metadata: {}, snapshots: [brokenSnapshot] })}\n`);
+
+  const responses = new Map([
+    ['/repos/ux/font/releases', [
+      { id: 11, tag_name: 'v1.1', name: 'Font 1.1', draft: false, published_at: '2026-08-26T00:00:00Z' },
+      { id: 10, tag_name: 'v1.0', name: 'Font 1.0', draft: false, published_at: '2025-07-18T00:00:00Z' }
+    ]],
+    ['/repos/ux/font/releases/11/assets', [
+      { id: 111, name: 'font.sha256', download_count: 4, size: 92 },
+      { id: 112, name: 'font.zip', download_count: 29, size: 100 },
+      { id: 113, name: 'font.exe', download_count: 109, size: 200 }
+    ]],
+    ['/repos/ux/font/releases/10/assets', [{ id: 101, name: 'FontSizeTweak-v1.0.zip', download_count: 1057, size: 300 }]],
+    ['/repos/ux/goblin/releases', [{ id: 20, tag_name: 'v0.2', name: 'Goblin 0.2', draft: false, published_at: '2026-08-23T00:00:00Z' }]],
+    ['/repos/ux/goblin/releases/20/assets', [
+      { id: 201, name: 'goblin.exe', download_count: 4, size: 400 },
+      { id: 202, name: 'goblin.sha256', download_count: 0, size: 90 },
+      { id: 203, name: 'goblin-old.exe', download_count: 10, size: 500 }
+    ]]
+  ]);
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    return { ok: true, status: 200, json: async () => responses.get(pathname) || [] };
+  };
+
+  const result = await metrics.run({
+    fetchImpl, token: 'x', outputDirectory: directory, now: new Date('2026-09-10T12:00:00Z'),
+    config: [{ repo: 'ux/font', label: 'Font' }, { repo: 'ux/goblin', label: 'Goblin' }]
+  });
+  const current = result.history.snapshots[0];
+  assert.equal(result.history.snapshots.length, 1);
+  assert.deepEqual(current.releases, { 'ux/font#11': 142, 'ux/font#10': 1057, 'ux/goblin#20': 14 });
+  assert.deepEqual(current.repositories, { 'ux/font': 1199, 'ux/goblin': 14 });
+  assert.equal(current.total, 1213);
+  assert.equal(current.assets['ux/font#10#101'], 1057);
+  assert.equal(result.summary.currentTotalDownloads, 1213);
+  assert.equal(result.summary.highestDownloadedRelease.id, 'ux/font#10');
+  assert.equal(result.summary.topRepository.repo, 'ux/font');
+  assert.deepEqual(result.summary.milestones, { latestAchieved: 1000, next: 2500, progressPercent: 14.2 });
+  assert.equal(JSON.parse(fs.readFileSync(historyPath, 'utf8')).snapshots[0].total, 1213);
 });
 
 test('same-day snapshot is replaced while all other history is preserved', () => {
