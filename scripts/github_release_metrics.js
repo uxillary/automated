@@ -89,19 +89,51 @@ function buildCurrent(repositories, date) {
   return { snapshot, metadata };
 }
 
+function reconcileSnapshotAggregates(snapshot, metadata) {
+  if (!snapshot || typeof snapshot !== 'object') return snapshot;
+  const assets = snapshot.assets && typeof snapshot.assets === 'object' ? snapshot.assets : {};
+  if (!Object.keys(assets).length) return snapshot;
+  const releases = {};
+  const repositories = {};
+
+  for (const [assetKey, downloads] of Object.entries(assets)) {
+    const asset = metadata?.assets?.[assetKey];
+    const releaseKey = asset?.release;
+    const repository = asset?.repository || metadata?.releases?.[releaseKey]?.repository;
+    if (!releaseKey || !repository) continue;
+    releases[releaseKey] = (releases[releaseKey] || 0) + validCount(downloads);
+    repositories[repository] = (repositories[repository] || 0) + validCount(downloads);
+  }
+
+  // Keep zero-download releases and repositories visible in the dashboard.
+  for (const key of Object.keys(snapshot.releases || {})) releases[key] ??= 0;
+  for (const key of Object.keys(snapshot.repositories || {})) repositories[key] ??= 0;
+
+  return {
+    ...snapshot,
+    total: Object.values(repositories).reduce((sum, downloads) => sum + downloads, 0),
+    repositories,
+    releases,
+    assets
+  };
+}
+
 function upsertSnapshot(history, snapshot, metadata) {
   const existing = history && Array.isArray(history.snapshots) ? history.snapshots : [];
-  const snapshots = existing.filter((item) => item && item.date !== snapshot.date);
-  snapshots.push(snapshot);
-  snapshots.sort((a, b) => String(a.date).localeCompare(String(b.date)));
   const priorMetadata = history?.metadata || {};
+  const mergedMetadata = {
+    repositories: { ...(priorMetadata.repositories || {}), ...metadata.repositories },
+    releases: { ...(priorMetadata.releases || {}), ...metadata.releases },
+    assets: { ...(priorMetadata.assets || {}), ...metadata.assets }
+  };
+  const snapshots = existing
+    .filter((item) => item && item.date !== snapshot.date)
+    .map((item) => reconcileSnapshotAggregates(item, mergedMetadata));
+  snapshots.push(reconcileSnapshotAggregates(snapshot, mergedMetadata));
+  snapshots.sort((a, b) => String(a.date).localeCompare(String(b.date)));
   return {
     version: 1,
-    metadata: {
-      repositories: { ...(priorMetadata.repositories || {}), ...metadata.repositories },
-      releases: { ...(priorMetadata.releases || {}), ...metadata.releases },
-      assets: { ...(priorMetadata.assets || {}), ...metadata.assets }
-    },
+    metadata: mergedMetadata,
     snapshots
   };
 }
@@ -185,6 +217,6 @@ async function run(options = {}) {
   return { history: updated, summary };
 }
 
-module.exports = { MILESTONES, sumAssetDownloads, validateConfig, fetchPages, collectRepositories, buildCurrent, upsertSnapshot, comparison, dailyDeltas, calculateMilestones, buildSummary, run };
+module.exports = { MILESTONES, sumAssetDownloads, validateConfig, fetchPages, collectRepositories, buildCurrent, reconcileSnapshotAggregates, upsertSnapshot, comparison, dailyDeltas, calculateMilestones, buildSummary, run };
 
 if (require.main === module) run().catch((error) => { console.error(error.message); process.exitCode = 1; });

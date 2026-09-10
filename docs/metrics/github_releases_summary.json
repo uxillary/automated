@@ -2,7 +2,7 @@
   "version": 1,
   "status": "ready",
   "latestSnapshotDate": "2026-09-10",
-  "currentTotalDownloads": 0,
+  "currentTotalDownloads": 1213,
   "gainSincePreviousSnapshot": null,
   "gain7Days": null,
   "gain30Days": null,
@@ -14,14 +14,14 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 0,
+      "downloads": 1199,
       "gain7": null,
       "gain30": null
     },
     {
       "repo": "uxillary/maintenance-goblin",
       "label": "Maintenance Goblin",
-      "downloads": 0,
+      "downloads": 14,
       "gain7": null,
       "gain30": null
     }
@@ -34,7 +34,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 0
+      "downloads": 142
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -43,7 +43,7 @@
       "tag": "v1.0.0",
       "publishedAt": "2025-07-18T20:45:30Z",
       "prerelease": false,
-      "downloads": 0
+      "downloads": 1057
     },
     {
       "id": "uxillary/maintenance-goblin#375299671",
@@ -52,7 +52,7 @@
       "tag": "v0.2.0",
       "publishedAt": "2026-08-23T19:04:38Z",
       "prerelease": false,
-      "downloads": 0
+      "downloads": 4
     },
     {
       "id": "uxillary/maintenance-goblin#247813517",
@@ -61,7 +61,7 @@
       "tag": "v0.1.0",
       "publishedAt": "2025-09-17T00:20:58Z",
       "prerelease": false,
-      "downloads": 0
+      "downloads": 10
     }
   ],
   "assets": [
@@ -125,19 +125,19 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 0,
+    "downloads": 1199,
     "gain7": null,
     "gain30": null
   },
   "fastestGrowingRepository": null,
   "highestDownloadedRelease": {
-    "id": "uxillary/font-size-tweak#376794812",
+    "id": "uxillary/font-size-tweak#233617246",
     "repository": "uxillary/font-size-tweak",
-    "name": "Font Size Tweak v1.1.0 - Quick Font Resizer for Windows ",
-    "tag": "v1.1.0",
-    "publishedAt": "2026-08-26T00:35:59Z",
+    "name": "Font Size Tweak v1.0.0 – Quick Font Resizer for Windows",
+    "tag": "v1.0.0",
+    "publishedAt": "2025-07-18T20:45:30Z",
     "prerelease": false,
-    "downloads": 0
+    "downloads": 1057
   },
   "highestDownloadedAsset": {
     "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -154,12 +154,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 0
+    "downloads": 142
   },
   "milestones": {
-    "latestAchieved": null,
-    "next": 100,
-    "progressPercent": 0
+    "latestAchieved": 1000,
+    "next": 2500,
+    "progressPercent": 14.2
   },
   "daily": [
     {
