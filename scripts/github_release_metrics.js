@@ -11,7 +11,7 @@ const MILESTONES = [100, 250, 500, 1000, 2500, 5000, 10000];
 const validCount = (value) => Number.isInteger(value) && value >= 0 ? value : 0;
 
 function sumAssetDownloads(assets) {
-  return Array.isArray(assets) ? assets.reduce((sum, asset) => sum + validCount(asset?.download_count), 0) : 0;
+  return Array.isArray(assets) ? assets.reduce((sum, asset) => sum + validCount(asset?.downloads), 0) : 0;
 }
 
 function validateConfig(config) {
