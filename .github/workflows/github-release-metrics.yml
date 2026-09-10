@@ -1,0 +1,50 @@
+name: GitHub Release Metrics
+
+on:
+  schedule:
+    - cron: '41 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-release-metrics-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collect release metrics
+        env:
+          GH_TOKEN: ${{ secrets.API_GITHUB }}
+        run: node scripts/github_release_metrics.js
+
+      - name: Validate generated JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('docs/metrics/github_releases_history.json'))"
+          node -e "JSON.parse(require('fs').readFileSync('docs/metrics/github_releases_summary.json'))"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/metrics/github_releases_history.json docs/metrics/github_releases_summary.json
+          if git diff --cached --quiet; then
+            echo "No release metrics changes to commit."
+            exit 0
+          fi
+          git commit -m "Update GitHub release metrics [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

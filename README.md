@@ -107,6 +107,25 @@ The mocked test suite never contacts GitHub and does not need a token:
 node --test tests/github_lifetime_stats.test.js
 ```
 
+## GitHub Release Metrics
+
+The daily **GitHub Release Metrics** workflow records cumulative download counts
+for uploaded release assets and publishes a historical dataset plus browser-ready
+summary under `docs/metrics/`. History begins with the first successful snapshot;
+GitHub does not provide earlier daily download counts, so none are backfilled.
+
+The explicit allow-list currently tracks `uxillary/font-size-tweak` and
+`uxillary/maintenance-goblin`. Add one entry to
+`scripts/github_release_config.js` to track another repository. The workflow uses
+the existing `API_GITHUB` secret and can be started from **Actions → GitHub Release
+Metrics → Run workflow**. No browser-side GitHub credentials or API calls are used.
+
+Run its tests locally with:
+
+```sh
+node --test tests/github_release_metrics.test.js
+```
+
 ---
 
 ## 🛠️ Setup Guide
