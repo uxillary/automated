@@ -1,9 +1,9 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-09-10",
-  "currentTotalDownloads": 1213,
-  "gainSincePreviousSnapshot": null,
+  "latestSnapshotDate": "2026-09-11",
+  "currentTotalDownloads": 1214,
+  "gainSincePreviousSnapshot": 1,
   "gain7Days": null,
   "gain30Days": null,
   "averageDaily7Days": null,
@@ -14,7 +14,7 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1199,
+      "downloads": 1200,
       "gain7": null,
       "gain30": null
     },
@@ -34,7 +34,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 142
+      "downloads": 143
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -87,7 +87,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 109
+      "downloads": 110
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -125,7 +125,7 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1199,
+    "downloads": 1200,
     "gain7": null,
     "gain30": null
   },
@@ -154,17 +154,21 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 142
+    "downloads": 143
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 14.2
+    "progressPercent": 14.3
   },
   "daily": [
     {
       "date": "2026-09-10",
       "downloads": null
+    },
+    {
+      "date": "2026-09-11",
+      "downloads": 1
     }
   ]
 }
