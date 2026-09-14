@@ -157,3 +157,19 @@ Optional (for commit stats, crypto, and streaks):
 Inspired by automation, powered by caffeine, sustained by daily commits ☕
 
 ---
+
+## Project Preview Automation
+
+The **Update project previews** workflow uses Playwright's Chromium browser to capture consistent, clean website previews at a 1440 × 900 desktop viewport. Screenshots are converted to WebP at quality 85 and stored with capture metadata in `generated/project-previews/`; these stable assets are intended for consumers such as adamj.link.
+
+Website definitions live only in `data/project-previews.json`. To add one, append a unique kebab-case `slug`, display `name`, verified HTTP(S) `url`, `"enabled": true`, and `"type": "website"`. Optional per-project settings include `waitFor`, `delay`, `viewport`, `fullPage`, `hideSelectors`, and `theme`. Only enabled website entries are captured; desktop applications and manually designed covers intentionally remain outside this workflow.
+
+Install dependencies and Chromium, then capture all projects locally:
+
+```sh
+npm ci
+npx playwright install chromium
+npm run previews
+```
+
+Capture one configured project with `npm run previews -- --project 404cache`, or validate the configuration without launching a browser with `npm run previews -- --validate-config`. To run it on GitHub, open **Actions → Update project previews → Run workflow**. It also runs every Monday at 03:17 UTC and commits generated changes only when image content or capture status changes. A failed site is recorded in the manifest without stopping other captures or deleting its last known-good image.

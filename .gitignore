@@ -1,1 +1,4 @@
 project_context.json
+node_modules/
+__pycache__/
+*.py[cod]
