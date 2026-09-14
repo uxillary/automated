@@ -1,8 +1,38 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-09-14T03:05:51.598Z",
   "viewport": {
     "width": 1440,
     "height": 900
   },
-  "projects": {}
+  "projects": {
+    "404cache": {
+      "status": "success",
+      "image": "404cache.webp",
+      "url": "https://infinite-curios.pages.dev",
+      "capturedAt": "2026-09-14T03:05:46.825Z",
+      "existingPreview": true
+    },
+    "hex-labs": {
+      "status": "failed",
+      "image": "hex-labs.webp",
+      "url": "https://hexlabs.pages.dev",
+      "capturedAt": null,
+      "existingPreview": false,
+      "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://hexlabs.pages.dev/"
+    },
+    "virtual-stock-market": {
+      "status": "success",
+      "image": "virtual-stock-market.webp",
+      "url": "https://404cache.pages.dev",
+      "capturedAt": "2026-09-14T03:05:49.436Z",
+      "existingPreview": true
+    },
+    "youtube-tracker": {
+      "status": "success",
+      "image": "youtube-tracker.webp",
+      "url": "https://uxillary.github.io/automated/",
+      "capturedAt": "2026-09-14T03:05:51.568Z",
+      "existingPreview": true
+    }
+  }
 }
