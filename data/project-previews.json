@@ -1,0 +1,41 @@
+{
+  "defaults": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "delay": 1500,
+    "fullPage": false,
+    "theme": "light"
+  },
+  "projects": [
+    {
+      "slug": "404cache",
+      "name": "404cache",
+      "url": "https://infinite-curios.pages.dev",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "hex-labs",
+      "name": "Hex Labs",
+      "url": "https://hexlabs.pages.dev",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "virtual-stock-market",
+      "name": "Virtual Stock Market",
+      "url": "https://404cache.pages.dev",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "youtube-tracker",
+      "name": "YouTube Channel Tracker",
+      "url": "https://uxillary.github.io/automated/",
+      "enabled": true,
+      "type": "website"
+    }
+  ]
+}
