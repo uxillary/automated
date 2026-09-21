@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-09-20",
-  "currentTotalDownloads": 1261,
+  "latestSnapshotDate": "2026-09-21",
+  "currentTotalDownloads": 1264,
   "gainSincePreviousSnapshot": 3,
   "gain7Days": 36,
   "gain30Days": null,
@@ -14,7 +14,7 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1247,
+      "downloads": 1250,
       "gain7": 36,
       "gain30": null
     },
@@ -34,7 +34,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 190
+      "downloads": 193
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -79,7 +79,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak-v1.1.0.zip",
       "size": 19470290,
-      "downloads": 36
+      "downloads": 37
     },
     {
       "id": "uxillary/font-size-tweak#376794812#529998977",
@@ -87,7 +87,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 148
+      "downloads": 150
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -125,14 +125,14 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1247,
+    "downloads": 1250,
     "gain7": 36,
     "gain30": null
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1247,
+    "downloads": 1250,
     "gain7": 36,
     "gain30": null
   },
@@ -160,12 +160,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 190
+    "downloads": 193
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 17.4
+    "progressPercent": 17.6
   },
   "daily": [
     {
@@ -210,6 +210,10 @@
     },
     {
       "date": "2026-09-20",
+      "downloads": 3
+    },
+    {
+      "date": "2026-09-21",
       "downloads": 3
     }
   ]
