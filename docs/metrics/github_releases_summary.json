@@ -1,12 +1,12 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-09-21",
-  "currentTotalDownloads": 1264,
-  "gainSincePreviousSnapshot": 3,
-  "gain7Days": 36,
+  "latestSnapshotDate": "2026-09-22",
+  "currentTotalDownloads": 1271,
+  "gainSincePreviousSnapshot": 7,
+  "gain7Days": 34,
   "gain30Days": null,
-  "averageDaily7Days": 5.142857142857143,
+  "averageDaily7Days": 4.857142857142857,
   "averageDaily30Days": null,
   "trackedRepositoryCount": 2,
   "trackedReleaseCount": 4,
@@ -14,8 +14,8 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1250,
-      "gain7": 36,
+      "downloads": 1257,
+      "gain7": 34,
       "gain30": null
     },
     {
@@ -34,7 +34,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 193
+      "downloads": 200
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -79,7 +79,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak-v1.1.0.zip",
       "size": 19470290,
-      "downloads": 37
+      "downloads": 38
     },
     {
       "id": "uxillary/font-size-tweak#376794812#529998977",
@@ -87,7 +87,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 150
+      "downloads": 156
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -125,15 +125,15 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1250,
-    "gain7": 36,
+    "downloads": 1257,
+    "gain7": 34,
     "gain30": null
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1250,
-    "gain7": 36,
+    "downloads": 1257,
+    "gain7": 34,
     "gain30": null
   },
   "highestDownloadedRelease": {
@@ -160,12 +160,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 193
+    "downloads": 200
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 17.6
+    "progressPercent": 18.1
   },
   "daily": [
     {
@@ -215,6 +215,10 @@
     {
       "date": "2026-09-21",
       "downloads": 3
+    },
+    {
+      "date": "2026-09-22",
+      "downloads": 7
     }
   ]
 }
