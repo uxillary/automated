@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/modern-stats.css">
   <link rel="stylesheet" href="css/brand.css">
-  <link rel="stylesheet" href="css/github-releases.css?v=2">
+  <link rel="stylesheet" href="css/github-releases.css?v=3">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -389,6 +389,17 @@
       </div>
     </div>
 
+    <section class="github-patterns" id="githubPatterns" aria-labelledby="githubPatternsTitle" aria-live="polite" aria-busy="true">
+      <header class="github-patterns-header">
+        <div><h3 id="githubPatternsTitle">Patterns &amp; Momentum</h3><p id="githubPatternObservation" class="github-pattern-observation" role="status">Collecting download history…</p></div>
+      </header>
+      <div class="github-pattern-layout">
+        <dl class="github-pattern-stats" id="githubPatternStats" aria-label="Download patterns"></dl>
+        <div class="github-weekdays" id="githubWeekdays" aria-label="Average downloads by weekday"></div>
+      </div>
+      <p class="github-pattern-note" id="githubPatternNote"></p>
+    </section>
+
     <div class="grid-2 github-performance-grid">
       <div class="card" id="githubApps"><h3 class="section-title">App Performance</h3><p class="github-state">Loading app totals…</p></div>
       <div class="card" id="githubMilestone"><h3 class="section-title">Next Milestone</h3><p class="github-state">Loading progress…</p></div>
@@ -493,7 +504,8 @@
 
   <script src="js/yt-overlays.js"></script>
   <script src="js/yt-insights.js"></script>
-  <script src="js/github-releases.js?v=4"></script>
+  <script src="js/github-patterns.js?v=1"></script>
+  <script src="js/github-releases.js?v=5"></script>
   <script src="js/activity-pulse.js"></script>
 
   <script>

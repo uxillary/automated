@@ -138,6 +138,38 @@
     peakEl.textContent = `${fmt(peak.value)} · ${formatDate(peak.date)}`;
   }
 
+  function renderPatterns() {
+    const root = document.getElementById('githubPatterns');
+    const stats = document.getElementById('githubPatternStats');
+    const weekdaysRoot = document.getElementById('githubWeekdays');
+    const observation = document.getElementById('githubPatternObservation');
+    const note = document.getElementById('githubPatternNote');
+    const analytics = window.GitHubDownloadPatterns.analyze(snapshots);
+    const formatFullDate = (date) => formatDate(date, true);
+    const period = analytics.comparison;
+    const periodValue = period
+      ? `${fmt(period.recent)} recent · ${fmt(period.previous)} previous<br><span class="github-pattern-detail">${period.difference > 0 ? '+' : ''}${fmt(period.difference)} downloads${period.percent == null ? ' · percentage unavailable (previous period was 0)' : ` · ${period.percent > 0 ? '+' : ''}${fmt(period.percent, 1)}%`}</span>`
+      : 'Collecting data · need 14 complete consecutive days';
+    const items = [
+      ['Last 7 days vs previous 7', periodValue, 'momentum'],
+      ['Active download streak', `${fmt(analytics.streaks.current)} days<br><span class="github-pattern-detail">Best: ${fmt(analytics.streaks.longest)} days</span>`],
+      ['Typical day · median', `${fmt(analytics.median, 1)} downloads<br><span class="github-pattern-detail">Average: ${fmt(analytics.mean, 1)} / day</span>`],
+      ['Best day', analytics.bestDay ? `${fmt(analytics.bestDay.downloads)} downloads<br><span class="github-pattern-detail">${formatFullDate(analytics.bestDay.date)}</span>` : 'Collecting data'],
+      ['Best 7-day run', analytics.bestWeek ? `${fmt(analytics.bestWeek.total)} downloads<br><span class="github-pattern-detail">${formatDate(analytics.bestWeek.startDate)}–${formatDate(analytics.bestWeek.endDate)}</span>` : 'Collecting data · need 7 consecutive valid days'],
+      ['Strongest observed weekday', analytics.weekdays.strongest ? `${analytics.weekdays.strongest.name}<br><span class="github-pattern-detail">${fmt(analytics.weekdays.strongest.average, 1)} / day · ${analytics.weekdays.strongest.count} observed days</span>` : 'Collecting data']
+    ];
+    stats.innerHTML = items.map(([label, value, extra]) => `<div${extra ? ` class="${extra}"` : ''}><dt>${label}</dt><dd>${value}</dd></div>`).join('');
+    const maximum = Math.max(1, ...analytics.weekdays.groups.map((item) => item.average || 0));
+    weekdaysRoot.innerHTML = `<h4>Average by weekday</h4><ul>${analytics.weekdays.groups.map((item) => {
+      const detail = item.count ? `${fmt(item.average, 1)} downloads/day · ${item.count} observed ${item.count === 1 ? 'day' : 'days'}` : 'Unavailable · no observations';
+      const width = item.count ? item.average / maximum * 100 : 0;
+      return `<li aria-label="${item.name}: ${detail}."><span class="github-weekday-name">${item.name.slice(0, 3)}</span><span class="github-weekday-track" aria-hidden="true"><span style="width:${width}%"></span></span><span class="github-weekday-value">${item.count ? `${fmt(item.average, 1)} · ${item.count}` : '—'}</span></li>`;
+    }).join('')}</ul>`;
+    observation.textContent = analytics.observation || 'Patterns will appear as valid daily history accumulates.';
+    note.textContent = `Based on ${analytics.validDayCount} recorded download ${analytics.validDayCount === 1 ? 'day' : 'days'}; patterns become more useful as history grows. Statistics use all available history, independent of the chart range.`;
+    root.setAttribute('aria-busy', 'false');
+  }
+
   function rangeName() {
     return range === 'all' ? 'all available history' : `last ${range} days`;
   }
@@ -270,6 +302,7 @@
       ['Tracked releases', fmt(summary.trackedReleaseCount)]
     ];
     document.getElementById('githubReleaseInsights').innerHTML = insights.map(([label, value]) => `<div class="github-insight"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
+    renderPatterns();
     renderChart();
   }
 
