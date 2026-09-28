@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T08:59:26.173Z",
+  "generatedAt": "2026-09-28T09:49:26.593Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -24,14 +24,14 @@
       "status": "success",
       "image": "virtual-stock-market.webp",
       "url": "https://404cache.pages.dev",
-      "capturedAt": "2026-09-21T08:59:23.801Z",
+      "capturedAt": "2026-09-28T09:49:24.339Z",
       "existingPreview": true
     },
     "youtube-tracker": {
       "status": "success",
       "image": "youtube-tracker.webp",
       "url": "https://uxillary.github.io/automated/",
-      "capturedAt": "2026-09-21T08:59:26.138Z",
+      "capturedAt": "2026-09-28T09:49:26.563Z",
       "existingPreview": true
     }
   }
