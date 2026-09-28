@@ -97,6 +97,30 @@
     return best;
   }
 
+  function milestoneHistory(snapshots, thresholds) {
+    const { rows } = validDaily(snapshots);
+    const milestones = [...new Set((Array.isArray(thresholds) ? thresholds : []).filter((value) => Number.isFinite(value) && value > 0))].sort((a, b) => a - b);
+    const first = rows[0] || null;
+    const latest = rows.at(-1) || null;
+    const currentTotal = latest?.total ?? null;
+    const next = currentTotal == null ? milestones[0] ?? null : milestones.find((value) => currentTotal < value) ?? null;
+    const achieved = currentTotal == null ? null : [...milestones].reverse().find((value) => currentTotal >= value) ?? null;
+    const progressPercent = currentTotal == null ? null : next == null ? 100 : Math.round(Math.max(0, Math.min(100, ((currentTotal - (achieved || 0)) / (next - (achieved || 0))) * 100)) * 10) / 10;
+    const items = milestones.map((threshold) => {
+      if (!first) return { threshold, status: 'future', reachedDate: null };
+      if (threshold <= first.total) return { threshold, status: 'before-history', reachedDate: null };
+      let reachedDate = null;
+      for (let index = 1; index < rows.length; index += 1) {
+        if (rows[index - 1].total < threshold && rows[index].total >= threshold) {
+          reachedDate = rows[index].date;
+          break;
+        }
+      }
+      return { threshold, status: threshold === next ? 'target' : reachedDate ? 'achieved' : 'future', reachedDate };
+    });
+    return { currentTotal, latestSnapshotDate: latest?.date ?? null, next, downloadsRemaining: currentTotal == null || next == null ? currentTotal == null ? null : 0 : next - currentTotal, achieved, progressPercent, items };
+  }
+
   function analyze(snapshots) {
     const { rows, daily } = validDaily(snapshots);
     const latestDay = rows.length ? rows[rows.length - 1].day : null;
@@ -115,5 +139,5 @@
     return { daily, validDayCount: daily.length, median: median(values), mean: values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null, comparison, streaks: runs, weekdays, bestDay: bestDay(daily), bestWeek: bestWeek(daily), observation };
   }
 
-  return { dayNumber, validDaily, median, periodComparison, streaks, weekdaySummary, bestDay, bestWeek, analyze };
+  return { dayNumber, validDaily, median, periodComparison, streaks, weekdaySummary, bestDay, bestWeek, milestoneHistory, analyze };
 });

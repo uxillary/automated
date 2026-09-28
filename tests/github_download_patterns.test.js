@@ -84,3 +84,61 @@ test('best week never spans a missing date or a reset interval', () => {
   ]).daily;
   assert.equal(patterns.bestWeek(reset), null);
 });
+
+test('milestone history records the first observed crossing date and pre-history achievements', () => {
+  const crossed = patterns.milestoneHistory([
+    { date: '2026-10-01', total: 90 }, { date: '2026-10-02', total: 100 }, { date: '2026-10-05', total: 260 }
+  ], [100, 250, 500]);
+  assert.deepEqual(crossed.items, [
+    { threshold: 100, status: 'achieved', reachedDate: '2026-10-02' },
+    { threshold: 250, status: 'achieved', reachedDate: '2026-10-05' },
+    { threshold: 500, status: 'target', reachedDate: null }
+  ]);
+  assert.equal(crossed.next, 500);
+  assert.equal(crossed.downloadsRemaining, 240);
+  assert.equal(crossed.progressPercent, 4);
+
+  const baselineAlreadyAbove = patterns.milestoneHistory([{ date: '2026-10-01', total: 300 }], [100, 250, 500]);
+  assert.deepEqual(baselineAlreadyAbove.items.slice(0, 2), [
+    { threshold: 100, status: 'before-history', reachedDate: null },
+    { threshold: 250, status: 'before-history', reachedDate: null }
+  ]);
+  assert.equal(baselineAlreadyAbove.items[2].status, 'target');
+});
+
+test('milestones handle exact equality, interval progress, resets, highest threshold, and sparse history', () => {
+  const equal = patterns.milestoneHistory([
+    { date: '2026-10-01', total: 90 }, { date: '2026-10-02', total: 100 }
+  ], [100, 250, 500]);
+  assert.equal(equal.items[0].reachedDate, '2026-10-02');
+  assert.equal(equal.next, 250);
+  assert.equal(equal.downloadsRemaining, 150);
+  assert.equal(equal.progressPercent, 0);
+
+  const interval = patterns.milestoneHistory([{ date: '2026-10-01', total: 175 }], [100, 250, 500]);
+  assert.equal(interval.next, 250);
+  assert.equal(interval.progressPercent, 50);
+
+  const reset = patterns.milestoneHistory([
+    { date: '2026-10-01', total: 90 }, { date: '2026-10-02', total: 110 }, { date: '2026-10-03', total: 80 }
+  ], [100, 250]);
+  assert.deepEqual(reset.items[0], { threshold: 100, status: 'target', reachedDate: '2026-10-02' });
+  assert.equal(reset.currentTotal, 80);
+  assert.equal(reset.downloadsRemaining, 20);
+
+  const beyond = patterns.milestoneHistory([{ date: '2026-10-01', total: 12000 }], [100, 250, 500, 1000, 2500, 5000, 10000]);
+  assert.equal(beyond.next, null);
+  assert.equal(beyond.downloadsRemaining, 0);
+  assert.equal(beyond.progressPercent, 100);
+  assert.equal(beyond.items.at(-1).status, 'before-history');
+
+  const empty = patterns.milestoneHistory([], [100, 250]);
+  assert.equal(empty.currentTotal, null);
+  assert.equal(empty.next, 100);
+  assert.equal(empty.progressPercent, null);
+  const belowFirst = patterns.milestoneHistory([{ date: '2026-10-01', total: 80 }], [100, 250]);
+  assert.equal(belowFirst.next, 100);
+  assert.equal(belowFirst.downloadsRemaining, 20);
+  assert.equal(belowFirst.progressPercent, 80);
+  assert.equal(patterns.milestoneHistory([{ date: '2026-10-01', total: 150 }], []).next, null);
+});

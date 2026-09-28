@@ -187,6 +187,7 @@ function buildSummary(history) {
   const newestRelease = [...releaseTotals].filter((r) => r.publishedAt).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)))[0] || null;
   return {
     version: 1, status: 'ready', latestSnapshotDate: latest.date, currentTotalDownloads: latest.total,
+    milestoneThresholds: MILESTONES,
     gainSincePreviousSnapshot: previous, gain7Days: gain7, gain30Days: gain30,
     averageDaily7Days: gain7 == null ? null : gain7 / 7, averageDaily30Days: gain30 == null ? null : gain30 / 30,
     trackedRepositoryCount: repositoryTotals.length, trackedReleaseCount: releaseTotals.length,

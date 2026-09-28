@@ -62,6 +62,7 @@ test('normalised downloads propagate through every aggregate and replace a broke
   assert.equal(result.summary.highestDownloadedRelease.id, 'ux/font#10');
   assert.equal(result.summary.topRepository.repo, 'ux/font');
   assert.deepEqual(result.summary.milestones, { latestAchieved: 1000, next: 2500, progressPercent: 14.2 });
+  assert.deepEqual(result.summary.milestoneThresholds, metrics.MILESTONES);
   assert.equal(JSON.parse(fs.readFileSync(historyPath, 'utf8')).snapshots[0].total, 1213);
 });
 
