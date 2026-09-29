@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { parseArgs, validateConfig } = require('../scripts/capture-project-previews');
+const { parseArgs, resolveColorScheme, validateConfig } = require('../scripts/capture-project-previews');
 
 const valid = () => ({
   defaults: { viewport: { width: 1440, height: 900 } },
@@ -15,6 +15,25 @@ test('accepts the project filter CLI option', () => {
 
 test('validates a minimal project preview configuration', () => {
   assert.equal(validateConfig(valid()).projects.length, 1);
+});
+
+test('accepts optional dark colour scheme and resolves it for the project', () => {
+  const config = valid();
+  config.projects[0].colorScheme = 'dark';
+  assert.equal(validateConfig(config).projects.length, 1);
+  assert.equal(resolveColorScheme(config.projects[0], config.defaults), 'dark');
+});
+
+test('projects without a colour scheme retain the existing configured default', () => {
+  const config = valid();
+  assert.equal(resolveColorScheme(config.projects[0], config.defaults), 'light');
+  assert.equal(resolveColorScheme(config.projects[0], {}), 'light');
+});
+
+test('rejects invalid colour scheme values', () => {
+  const config = valid();
+  config.projects[0].colorScheme = 'sepia';
+  assert.throws(() => validateConfig(config), /colorScheme is invalid/);
 });
 
 test('rejects unsafe URL protocols', () => {

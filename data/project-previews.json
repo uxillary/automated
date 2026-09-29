@@ -13,6 +13,7 @@
       "slug": "404cache",
       "name": "404cache",
       "url": "https://infinite-curios.pages.dev",
+      "colorScheme": "dark",
       "enabled": true,
       "type": "website"
     },

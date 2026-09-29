@@ -65,12 +65,17 @@ function validateConfig(config) {
     assertInteger(viewport.height, `${label}.viewport.height`, 240, 4320);
     const delay = project.delay ?? defaults.delay ?? 1500;
     assertInteger(delay, `${label}.delay`, 0, MAX_DELAY);
+    if (project.colorScheme !== undefined && !['light', 'dark', 'no-preference'].includes(project.colorScheme)) throw new Error(`${label}.colorScheme is invalid`);
     if (project.waitFor !== undefined && (typeof project.waitFor !== 'string' || !project.waitFor.trim())) throw new Error(`${label}.waitFor must be a non-empty selector`);
     if (project.hideSelectors !== undefined && (!Array.isArray(project.hideSelectors) || project.hideSelectors.some((item) => typeof item !== 'string' || !item.trim()))) throw new Error(`${label}.hideSelectors must be an array of selectors`);
     const theme = project.theme ?? defaults.theme ?? 'light';
     if (!['light', 'dark', 'no-preference'].includes(theme)) throw new Error(`${label}.theme is invalid`);
   }
   return { defaults, projects: config.projects };
+}
+
+function resolveColorScheme(project, defaults) {
+  return project.colorScheme ?? project.theme ?? defaults.theme ?? 'light';
 }
 
 async function readJson(file, fallback = null) {
@@ -99,7 +104,7 @@ async function captureProject(browser, project, defaults, previous) {
     ignoreHTTPSErrors: true,
     viewport,
     deviceScaleFactor: 1,
-    colorScheme: project.theme ?? defaults.theme ?? 'light',
+    colorScheme: resolveColorScheme(project, defaults),
     reducedMotion: 'reduce',
     locale: 'en-GB',
     timezoneId: 'UTC'
@@ -162,4 +167,4 @@ async function main() {
 }
 
 if (require.main === module) main().catch((error) => { console.error(`Fatal: ${conciseError(error)}`); process.exitCode = 1; });
-module.exports = { parseArgs, validateConfig };
+module.exports = { parseArgs, resolveColorScheme, validateConfig };
