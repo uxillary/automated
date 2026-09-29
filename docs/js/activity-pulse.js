@@ -35,6 +35,7 @@
     const github = githubResult.status === 'fulfilled' && githubResult.value.status !== 'awaiting_baseline'
       ? githubResult.value : null;
     const youtube = youtubeResult.status === 'fulfilled' ? youtubeResult.value : null;
+    window.WhileAwayDashboard?.setYoutube(youtube);
     const updated = [
       github && (formatDate(github.latestSnapshotDate) && `GitHub snapshot ${formatDate(github.latestSnapshotDate)}`),
       youtube && (formatDate(youtube.last_updated) && `YouTube updated ${formatDate(youtube.last_updated)}`)

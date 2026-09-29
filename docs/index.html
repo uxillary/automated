@@ -349,6 +349,14 @@
     <div class="pulse-grid" id="activityPulse" aria-live="polite" aria-busy="true">
       <p class="pulse-state">Loading current activity…</p>
     </div>
+    <section class="while-away" id="whileAway" aria-labelledby="whileAwayTitle" hidden>
+      <div class="while-away-main">
+        <h3 id="whileAwayTitle">While you were away</h3>
+        <p class="while-away-summary" id="whileAwaySummary" role="status" aria-live="polite">Loading visit comparison…</p>
+      </div>
+      <div class="while-away-details" id="whileAwayDetails"></div>
+      <p class="while-away-privacy">Visit comparison is stored only in this browser.</p>
+    </section>
   </section>
 
   <section class="github-section stack" id="githubReleases" aria-labelledby="githubReleasesTitle">
@@ -519,6 +527,7 @@
   <script src="js/yt-overlays.js"></script>
   <script src="js/yt-insights.js"></script>
   <script src="js/github-patterns.js?v=3"></script>
+  <script src="js/while-away.js?v=1"></script>
   <script src="js/github-releases.js?v=10"></script>
   <script src="js/activity-pulse.js"></script>
 

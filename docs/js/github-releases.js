@@ -444,6 +444,7 @@
     document.getElementById('githubReleaseInsights').innerHTML = insights.map(([label, value]) => `<div class="github-insight"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
     renderPatterns(downloadAnalytics);
     renderChart();
+    window.WhileAwayDashboard?.setGithub(summary, downloadAnalytics);
   }
 
   section.addEventListener('click', (event) => {

@@ -12,6 +12,7 @@
 .pulse-primary .pulse-value{font-size:clamp(1.45rem,2vw,2rem)}
 .pulse-note{grid-column:2;color:var(--muted);font-size:.72rem;margin-top:3px}
 .pulse-state{grid-column:1/-1;color:var(--muted);margin:8px 0}
+.while-away{display:grid;grid-template-columns:minmax(200px,.9fr) minmax(0,1.7fr);gap:6px 22px;align-items:start;margin-top:14px;padding:13px 16px;border:1px solid var(--border);border-radius:12px;background:color-mix(in srgb,var(--accent) 5%,var(--card))}.while-away[hidden]{display:none}.while-away-main h3{margin:0 0 4px;color:var(--muted);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.while-away-summary{margin:0;font-size:1rem;font-weight:720;line-height:1.4;font-variant-numeric:tabular-nums}.while-away-details{min-width:0}.while-away-changes{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:5px 14px;margin:0}.while-away-changes>div{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px solid color-mix(in srgb,var(--border) 70%,transparent)}.while-away-changes dt{min-width:0;color:var(--muted);font-size:.75rem;overflow-wrap:anywhere}.while-away-changes dd{margin:0;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.while-away-events{margin:7px 0 0;padding-left:17px;color:var(--fg);font-size:.72rem}.while-away-privacy{grid-column:1/-1;margin:0;color:var(--muted);font-size:.64rem}
 .youtube-heading{padding-top:4px}
 .youtube-controls{box-shadow:none}
 .youtube-section #chartCard{box-shadow:none}
@@ -19,3 +20,4 @@
 button{min-height:36px}
 @media(max-width:1000px){.pulse-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pulse-metric:nth-child(4){border-left:0}}
 @media(max-width:560px){.pulse-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}.pulse-metric{padding:12px 8px;border-bottom:1px solid var(--border)}.pulse-metric:nth-child(odd){border-left:0}.pulse-metric:nth-child(4){border-left:1px solid var(--border)}.pulse-metric:nth-last-child(-n+2){border-bottom:0}.pulse-icon{width:26px;height:26px}.pulse-label,.pulse-note{font-size:.68rem}.youtube-controls{padding:12px}}
+@media(max-width:760px){.while-away{grid-template-columns:1fr;gap:8px}.while-away-privacy{grid-column:1}}
