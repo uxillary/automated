@@ -149,6 +149,61 @@
     return best;
   }
 
+  function intensityBands(values) {
+    const sorted = (Array.isArray(values) ? values : []).filter((value) => Number.isFinite(value) && value > 0).sort((a, b) => a - b);
+    const cutoffs = sorted.length ? [0.25, 0.5, 0.75].map((quantile) => sorted[Math.ceil(sorted.length * quantile) - 1]) : [];
+    const levels = (value) => !cutoffs.length ? 0 : value <= cutoffs[0] ? 1 : value <= cutoffs[1] ? 2 : value <= cutoffs[2] ? 3 : 4;
+    const bounds = sorted.length ? [
+      { min: sorted[0], max: cutoffs[0] },
+      { min: cutoffs[0] + 1, max: cutoffs[1] },
+      { min: cutoffs[1] + 1, max: cutoffs[2] },
+      { min: cutoffs[2] + 1, max: sorted.at(-1) }
+    ] : Array.from({ length: 4 }, () => ({ min: null, max: null }));
+    return {
+      cutoffs,
+      levels,
+      bands: bounds.map((bound, index) => ({
+        level: index + 1,
+        min: bound.min <= bound.max ? bound.min : null,
+        max: bound.min <= bound.max ? bound.max : null,
+        count: bound.min <= bound.max ? sorted.filter((value) => levels(value) === index + 1).length : 0
+      }))
+    };
+  }
+
+  function heatmapCalendar(snapshots, windowDays = 365) {
+    const { rows, daily } = validDaily(snapshots);
+    if (!rows.length) return { startDate: null, endDate: null, weeks: [], validDays: 0, positiveDays: 0, zeroDays: 0, unavailableDays: 0, bands: intensityBands([]).bands };
+    const span = Number.isInteger(windowDays) && windowDays > 0 ? Math.min(windowDays, 365) : 365;
+    const endDay = rows.at(-1).day;
+    const startDay = Math.max(rows[0].day, endDay - span + 1);
+    const byDay = new Map(daily.filter((point) => point.day >= startDay && point.day <= endDay).map((point) => [point.day, point]));
+    const positiveValues = [...byDay.values()].filter((point) => point.downloads > 0).map((point) => point.downloads);
+    const intensity = intensityBands(positiveValues);
+    const leading = (new Date(startDay * DAY).getUTCDay() + 6) % 7;
+    const dateCount = endDay - startDay + 1;
+    const weekCount = Math.ceil((leading + dateCount) / 7);
+    const weeks = Array.from({ length: weekCount }, (_, weekIndex) => Array.from({ length: 7 }, (_, weekday) => {
+      const day = startDay - leading + weekIndex * 7 + weekday;
+      if (day < startDay || day > endDay) return null;
+      const date = new Date(day * DAY).toISOString().slice(0, 10);
+      const point = byDay.get(day);
+      if (!point) return { date, day, weekday, downloads: null, status: 'unavailable', level: 0 };
+      const isZero = point.downloads === 0;
+      return { date, day, weekday, downloads: point.downloads, status: isZero ? 'zero' : 'activity', level: isZero ? 0 : intensity.levels(point.downloads) };
+    }));
+    const validDays = byDay.size;
+    const positiveDays = positiveValues.length;
+    const zeroDays = validDays - positiveDays;
+    return {
+      startDate: new Date(startDay * DAY).toISOString().slice(0, 10),
+      endDate: new Date(endDay * DAY).toISOString().slice(0, 10),
+      startDay, endDay, weeks, validDays, positiveDays, zeroDays,
+      unavailableDays: dateCount - validDays,
+      bands: intensity.bands
+    };
+  }
+
   function milestoneHistory(snapshots, thresholds) {
     const { rows } = validDaily(snapshots);
     const milestones = [...new Set((Array.isArray(thresholds) ? thresholds : []).filter((value) => Number.isFinite(value) && value > 0))].sort((a, b) => a - b);
@@ -191,5 +246,5 @@
     return { daily, validDayCount: daily.length, median: median(values), mean: values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null, comparison, streaks: runs, weekdays, bestDay: bestDay(daily), bestWeek: bestWeek(daily), observation };
   }
 
-  return { dayNumber, validDaily, median, periodTotal, periodComparison, projectAnalytics, sharePercent, reconcileProjectTotals, sortProjects, streaks, weekdaySummary, bestDay, bestWeek, milestoneHistory, analyze };
+  return { dayNumber, validDaily, median, periodTotal, periodComparison, projectAnalytics, sharePercent, reconcileProjectTotals, sortProjects, streaks, weekdaySummary, bestDay, bestWeek, intensityBands, heatmapCalendar, milestoneHistory, analyze };
 });

@@ -166,6 +166,50 @@
     root.setAttribute('aria-busy', 'false');
   }
 
+  function renderHeatmap(analytics) {
+    const root = document.getElementById('githubDownloadHeatmap');
+    const scroll = document.getElementById('githubHeatmapScroll');
+    const summary = document.getElementById('githubHeatmapSummary');
+    const legend = document.getElementById('githubHeatmapLegend');
+    const streak = document.getElementById('githubHeatmapStreak');
+    const calendar = window.GitHubDownloadPatterns.heatmapCalendar(snapshots);
+    const dateLabel = (value) => new Date(`${value}T00:00:00Z`).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+    const bands = calendar.bands;
+    const bandLabel = (band) => band.count ? `${fmt(band.min)}–${fmt(band.max)} downloads · ${['Low', 'Moderate', 'High', 'Highest'][band.level - 1]}` : `Level ${band.level} · no recorded days`;
+    const legendItems = [
+      ['unavailable', 0, 'No recorded daily observation'],
+      ['zero', 0, '0 downloads · valid observation'],
+      ...bands.map((band) => ['activity', band.level, bandLabel(band)])
+    ];
+    legend.innerHTML = legendItems.map(([state, level, label]) => `<span class="github-heatmap-legend-item"><i class="github-heat-cell" data-state="${state}" data-level="${level}" aria-hidden="true"></i><span>${escapeHtml(label)}</span></span>`).join('');
+
+    const monthLabels = [];
+    calendar.weeks.forEach((week, index) => {
+      const dates = week.filter(Boolean);
+      if (!dates.length) return;
+      const first = dates[0];
+      const monthStart = dates.find((cell) => cell.date.slice(-2) === '01');
+      const labelCell = index === 0 ? first : monthStart;
+      if (labelCell) monthLabels.push(`<span style="grid-column:${index + 1}" aria-hidden="true">${escapeHtml(new Date(`${labelCell.date}T00:00:00Z`).toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' }))}</span>`);
+    });
+    const lastValidDate = calendar.weeks.flat().filter((cell) => cell && cell.status !== 'unavailable').at(-1)?.date;
+    const cells = calendar.weeks.flat().map((cell) => {
+      if (!cell) return '<span class="github-heatmap-empty" aria-hidden="true"></span>';
+      const fullDate = dateLabel(cell.date);
+      if (cell.status === 'unavailable') return `<span class="github-heat-cell" data-state="unavailable" data-level="0" aria-hidden="true" title="${escapeHtml(fullDate)} — No recorded daily observation"></span>`;
+      const description = cell.status === 'zero' ? '0 downloads. Valid day with no downloads.' : `${fmt(cell.downloads)} downloads. Valid day with activity, ${['', 'low', 'moderate', 'high', 'highest'][cell.level]} activity band.`;
+      return `<button type="button" class="github-heat-cell github-heatmap-cell" data-state="${cell.status}" data-level="${cell.level}" data-date="${cell.date}" aria-label="${escapeHtml(`${fullDate}: ${description}`)}" title="${escapeHtml(`${fullDate} · ${description}`)}" tabindex="${cell.date === lastValidDate ? 0 : -1}"></button>`;
+    }).join('');
+    scroll.innerHTML = `<div class="github-heatmap-calendar" style="--heatmap-weeks:${calendar.weeks.length || 1}"><div class="github-heatmap-months" aria-hidden="true">${monthLabels.join('')}</div><div class="github-heatmap-grid" role="group" aria-labelledby="githubHeatmapTitle" aria-describedby="githubHeatmapKeyboardHelp">${cells}</div></div>`;
+    if (calendar.startDate) {
+      summary.textContent = `${calendar.validDays} recorded download days from ${dateLabel(calendar.startDate)} to ${dateLabel(calendar.endDate)}: ${calendar.positiveDays} days with activity, ${calendar.zeroDays} valid zero-download days, and ${calendar.unavailableDays} unavailable ${calendar.unavailableDays === 1 ? 'day' : 'days'}.`;
+    } else summary.textContent = 'No valid daily observations are available.';
+    const currentStreak = analytics.streaks.current;
+    streak.textContent = `Current active streak: ${fmt(currentStreak)} ${currentStreak === 1 ? 'day' : 'days'}`;
+    root.setAttribute('aria-busy', 'false');
+    if (window.matchMedia('(max-width: 560px)').matches) scroll.scrollLeft = scroll.scrollWidth;
+  }
+
   function renderMilestones(summary, analytics) {
     const mount = document.getElementById('githubMilestone');
     const thresholdsFromSummary = Array.isArray(summary.milestoneThresholds);
@@ -389,6 +433,7 @@
 
     const downloadAnalytics = window.GitHubDownloadPatterns.analyze(snapshots);
     renderMilestones(summary, downloadAnalytics);
+    renderHeatmap(downloadAnalytics);
 
     const insights = [
       ['Top release', summary.highestDownloadedRelease ? `${summary.highestDownloadedRelease.name} · ${fmt(summary.highestDownloadedRelease.downloads)}` : 'No release assets'],
@@ -412,6 +457,21 @@
   });
 
   section.addEventListener('keydown', (event) => {
+    const heatCell = event.target.closest('.github-heatmap-cell');
+    if (heatCell) {
+      const cells = [...section.querySelectorAll('.github-heatmap-cell')];
+      const currentIndex = cells.indexOf(heatCell);
+      let nextIndex = currentIndex;
+      if (event.key === 'ArrowRight') nextIndex = Math.min(cells.length - 1, currentIndex + 1);
+      else if (event.key === 'ArrowLeft') nextIndex = Math.max(0, currentIndex - 1);
+      else if (event.key === 'Home') nextIndex = 0;
+      else if (event.key === 'End') nextIndex = cells.length - 1;
+      else return;
+      event.preventDefault();
+      cells.forEach((cell, index) => { cell.tabIndex = index === nextIndex ? 0 : -1; });
+      cells[nextIndex]?.focus();
+      return;
+    }
     const tab = event.target.closest('[role="tab"][data-github-view]');
     if (!tab) return;
     const tabs = [...section.querySelectorAll('[role="tab"][data-github-view]')];

@@ -199,3 +199,53 @@ test('project and overall current totals must reconcile with the latest reposito
   assert.equal(patterns.reconcileProjectTotals(projects, 100, { a: 74, b: 26 }), false);
   assert.equal(patterns.reconcileProjectTotals(null, 100, { a: 100 }), false);
 });
+
+test('heatmap distinguishes the baseline, valid zero days, and activity on a Monday-first calendar', () => {
+  const calendar = patterns.heatmapCalendar(snapshotsFromDaily(20706, [0, 4])); // 2026-09-10 through 2026-09-12
+  assert.equal(calendar.startDate, '2026-09-10');
+  assert.equal(calendar.endDate, '2026-09-12');
+  assert.deepEqual([calendar.validDays, calendar.positiveDays, calendar.zeroDays, calendar.unavailableDays], [2, 1, 1, 1]);
+  assert.deepEqual(calendar.weeks[0].slice(0, 6).map((cell) => cell && [cell.date, cell.status, cell.downloads]), [
+    null, null, null, ['2026-09-10', 'unavailable', null], ['2026-09-11', 'zero', 0], ['2026-09-12', 'activity', 4]
+  ]);
+});
+
+test('heatmap marks gaps and reset deltas unavailable while retaining later valid days', () => {
+  const snapshots = [
+    { date: '2026-01-01', total: 100 }, { date: '2026-01-02', total: 101 },
+    { date: '2026-01-04', total: 103 }, { date: '2026-01-05', total: 99 }, { date: '2026-01-06', total: 100 }
+  ];
+  const calendar = patterns.heatmapCalendar(snapshots);
+  const cells = calendar.weeks.flat().filter(Boolean);
+  assert.deepEqual(cells.map(({ date, status }) => [date, status]), [
+    ['2026-01-01', 'unavailable'], ['2026-01-02', 'activity'], ['2026-01-03', 'unavailable'],
+    ['2026-01-04', 'unavailable'], ['2026-01-05', 'unavailable'], ['2026-01-06', 'activity']
+  ]);
+  assert.equal(calendar.validDays, 2);
+  assert.equal(calendar.unavailableDays, 4);
+});
+
+test('heatmap intensity uses four nearest-rank quantile bands and keeps ties together', () => {
+  const four = patterns.intensityBands([1, 2, 3, 4]);
+  assert.deepEqual([1, 2, 3, 4].map((value) => four.levels(value)), [1, 2, 3, 4]);
+  assert.deepEqual(four.bands.map(({ min, max, count }) => [min, max, count]), [[1, 1, 1], [2, 2, 1], [3, 3, 1], [4, 4, 1]]);
+  const tied = patterns.intensityBands([5, 5, 10]);
+  assert.deepEqual([5, 5, 10].map((value) => tied.levels(value)), [1, 1, 3]);
+  assert.deepEqual(tied.bands.map(({ count }) => count), [2, 0, 1, 0]);
+  assert.equal(patterns.intensityBands([]).levels(1), 0);
+});
+
+test('heatmap caps its calendar window at 365 days and handles empty and baseline-only histories', () => {
+  const longHistory = snapshotsFromDaily(20000, Array(400).fill(1));
+  const calendar = patterns.heatmapCalendar(longHistory, 900);
+  assert.equal(calendar.validDays, 365);
+  assert.equal(calendar.startDay, calendar.endDay - 364);
+  assert.equal(calendar.startDate, dateAt(calendar.startDay));
+  assert.deepEqual(patterns.heatmapCalendar([]), {
+    startDate: null, endDate: null, weeks: [], validDays: 0, positiveDays: 0, zeroDays: 0, unavailableDays: 0,
+    bands: [1, 2, 3, 4].map((level) => ({ level, min: null, max: null, count: 0 }))
+  });
+  const baseline = patterns.heatmapCalendar([{ date: '2026-09-10', total: 0 }]);
+  assert.equal(baseline.validDays, 0);
+  assert.equal(baseline.unavailableDays, 1);
+});

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/stats.css">
   <link rel="stylesheet" href="css/modern-stats.css">
   <link rel="stylesheet" href="css/brand.css">
-  <link rel="stylesheet" href="css/github-releases.css?v=5">
+  <link rel="stylesheet" href="css/github-releases.css?v=6">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -405,6 +405,20 @@
       <div class="card github-milestones-card" id="githubMilestone"><h3 class="section-title">Milestones &amp; Records</h3><p class="github-state">Loading milestone history…</p></div>
     </div>
 
+    <section class="card github-download-heatmap" id="githubDownloadHeatmap" aria-labelledby="githubHeatmapTitle" aria-busy="true">
+      <header class="github-heatmap-header">
+        <div><h3 id="githubHeatmapTitle">Download Calendar</h3><p>Recorded daily release-download activity.</p></div>
+        <p id="githubHeatmapStreak" class="github-heatmap-streak"></p>
+      </header>
+      <p id="githubHeatmapSummary" class="github-heatmap-summary" role="status" aria-live="polite">Loading valid daily observations…</p>
+      <div id="githubHeatmapLegend" class="github-heatmap-legend" aria-label="Activity intensity legend"></div>
+      <div class="github-heatmap-layout">
+        <div class="github-heatmap-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div id="githubHeatmapScroll" class="github-heatmap-scroll" tabindex="0" role="region" aria-label="Scrollable GitHub download calendar"></div>
+      </div>
+      <p class="sr-only" id="githubHeatmapKeyboardHelp">Use Left and Right Arrow keys to move between recorded dates. Home and End move to the first and latest recorded dates.</p>
+    </section>
+
     <details class="secondary-insights card github-insights">
       <summary><i class="fa-regular fa-lightbulb" aria-hidden="true"></i>View release insights</summary>
       <div id="githubReleaseInsights" class="github-insight-grid"><p class="github-state">Loading release details…</p></div>
@@ -504,8 +518,8 @@
 
   <script src="js/yt-overlays.js"></script>
   <script src="js/yt-insights.js"></script>
-  <script src="js/github-patterns.js?v=2"></script>
-  <script src="js/github-releases.js?v=9"></script>
+  <script src="js/github-patterns.js?v=3"></script>
+  <script src="js/github-releases.js?v=10"></script>
   <script src="js/activity-pulse.js"></script>
 
   <script>
