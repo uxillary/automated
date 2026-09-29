@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-09-28",
-  "currentTotalDownloads": 1326,
+  "latestSnapshotDate": "2026-09-29",
+  "currentTotalDownloads": 1331,
   "milestoneThresholds": [
     100,
     250,
@@ -12,10 +12,10 @@
     5000,
     10000
   ],
-  "gainSincePreviousSnapshot": 3,
-  "gain7Days": 62,
+  "gainSincePreviousSnapshot": 5,
+  "gain7Days": 60,
   "gain30Days": null,
-  "averageDaily7Days": 8.857142857142858,
+  "averageDaily7Days": 8.571428571428571,
   "averageDaily30Days": null,
   "trackedRepositoryCount": 2,
   "trackedReleaseCount": 4,
@@ -23,8 +23,8 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1312,
-      "gain7": 62,
+      "downloads": 1317,
+      "gain7": 60,
       "gain30": null
     },
     {
@@ -43,7 +43,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 255
+      "downloads": 260
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -88,7 +88,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak-v1.1.0.zip",
       "size": 19470290,
-      "downloads": 44
+      "downloads": 47
     },
     {
       "id": "uxillary/font-size-tweak#376794812#529998977",
@@ -96,7 +96,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 205
+      "downloads": 207
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -134,15 +134,15 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1312,
-    "gain7": 62,
+    "downloads": 1317,
+    "gain7": 60,
     "gain30": null
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1312,
-    "gain7": 62,
+    "downloads": 1317,
+    "gain7": 60,
     "gain30": null
   },
   "highestDownloadedRelease": {
@@ -169,12 +169,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 255
+    "downloads": 260
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 21.7
+    "progressPercent": 22.1
   },
   "daily": [
     {
@@ -252,6 +252,10 @@
     {
       "date": "2026-09-28",
       "downloads": 3
+    },
+    {
+      "date": "2026-09-29",
+      "downloads": 5
     }
   ]
 }
