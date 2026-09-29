@@ -146,13 +146,14 @@
     const note = document.getElementById('githubPatternNote');
     const period = analytics.comparison;
     const periodValue = period
-      ? `${fmt(period.recent)} recent · ${fmt(period.previous)} previous<br><span class="github-pattern-detail">${period.difference > 0 ? '+' : ''}${fmt(period.difference)} downloads${period.percent == null ? ' · percentage unavailable (previous period was 0)' : ` · ${period.percent > 0 ? '+' : ''}${fmt(period.percent, 1)}%`}</span>`
+      ? period.percent == null
+        ? `<strong>${period.difference > 0 ? '+' : ''}${fmt(period.difference)} downloads</strong><br><span class="github-pattern-detail">${fmt(period.recent)} vs ${fmt(period.previous)} previous 7d</span>`
+        : `<strong>${period.percent > 0 ? '+' : ''}${fmt(period.percent, 1)}%</strong><br><span class="github-pattern-detail">${fmt(period.recent)} downloads vs ${fmt(period.previous)} previous 7d</span>`
       : 'Collecting data · need 14 complete consecutive days';
     const items = [
-      ['Last 7 days vs previous 7', periodValue, 'momentum'],
-      ['Active download streak', `${fmt(analytics.streaks.current)} days`],
-      ['Typical day · median', `${fmt(analytics.median, 1)} downloads<br><span class="github-pattern-detail">Average: ${fmt(analytics.mean, 1)} / day</span>`],
-      ['Strongest observed weekday', analytics.weekdays.strongest ? `${analytics.weekdays.strongest.name}<br><span class="github-pattern-detail">${fmt(analytics.weekdays.strongest.average, 1)} / day · ${analytics.weekdays.strongest.count} observed days</span>` : 'Collecting data']
+      ['Recent momentum', periodValue, 'momentum'],
+      ['Typical day', `${fmt(analytics.median, 1)} downloads<br><span class="github-pattern-detail">Median</span>`],
+      ['Active streak', `${fmt(analytics.streaks.current)} days`]
     ];
     stats.innerHTML = items.map(([label, value, extra]) => `<div${extra ? ` class="${extra}"` : ''}><dt>${label}</dt><dd>${value}</dd></div>`).join('');
     const maximum = Math.max(1, ...analytics.weekdays.groups.map((item) => item.average || 0));
@@ -161,8 +162,8 @@
       const width = item.count ? item.average / maximum * 100 : 0;
       return `<li aria-label="${item.name}: ${detail}."><span class="github-weekday-name">${item.name.slice(0, 3)}</span><span class="github-weekday-track" aria-hidden="true"><span style="width:${width}%"></span></span><span class="github-weekday-value">${item.count ? `${fmt(item.average, 1)} · ${item.count}` : '—'}</span></li>`;
     }).join('')}</ul>`;
-    observation.textContent = analytics.observation || 'Patterns will appear as valid daily history accumulates.';
-    note.textContent = `Based on ${analytics.validDayCount} recorded download ${analytics.validDayCount === 1 ? 'day' : 'days'}; patterns become more useful as history grows. Statistics use all available history, independent of the chart range.`;
+    observation.textContent = analytics.comparison ? 'Compared with the previous 7 valid days.' : analytics.observation || 'Patterns will appear as valid daily history accumulates.';
+    note.textContent = `Based on ${analytics.validDayCount} valid daily observations across all recorded history.`;
     root.setAttribute('aria-busy', 'false');
   }
 
@@ -225,7 +226,12 @@
       'before-history': 'Reached before tracked history', achieved: 'Reached', target: 'Current target', future: 'Future'
     };
     const timeline = thresholds.length
-      ? `<ol class="milestone-timeline" aria-label="Download milestone history">${historyState.items.map((item) => `<li class="milestone-step is-${item.status}" aria-label="${fmt(item.threshold)} downloads: ${statuses[item.status]}${item.reachedDate ? ` ${formatDate(item.reachedDate, true)}` : ''}."><span class="milestone-state">${item.status === 'achieved' || item.status === 'before-history' ? '✓' : item.status === 'target' ? '→' : '·'} ${statuses[item.status]}</span><strong>${thresholdLabel(item.threshold)}</strong>${item.status === 'achieved' ? `<span class="milestone-date">Reached ${formatDate(item.reachedDate, true)}</span>` : item.status === 'before-history' ? '<span class="milestone-date">Before tracked history</span>' : item.status === 'target' && item.reachedDate ? `<span class="milestone-date">Previously reached ${formatDate(item.reachedDate, true)}</span>` : '<span class="milestone-date">&nbsp;</span>'}</li>`).join('')}</ol>`
+      ? `<ol class="milestone-timeline" aria-label="Download milestone history">${historyState.items.map((item) => {
+        const stateLabel = item.status === 'before-history' ? 'Before history' : statuses[item.status];
+        const accessibleState = `${statuses[item.status]}${item.reachedDate ? ` ${formatDate(item.reachedDate, true)}` : ''}`;
+        const symbol = item.status === 'achieved' || item.status === 'before-history' ? '✓' : item.status === 'target' ? '●' : '○';
+        return `<li class="milestone-step is-${item.status}" aria-label="${fmt(item.threshold)} downloads: ${accessibleState}."><span class="milestone-state" aria-hidden="true">${symbol} ${stateLabel}</span><strong>${thresholdLabel(item.threshold)}</strong></li>`;
+      }).join('')}</ol>`
       : '<p class="milestone-copy">Milestone sequence is unavailable in the current summary.</p>';
 
     const daily = analytics.daily;
@@ -240,14 +246,11 @@
       ['Best 7-day period · highest average', analytics.bestWeek ? `${fmt(analytics.bestWeek.total)} downloads<br><span class="milestone-record-detail">${formatDate(analytics.bestWeek.startDate)}–${formatDate(analytics.bestWeek.endDate)} · ${fmt(analytics.bestWeek.total / 7, 1)} / day</span>${bestWeekIsCurrent ? '<span class="record-badge">Current record</span>' : ''}` : 'Collecting 7 consecutive valid days'],
       ['Longest active download streak', `${fmt(analytics.streaks.longest)} days`]
     ];
-    const top = next == null
-      ? thresholds.length || summaryMilestone ? '<p class="milestone-copy">Highest configured milestone reached.</p>' : '<p class="milestone-copy">Milestone details are unavailable in the current summary.</p>'
-      : `<div class="milestone-next"><span>Next milestone</span><strong>${fmt(next)} downloads</strong><span>${remaining == null ? 'Collecting current total' : `${fmt(remaining)} to go`}</span></div>`;
     const progressMarkup = next != null && progress != null
       ? `<div class="milestone-progress" role="progressbar" aria-label="Progress toward ${fmt(next)} downloads" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}" aria-valuetext="${fmt(progress, 1)} percent complete; ${fmt(remaining)} downloads remaining"><span class="milestone-fill" style="width:${Math.max(0, Math.min(100, progress))}%"></span></div><p class="milestone-progress-label">${fmt(progress, 1)}% complete · ${fmt(remaining)} downloads remaining</p>`
       : '';
     mount.className = 'card github-milestones-card';
-    mount.innerHTML = `<h3 class="section-title icon-heading"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>Milestones &amp; Records</h3><div class="milestone-overview"><div class="milestone-total"><span>Total downloads</span><strong>${fmt(currentTotal)}</strong></div>${top}</div>${progressMarkup}${timeline}${!thresholdsFromSummary && thresholds.length ? '<p class="milestone-history-note">Milestone sequence uses only thresholds present in the available summary.</p>' : ''}<div class="milestone-records"><h4>Personal records</h4><dl>${records.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl></div>`;
+    mount.innerHTML = `<h3 class="section-title icon-heading"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>Milestones &amp; Records</h3>${timeline}<div class="milestone-overview"><div class="milestone-total"><span>Download progress</span><strong>${fmt(currentTotal)}${next == null ? '' : ` / ${fmt(next)}`}</strong><span>${next == null ? 'Highest configured milestone reached.' : `${fmt(remaining)} downloads remaining`}</span></div></div>${progressMarkup}${!thresholdsFromSummary && thresholds.length ? '<p class="milestone-history-note">Milestone sequence uses only available thresholds.</p>' : ''}<div class="milestone-records"><h4>Personal records</h4><dl>${records.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl></div>`;
   }
 
   function rangeName() {
@@ -421,14 +424,6 @@
   }
 
   function render(summary) {
-    const cards = [
-      ['Total Downloads', summary.currentTotalDownloads, 'Across tracked applications'],
-      ['Last 7 Days', summary.gain7Days, summary.gain7Days == null ? 'Waiting for a 7-day comparison' : 'Latest available 7-day gain'],
-      ['Last 30 Days', summary.gain30Days, summary.gain30Days == null ? 'Waiting for a 30-day comparison' : 'Latest available 30-day gain'],
-      ['Downloads / Day', summary.averageDaily7Days, summary.averageDaily7Days == null ? 'Waiting for a 7-day comparison' : 'Recent 7-day average']
-    ];
-    document.getElementById('githubKpis').innerHTML = cards.map(([label, value, sub]) => `<article class="kpi-card"><span class="kpi-label">${label}</span><div class="kpi-value">${fmt(value, label === 'Downloads / Day' ? 1 : 0)}</div><div class="kpi-sub">${sub}</div></article>`).join('');
-
     renderProjectPerformance(summary);
 
     const downloadAnalytics = window.GitHubDownloadPatterns.analyze(snapshots);
@@ -505,7 +500,6 @@
     syncControls();
     render(summary);
   }).catch((error) => {
-    document.getElementById('githubKpis').innerHTML = `<article class="kpi-card"><span class="kpi-label">GitHub Releases</span><div class="kpi-value">Baseline pending</div><div class="kpi-sub">${escapeHtml(error.message)}</div></article>`;
     document.getElementById('githubChartStatus').textContent = 'Release history will appear after the first successful workflow run.';
     document.getElementById('githubChartEmpty').hidden = false;
     document.getElementById('githubChartEmpty').textContent = 'GitHub release history is not available yet.';

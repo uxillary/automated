@@ -20,7 +20,7 @@
   const state = {
     timeRange: '30',
     selectedChannels: new Set(),
-    datasetToggles: { subscribers: true, views: true, videos: true, averages: true, markers: true },
+    datasetToggles: { subscribers: true, views: true, videos: false, averages: false, markers: false },
     sortKey: 'subscribers',
     sortDir: 'desc',
     selectedChannel: null,

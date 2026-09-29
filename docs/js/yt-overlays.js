@@ -123,39 +123,40 @@ try {
   wrap.innerHTML = `
     <div class="yt-eta-card">
       <div class="yt-eta-title"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Next Milestones</div>
-      <table class="mini-table">
-        <thead>
-          <tr>
-            <th><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Target</th>
-            <th><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> 30d pace</th>
-            <th><i class="fa-solid fa-bolt" aria-hidden="true"></i> 7d pace</th>
-            <th><i class="fa-solid fa-signal" aria-hidden="true"></i> Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map(r => `
-            <tr>
-              <td><strong>${r.target.toLocaleString()}</strong><div class="milestone-progress" aria-label="${Math.round(progress(r.target))}% progress toward ${r.target.toLocaleString()} subscribers"><span style="width:${progress(r.target)}%"></span></div><small>${Math.max(0, r.target - currentSubs).toLocaleString()} subscribers to go</small></td>
-              <td>${fmtEta(r.scenarios.conservative)}</td>
-              <td>${fmtEta(r.scenarios.current)}</td>
-              <td>${r.scenarios.current && r.scenarios.conservative
-                ? (r.scenarios.current.days < r.scenarios.conservative.days ? 'On current pace' : 'Long-range target')
-                : 'Based on available pace'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
+      <ol class="yt-milestone-list" aria-label="Next subscriber milestones">
+        ${rows.map(r => `
+          <li class="yt-milestone-row">
+            <div class="yt-milestone-target">
+              <strong>${r.target.toLocaleString()} subscribers</strong>
+              <div class="yt-milestone-progress" role="progressbar" aria-label="Progress toward ${r.target.toLocaleString()} subscribers" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progress(r.target))}"><span style="width:${progress(r.target)}%"></span></div>
+              <small>${Math.max(0, r.target - currentSubs).toLocaleString()} subscribers to go</small>
+            </div>
+            <span data-label="30-day pace">${fmtEta(r.scenarios.conservative)}</span>
+            <span data-label="7-day pace">${fmtEta(r.scenarios.current)}</span>
+            <span data-label="Status">${r.scenarios.current && r.scenarios.conservative
+              ? (r.scenarios.current.days < r.scenarios.conservative.days ? 'On current pace' : 'Long-range target')
+              : 'Based on available pace'}</span>
+          </li>
+        `).join('')}
+      </ol>
       <div class="yt-eta-foot">Conservative = 30-day subscriber pace. Current = 7-day pace.</div>
     </div>`;
 
   // lean styles (let global CSS do most of the work)
   const style = document.createElement('style');
   style.textContent = `
-    .yt-eta-title{font-weight:700;margin-bottom:10px}
-    .yt-eta-foot{margin-top:8px;color:var(--muted);font-size:.8rem}
-    .milestone-progress{width:150px;max-width:100%;height:6px;margin:7px 0 5px;border-radius:999px;background:var(--surface-soft);overflow:hidden}
-    .milestone-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
-    .mini-table small{color:var(--muted);white-space:nowrap}
+    .yt-eta-title{font-weight:700;margin-bottom:8px}
+    .yt-eta-foot{margin-top:7px;color:var(--muted);font-size:.76rem}
+    .yt-milestone-list{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--border)}
+    .yt-milestone-row{display:grid;grid-template-columns:minmax(150px,1.5fr) repeat(3,minmax(95px,1fr));gap:12px;align-items:center;min-width:0;padding:9px 0;border-bottom:1px solid var(--border);font-size:.8rem}
+    .yt-milestone-row>span{min-width:0;overflow-wrap:anywhere}
+    .yt-milestone-row>span[data-label]::before{content:attr(data-label);display:block;margin-bottom:3px;color:var(--muted);font-size:.68rem}
+    .yt-milestone-target{min-width:0}
+    .yt-milestone-target strong{font-size:.86rem}
+    .yt-milestone-target small{color:var(--muted);font-size:.7rem}
+    .yt-milestone-progress{height:5px;max-width:150px;margin:5px 0 3px;border-radius:999px;background:var(--surface-soft);overflow:hidden}
+    .yt-milestone-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+    @media(max-width:560px){.yt-milestone-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:8px 0}.yt-milestone-target{grid-column:1/-1}.yt-milestone-row>span{font-size:.75rem}}
   `;
   document.head.appendChild(style);
 
