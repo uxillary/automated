@@ -19,7 +19,7 @@
     {
       "slug": "hex-labs",
       "name": "Hex Labs",
-      "url": "https://hexlabs.pages.dev",
+      "url": "https://hex-labs.pages.dev",
       "enabled": true,
       "type": "website"
     },
@@ -34,6 +34,41 @@
       "slug": "youtube-tracker",
       "name": "YouTube Channel Tracker",
       "url": "https://uxillary.github.io/automated/",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "clipsift",
+      "name": "ClipSift",
+      "url": "https://uxillary.github.io/clipsift/",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "get-optimized",
+      "name": "Get Optimized",
+      "url": "https://get-optimized.pages.dev",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "maintenance-goblin",
+      "name": "Maintenance Goblin",
+      "url": "https://uxillary.github.io/maintenance-goblin/",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "font-size-tweak",
+      "name": "Font Size Tweak",
+      "url": "https://uxillary.github.io/font-size-tweak/",
+      "enabled": true,
+      "type": "website"
+    },
+    {
+      "slug": "astrogenesis",
+      "name": "Astrogenesis",
+      "url": "https://astrogenesis.wiki",
       "enabled": true,
       "type": "website"
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T09:49:26.593Z",
+  "generatedAt": "2026-09-29T05:07:34.689Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -13,12 +13,11 @@
       "existingPreview": true
     },
     "hex-labs": {
-      "status": "failed",
+      "status": "success",
       "image": "hex-labs.webp",
-      "url": "https://hexlabs.pages.dev",
-      "capturedAt": null,
-      "existingPreview": false,
-      "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://hexlabs.pages.dev/"
+      "url": "https://hex-labs.pages.dev",
+      "capturedAt": "2026-09-29T05:07:31.553Z",
+      "existingPreview": true
     },
     "virtual-stock-market": {
       "status": "success",
@@ -32,6 +31,41 @@
       "image": "youtube-tracker.webp",
       "url": "https://uxillary.github.io/automated/",
       "capturedAt": "2026-09-28T09:49:26.563Z",
+      "existingPreview": true
+    },
+    "clipsift": {
+      "status": "success",
+      "image": "clipsift.webp",
+      "url": "https://uxillary.github.io/clipsift/",
+      "capturedAt": "2026-09-29T05:07:20.345Z",
+      "existingPreview": true
+    },
+    "get-optimized": {
+      "status": "success",
+      "image": "get-optimized.webp",
+      "url": "https://get-optimized.pages.dev",
+      "capturedAt": "2026-09-29T05:07:23.371Z",
+      "existingPreview": true
+    },
+    "maintenance-goblin": {
+      "status": "success",
+      "image": "maintenance-goblin.webp",
+      "url": "https://uxillary.github.io/maintenance-goblin/",
+      "capturedAt": "2026-09-29T05:07:25.969Z",
+      "existingPreview": true
+    },
+    "font-size-tweak": {
+      "status": "success",
+      "image": "font-size-tweak.webp",
+      "url": "https://uxillary.github.io/font-size-tweak/",
+      "capturedAt": "2026-09-29T05:07:28.776Z",
+      "existingPreview": true
+    },
+    "astrogenesis": {
+      "status": "success",
+      "image": "astrogenesis.webp",
+      "url": "https://astrogenesis.wiki",
+      "capturedAt": "2026-09-29T05:07:34.647Z",
       "existingPreview": true
     }
   }
