@@ -1,0 +1,356 @@
+{
+  "version": 1,
+  "metricDefinitions": {
+    "views": "Repository page views",
+    "uniqueVisitors": "GitHub-reported daily unique visitors; do not sum across days",
+    "clones": "Full repository clones, not fetches or installs",
+    "uniqueCloners": "GitHub-reported daily unique cloners; do not sum across days",
+    "stars": "Current stargazer count",
+    "forks": "Current fork count",
+    "subscribers": "Current repository notification subscribers"
+  },
+  "projects": [
+    {
+      "id": "font-size-tweak",
+      "label": "FontSize Tweak",
+      "github": "uxillary/font-size-tweak"
+    },
+    {
+      "id": "maintenance-goblin",
+      "label": "Maintenance Goblin",
+      "github": "uxillary/maintenance-goblin"
+    }
+  ],
+  "observations": [
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-10",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-11",
+      "views": 6,
+      "uniqueVisitors": 4,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-12",
+      "views": 5,
+      "uniqueVisitors": 4,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-13",
+      "views": 3,
+      "uniqueVisitors": 2,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-14",
+      "views": 5,
+      "uniqueVisitors": 4,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-15",
+      "views": 3,
+      "uniqueVisitors": 1,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-16",
+      "views": 6,
+      "uniqueVisitors": 5,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-17",
+      "views": 3,
+      "uniqueVisitors": 3,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-18",
+      "views": 5,
+      "uniqueVisitors": 4,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-19",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-20",
+      "views": 2,
+      "uniqueVisitors": 1,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-21",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-22",
+      "views": 6,
+      "uniqueVisitors": 5,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-23",
+      "views": 1,
+      "uniqueVisitors": 1,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-09-29",
+      "views": null,
+      "uniqueVisitors": null,
+      "clones": null,
+      "uniqueCloners": null,
+      "stars": 6,
+      "forks": 0,
+      "subscribers": 0
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-10",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 20,
+      "uniqueCloners": 16,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-11",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 3,
+      "uniqueCloners": 3,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-12",
+      "views": 2,
+      "uniqueVisitors": 1,
+      "clones": 4,
+      "uniqueCloners": 4,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-13",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 3,
+      "uniqueCloners": 3,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-14",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-15",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-16",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-17",
+      "views": 1,
+      "uniqueVisitors": 1,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-18",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-19",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-20",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-21",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-22",
+      "views": 1,
+      "uniqueVisitors": 1,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-23",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 15,
+      "uniqueCloners": 6,
+      "stars": null,
+      "forks": null,
+      "subscribers": null
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-09-29",
+      "views": null,
+      "uniqueVisitors": null,
+      "clones": null,
+      "uniqueCloners": null,
+      "stars": 0,
+      "forks": 0,
+      "subscribers": 1
+    }
+  ]
+}
