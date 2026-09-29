@@ -41,7 +41,7 @@
   function normalizeSnapshots(rows) {
     return (Array.isArray(rows) ? rows : [])
       .filter((item) => item && dayNumber(item.date) != null && typeof item.total === 'number' && Number.isFinite(item.total) && item.total >= 0)
-      .map((item) => ({ date: item.date, day: dayNumber(item.date), total: Number(item.total) }))
+      .map((item) => ({ date: item.date, day: dayNumber(item.date), total: Number(item.total), repositories: item.repositories && typeof item.repositories === 'object' ? item.repositories : {} }))
       .sort((a, b) => a.day - b.day);
   }
 
@@ -311,6 +311,71 @@
     if (history) renderChart();
   }
 
+  function projectSparkline(label, points, endDate) {
+    const width = 112;
+    const height = 26;
+    const inset = 2;
+    const endDay = window.GitHubDownloadPatterns.dayNumber(endDate);
+    const startDay = endDay - 13;
+    const maximum = Math.max(1, ...points.map((point) => point.downloads));
+    const plotted = points.map((point) => ({
+      ...point,
+      x: inset + ((point.day - startDay) / 13) * (width - inset * 2),
+      y: height - inset - (point.downloads / maximum) * (height - inset * 2)
+    }));
+    const segments = [];
+    for (const point of plotted) {
+      const current = segments.at(-1);
+      if (!current || point.day !== current.at(-1).day + 1) segments.push([point]);
+      else current.push(point);
+    }
+    const paths = segments.filter((segment) => segment.length > 1).map((segment) => `<path d="${segment.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ')}"></path>`).join('');
+    const singlePoints = segments.filter((segment) => segment.length === 1).flat().map((point) => `<circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="1.7"></circle>`).join('');
+    const total = points.reduce((sum, point) => sum + point.downloads, 0);
+    const accessibleSummary = points.length
+      ? `${points.length} valid daily observations in the last 14 calendar days; ${fmt(total)} downloads total.`
+      : 'No valid daily observations in the last 14 calendar days.';
+    return `<svg class="project-sparkline" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(label)} sparkline: ${accessibleSummary}" focusable="false"><path class="sparkline-baseline" d="M${inset},${height - inset} H${width - inset}"></path>${paths}${singlePoints}</svg>`;
+  }
+
+  function renderProjectPerformance(summary) {
+    const mount = document.getElementById('githubApps');
+    const projects = summary.repositories;
+    const latestSnapshot = snapshots.at(-1);
+    const total = summary.currentTotalDownloads;
+    const reconciles = window.GitHubDownloadPatterns.reconcileProjectTotals(projects, total, latestSnapshot?.repositories);
+    if (!reconciles) {
+      mount.innerHTML = '<h3 class="section-title icon-heading"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>Project Performance</h3><p class="project-data-state" role="status">Project totals do not reconcile with the tracked overall total. Project comparison is temporarily unavailable.</p>';
+      return;
+    }
+    const orderedProjects = window.GitHubDownloadPatterns.sortProjects(projects);
+    const rows = orderedProjects.map((project) => {
+      const analytics = window.GitHubDownloadPatterns.projectAnalytics(snapshots, project.repo, summary.latestSnapshotDate);
+      const current = analytics.currentTotal;
+      const share = window.GitHubDownloadPatterns.sharePercent(project.downloads, total);
+      const shareLabel = share == null ? 'Share unavailable · total is 0' : `${fmt(share, 1)}% of tracked total`;
+      const shareMarkup = share == null
+        ? '<div class="project-share project-share-unavailable" aria-hidden="true"><span></span></div>'
+        : `<div class="project-share" role="progressbar" aria-label="Share of tracked downloads for ${escapeHtml(project.label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${share.toFixed(1)}" aria-valuetext="${fmt(share, 1)} percent of tracked downloads"><span style="width:${Math.max(0, Math.min(100, share))}%"></span></div>`;
+      const recent7 = analytics.recent7 == null ? 'Collecting data' : `+${fmt(analytics.recent7)}`;
+      const recent30 = analytics.recent30 == null ? 'Collecting data' : `+${fmt(analytics.recent30)}`;
+      let momentum = 'Collecting comparison data';
+      if (analytics.comparison) {
+        const comparison = analytics.comparison;
+        if (comparison.previous === 0 && comparison.recent > 0) momentum = 'Activity resumed';
+        else if (comparison.difference === 0) momentum = 'No change vs previous 7d';
+        else {
+          const arrow = comparison.difference > 0 ? '↑' : '↓';
+          const amount = Math.abs(comparison.percent);
+          momentum = `${arrow} ${amount < 1 ? '<1' : fmt(amount)}% vs previous 7d`;
+        }
+      }
+      const sparkline = projectSparkline(project.label, analytics.sparkline, summary.latestSnapshotDate);
+      return `<article class="project-row"><div class="project-row-main"><div class="project-name-block"><h4>${escapeHtml(project.label)}</h4><p>${current == null ? 'Collecting data' : `${fmt(current)} downloads`} · ${shareLabel}</p></div><strong class="project-total">${fmt(current)}</strong></div>${shareMarkup}<div class="project-row-detail"><div class="project-recent"><span>Last 7 days</span><strong>${recent7}</strong><span>Last 30 days</span><strong>${recent30}</strong></div><div class="project-momentum"><span>Recent activity</span><strong>${analytics.activity}</strong><span class="project-momentum-detail">${momentum}</span></div><div class="project-sparkline-wrap">${sparkline}</div></div></article>`;
+    }).join('');
+    mount.innerHTML = `<h3 class="section-title icon-heading"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>Project Performance</h3><p class="table-subtitle">Tracked release downloads by repository.</p><div class="project-list">${rows || '<p class="github-state">No tracked repositories are available.</p>'}</div>`;
+  }
+
   function render(summary) {
     const cards = [
       ['Total Downloads', summary.currentTotalDownloads, 'Across tracked applications'],
@@ -320,13 +385,7 @@
     ];
     document.getElementById('githubKpis').innerHTML = cards.map(([label, value, sub]) => `<article class="kpi-card"><span class="kpi-label">${label}</span><div class="kpi-value">${fmt(value, label === 'Downloads / Day' ? 1 : 0)}</div><div class="kpi-sub">${sub}</div></article>`).join('');
 
-    const apps = summary.repositories || [];
-    const total = summary.currentTotalDownloads || 0;
-    document.getElementById('githubApps').innerHTML = `<h3 class="section-title icon-heading"><i class="fa-solid fa-box-open" aria-hidden="true"></i>App Performance</h3><p class="table-subtitle">Cumulative downloads and recent growth.</p><div class="app-list">${apps.map((app) => {
-      const badges = `${summary.topRepository?.repo === app.repo ? '<span class="highlight-pill">Most downloaded</span>' : ''}${summary.fastestGrowingRepository?.repo === app.repo ? '<span class="highlight-pill">Fastest growing</span>' : ''}`;
-      const share = total ? app.downloads / total * 100 : 0;
-      return `<div class="app-row"><div class="app-row-header"><div><strong>${escapeHtml(app.label)}</strong>${badges}<div class="app-row-meta">${app.gain7 == null ? 'Recent gain collecting' : `+${fmt(app.gain7)} in 7 days`} · ${share.toFixed(1)}% share</div></div><strong>${fmt(app.downloads)}</strong></div><div class="metric-track" aria-label="${share.toFixed(1)} percent of downloads"><span class="metric-fill" style="width:${share}%"></span></div></div>`;
-    }).join('') || '<p class="github-state">No release assets found in the tracked repositories.</p>'}</div>`;
+    renderProjectPerformance(summary);
 
     const downloadAnalytics = window.GitHubDownloadPatterns.analyze(snapshots);
     renderMilestones(summary, downloadAnalytics);

@@ -36,20 +36,72 @@
   }
 
   function periodComparison(daily, latestDay, days = 7) {
-    const byDay = new Map(daily.map((point) => [point.day, point.downloads]));
-    const sums = [];
-    for (const offset of [0, days]) {
-      let total = 0;
-      for (let index = 0; index < days; index += 1) {
-        const value = byDay.get(latestDay - offset - index);
-        if (value == null) return null;
-        total += value;
-      }
-      sums.push(total);
-    }
-    const recent = sums[0];
-    const previous = sums[1];
+    const recent = periodTotal(daily, latestDay, days);
+    const previous = periodTotal(daily, latestDay, days, days);
+    if (recent == null || previous == null) return null;
     return { recent, previous, difference: recent - previous, percent: previous === 0 ? null : (recent - previous) / previous * 100 };
+  }
+
+  function periodTotal(daily, latestDay, days = 7, offset = 0) {
+    const byDay = new Map(daily.map((point) => [point.day, point.downloads]));
+    let total = 0;
+    for (let index = 0; index < days; index += 1) {
+      const value = byDay.get(latestDay - offset - index);
+      if (value == null) return null;
+      total += value;
+    }
+    return total;
+  }
+
+  function projectAnalytics(snapshots, repository, latestDate) {
+    const rows = (Array.isArray(snapshots) ? snapshots : [])
+      .filter((item) => item && dayNumber(item.date) != null && Number.isFinite(item.total) && item.total >= 0)
+      .map((item) => {
+        const value = item.repositories && Object.hasOwn(item.repositories, repository) ? item.repositories[repository] : null;
+        return { date: item.date, day: dayNumber(item.date), total: Number.isFinite(value) && value >= 0 ? value : null };
+      })
+      .sort((a, b) => a.day - b.day);
+    const daily = [];
+    for (let index = 1; index < rows.length; index += 1) {
+      const previous = rows[index - 1];
+      const current = rows[index];
+      if (current.day - previous.day !== 1 || previous.total == null || current.total == null) continue;
+      const downloads = current.total - previous.total;
+      if (downloads >= 0) daily.push({ date: current.date, day: current.day, downloads });
+    }
+    const latestDay = dayNumber(latestDate) ?? rows.at(-1)?.day ?? null;
+    const recent7 = latestDay == null ? null : periodTotal(daily, latestDay, 7);
+    const recent30 = latestDay == null ? null : periodTotal(daily, latestDay, 30);
+    return {
+      currentTotal: rows.at(-1)?.total ?? null,
+      daily,
+      recent7,
+      recent30,
+      comparison: latestDay == null ? null : periodComparison(daily, latestDay, 7),
+      activity: recent7 == null ? 'Collecting data' : recent7 > 0 ? 'Active' : 'No recent downloads',
+      sparkline: latestDay == null ? [] : daily.filter((point) => point.day >= latestDay - 13 && point.day <= latestDay)
+    };
+  }
+
+  function sharePercent(value, total) {
+    return Number.isFinite(value) && Number.isFinite(total) && total > 0 ? value / total * 100 : null;
+  }
+
+  function reconcileProjectTotals(projects, overallTotal, snapshotRepositories) {
+    if (!Array.isArray(projects) || !snapshotRepositories || typeof snapshotRepositories !== 'object' || !Number.isFinite(overallTotal)) return false;
+    const keys = Object.keys(snapshotRepositories).sort();
+    const projectKeys = projects.map((project) => project.repo).sort();
+    if (keys.length !== projectKeys.length || keys.some((key, index) => key !== projectKeys[index])) return false;
+    const snapshotTotal = keys.reduce((sum, key) => sum + snapshotRepositories[key], 0);
+    const summaryTotal = projects.reduce((sum, project) => {
+      if (!Number.isFinite(project.downloads) || project.downloads < 0 || project.downloads !== snapshotRepositories[project.repo]) return NaN;
+      return sum + project.downloads;
+    }, 0);
+    return Number.isFinite(summaryTotal) && summaryTotal === overallTotal && snapshotTotal === overallTotal;
+  }
+
+  function sortProjects(projects) {
+    return [...(Array.isArray(projects) ? projects : [])].sort((a, b) => b.downloads - a.downloads || (a.repo < b.repo ? -1 : a.repo > b.repo ? 1 : 0));
   }
 
   function streaks(daily, latestDay) {
@@ -139,5 +191,5 @@
     return { daily, validDayCount: daily.length, median: median(values), mean: values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null, comparison, streaks: runs, weekdays, bestDay: bestDay(daily), bestWeek: bestWeek(daily), observation };
   }
 
-  return { dayNumber, validDaily, median, periodComparison, streaks, weekdaySummary, bestDay, bestWeek, milestoneHistory, analyze };
+  return { dayNumber, validDaily, median, periodTotal, periodComparison, projectAnalytics, sharePercent, reconcileProjectTotals, sortProjects, streaks, weekdaySummary, bestDay, bestWeek, milestoneHistory, analyze };
 });

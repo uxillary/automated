@@ -142,3 +142,60 @@ test('milestones handle exact equality, interval progress, resets, highest thres
   assert.equal(belowFirst.progressPercent, 80);
   assert.equal(patterns.milestoneHistory([{ date: '2026-10-01', total: 150 }], []).next, null);
 });
+
+test('project daily changes exclude the baseline, gaps, missing project values, and decreases', () => {
+  const snapshots = [
+    { date: '2026-11-01', total: 100, repositories: { app: 50 } },
+    { date: '2026-11-02', total: 110, repositories: { app: 55 } },
+    { date: '2026-11-03', total: 120, repositories: {} },
+    { date: '2026-11-04', total: 130, repositories: { app: 65 } },
+    { date: '2026-11-05', total: 140, repositories: { app: 60 } },
+    { date: '2026-11-06', total: 150, repositories: { app: 62 } }
+  ];
+  const result = patterns.projectAnalytics(snapshots, 'app', '2026-11-06');
+  assert.equal(result.currentTotal, 62);
+  assert.deepEqual(result.daily.map(({ date, downloads }) => [date, downloads]), [['2026-11-02', 5], ['2026-11-06', 2]]);
+  assert.equal(result.recent7, null);
+  assert.equal(result.activity, 'Collecting data');
+});
+
+test('project recent periods distinguish zero activity, active periods, zero baselines, and insufficient history', () => {
+  const start = 20758; // 2026-11-01
+  const snapshotsForProject = (changes) => {
+    let projectTotal = 0;
+    let overallTotal = 0;
+    return [{ date: dateAt(start), total: overallTotal, repositories: { app: projectTotal } }, ...changes.map((change, index) => {
+      projectTotal += change;
+      overallTotal += change;
+      return { date: dateAt(start + index + 1), total: overallTotal, repositories: { app: projectTotal } };
+    })];
+  };
+  const resumed = patterns.projectAnalytics(snapshotsForProject([...Array(7).fill(0), ...Array(7).fill(3)]), 'app', dateAt(start + 14));
+  assert.equal(resumed.recent7, 21);
+  assert.equal(resumed.activity, 'Active');
+  assert.deepEqual(resumed.comparison, { recent: 21, previous: 0, difference: 21, percent: null });
+  assert.equal(patterns.projectAnalytics(snapshotsForProject(Array(7).fill(0)), 'app', dateAt(start + 7)).activity, 'No recent downloads');
+  assert.equal(patterns.projectAnalytics(snapshotsForProject([2, 0]), 'app', dateAt(start + 2)).activity, 'Collecting data');
+  const thirtyDays = patterns.projectAnalytics(snapshotsForProject(Array(30).fill(1)), 'app', dateAt(start + 30));
+  assert.equal(thirtyDays.recent30, 30);
+  assert.equal(thirtyDays.recent7, 7);
+});
+
+test('project shares are safe at zero totals and sort deterministically by downloads then repository', () => {
+  assert.equal(patterns.sharePercent(0, 0), null);
+  assert.equal(patterns.sharePercent(1, 0), null);
+  assert.equal(patterns.sharePercent(75, 100), 75);
+  const shares = [patterns.sharePercent(75, 100), patterns.sharePercent(25, 100)];
+  assert.equal(shares.reduce((sum, value) => sum + value, 0), 100);
+  assert.deepEqual(patterns.sortProjects([
+    { repo: 'z/app', downloads: 25 }, { repo: 'b/app', downloads: 75 }, { repo: 'a/app', downloads: 75 }
+  ]).map((project) => project.repo), ['a/app', 'b/app', 'z/app']);
+});
+
+test('project and overall current totals must reconcile with the latest repository snapshot', () => {
+  const projects = [{ repo: 'a', downloads: 75 }, { repo: 'b', downloads: 25 }];
+  assert.equal(patterns.reconcileProjectTotals(projects, 100, { a: 75, b: 25 }), true);
+  assert.equal(patterns.reconcileProjectTotals(projects, 101, { a: 75, b: 25 }), false);
+  assert.equal(patterns.reconcileProjectTotals(projects, 100, { a: 74, b: 26 }), false);
+  assert.equal(patterns.reconcileProjectTotals(null, 100, { a: 100 }), false);
+});
