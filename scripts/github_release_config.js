@@ -1,7 +1,6 @@
 'use strict';
 
-// Add one object here to begin tracking another application.
-module.exports = [
-  { repo: 'uxillary/font-size-tweak', label: 'FontSize Tweak' },
-  { repo: 'uxillary/maintenance-goblin', label: 'Maintenance Goblin' }
-];
+// Keep the existing release collector's small config contract while sourcing its allow-list canonically.
+module.exports = require('./project_metrics_config')
+  .filter((project) => project.releaseDownloads)
+  .map((project) => ({ repo: project.github, label: project.label }));

@@ -126,6 +126,36 @@ Run its tests locally with:
 node --test tests/github_release_metrics.test.js
 ```
 
+## GitHub Discovery Metrics
+
+The **GitHub Discovery Metrics** workflow runs daily at **04:11 UTC** and can
+also be started from **Actions → GitHub Discovery Metrics → Run workflow**. It
+uses the `METRICS_GITHUB_TOKEN` Actions secret to collect repository views and
+daily unique visitors, full clones and daily unique cloners, plus current stars,
+forks, and notification subscribers for projects in
+`scripts/project_metrics_config.js`.
+
+GitHub traffic endpoints expose a rolling 14-day window. Each successful run
+imports all returned dated traffic rows and upserts them by project and date,
+preserving older observations when they age out of GitHub's window. Durable
+history and the current summary are written to
+`docs/metrics/github_discovery_history.json` and
+`docs/metrics/github_discovery_summary.json`. A partial endpoint failure is
+reported and does not erase valid data from other endpoints; unavailable values
+remain null rather than becoming zero. The initial manual run should be started
+promptly to preserve the available window.
+
+Repository views are not website visits; clones are not installs; stars are
+not users; release downloads are not unique people. Daily unique visitors and
+cloners are not added together to imply unique people across a week. The
+collector does not publish credentials or raw GitHub response metadata.
+
+Focused tests:
+
+```sh
+node --test tests/github_discovery_metrics.test.js tests/github_release_metrics.test.js
+```
+
 ---
 
 ## 🛠️ Setup Guide
