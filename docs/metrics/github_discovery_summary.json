@@ -6,7 +6,7 @@
       "projectId": "font-size-tweak",
       "label": "FontSize Tweak",
       "repository": "uxillary/font-size-tweak",
-      "latestObservationDate": "2026-09-29",
+      "latestObservationDate": "2026-09-30",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -17,23 +17,63 @@
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
         {
-          "date": "2026-09-23",
+          "date": "2026-09-24",
+          "uniqueVisitors": 4
+        },
+        {
+          "date": "2026-09-25",
           "uniqueVisitors": 1
+        },
+        {
+          "date": "2026-09-26",
+          "uniqueVisitors": 3
+        },
+        {
+          "date": "2026-09-27",
+          "uniqueVisitors": 3
+        },
+        {
+          "date": "2026-09-28",
+          "uniqueVisitors": 2
+        },
+        {
+          "date": "2026-09-29",
+          "uniqueVisitors": 3
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
         {
-          "date": "2026-09-23",
+          "date": "2026-09-24",
+          "uniqueCloners": 11
+        },
+        {
+          "date": "2026-09-25",
           "uniqueCloners": 1
+        },
+        {
+          "date": "2026-09-26",
+          "uniqueCloners": 5
+        },
+        {
+          "date": "2026-09-27",
+          "uniqueCloners": 2
+        },
+        {
+          "date": "2026-09-28",
+          "uniqueCloners": 0
+        },
+        {
+          "date": "2026-09-29",
+          "uniqueCloners": 16
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-09-29",
+      "availableHistoryEnd": "2026-09-30",
       "coverage": {
-        "observations": 15,
-        "daysWithViews": 1,
-        "daysWithClones": 1,
+        "observations": 21,
+        "daysWithViews": 6,
+        "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
         "views7DaysComplete": false,
         "clones7DaysComplete": false,
@@ -44,7 +84,7 @@
       "projectId": "maintenance-goblin",
       "label": "Maintenance Goblin",
       "repository": "uxillary/maintenance-goblin",
-      "latestObservationDate": "2026-09-29",
+      "latestObservationDate": "2026-09-30",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -55,23 +95,63 @@
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
         {
-          "date": "2026-09-23",
+          "date": "2026-09-24",
+          "uniqueVisitors": 0
+        },
+        {
+          "date": "2026-09-25",
+          "uniqueVisitors": 0
+        },
+        {
+          "date": "2026-09-26",
+          "uniqueVisitors": 0
+        },
+        {
+          "date": "2026-09-27",
+          "uniqueVisitors": 1
+        },
+        {
+          "date": "2026-09-28",
+          "uniqueVisitors": 0
+        },
+        {
+          "date": "2026-09-29",
           "uniqueVisitors": 0
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
         {
-          "date": "2026-09-23",
-          "uniqueCloners": 6
+          "date": "2026-09-24",
+          "uniqueCloners": 2
+        },
+        {
+          "date": "2026-09-25",
+          "uniqueCloners": 0
+        },
+        {
+          "date": "2026-09-26",
+          "uniqueCloners": 0
+        },
+        {
+          "date": "2026-09-27",
+          "uniqueCloners": 1
+        },
+        {
+          "date": "2026-09-28",
+          "uniqueCloners": 1
+        },
+        {
+          "date": "2026-09-29",
+          "uniqueCloners": 0
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-09-29",
+      "availableHistoryEnd": "2026-09-30",
       "coverage": {
-        "observations": 15,
-        "daysWithViews": 1,
-        "daysWithClones": 1,
+        "observations": 21,
+        "daysWithViews": 6,
+        "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
         "views7DaysComplete": false,
         "clones7DaysComplete": false,
