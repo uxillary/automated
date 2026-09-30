@@ -194,14 +194,15 @@
       if (labelCell) monthLabels.push(`<span style="grid-column:${index + 1}" aria-hidden="true">${escapeHtml(new Date(`${labelCell.date}T00:00:00Z`).toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' }))}</span>`);
     });
     const lastValidDate = calendar.weeks.flat().filter((cell) => cell && cell.status !== 'unavailable').at(-1)?.date;
-    const cells = calendar.weeks.flat().map((cell) => {
+    const renderCell = (cell) => {
       if (!cell) return '<span class="github-heatmap-empty" aria-hidden="true"></span>';
       const fullDate = dateLabel(cell.date);
       if (cell.status === 'unavailable') return `<span class="github-heat-cell" data-state="unavailable" data-level="0" aria-hidden="true" title="${escapeHtml(fullDate)} — No recorded daily observation"></span>`;
       const description = cell.status === 'zero' ? '0 downloads. Valid day with no downloads.' : `${fmt(cell.downloads)} downloads. Valid day with activity, ${['', 'low', 'moderate', 'high', 'highest'][cell.level]} activity band.`;
       return `<button type="button" class="github-heat-cell github-heatmap-cell" data-state="${cell.status}" data-level="${cell.level}" data-date="${cell.date}" aria-label="${escapeHtml(`${fullDate}: ${description}`)}" title="${escapeHtml(`${fullDate} · ${description}`)}" tabindex="${cell.date === lastValidDate ? 0 : -1}"></button>`;
-    }).join('');
-    scroll.innerHTML = `<div class="github-heatmap-calendar" style="--heatmap-weeks:${calendar.weeks.length || 1}"><div class="github-heatmap-months" aria-hidden="true">${monthLabels.join('')}</div><div class="github-heatmap-grid" role="group" aria-labelledby="githubHeatmapTitle" aria-describedby="githubHeatmapKeyboardHelp">${cells}</div></div>`;
+    };
+    const weeks = calendar.weeks.map((week) => `<div class="github-heatmap-week">${week.map(renderCell).join('')}</div>`).join('');
+    scroll.innerHTML = `<div class="github-heatmap-calendar"><div class="github-heatmap-months" style="--heatmap-weeks:${calendar.weeks.length || 1}" aria-hidden="true">${monthLabels.join('')}</div><div class="github-heatmap-grid" role="group" aria-labelledby="githubHeatmapTitle" aria-describedby="githubHeatmapKeyboardHelp">${weeks}</div></div>`;
     if (calendar.startDate) {
       summary.textContent = `${calendar.validDays} recorded download days from ${dateLabel(calendar.startDate)} to ${dateLabel(calendar.endDate)}: ${calendar.positiveDays} days with activity, ${calendar.zeroDays} valid zero-download days, and ${calendar.unavailableDays} unavailable ${calendar.unavailableDays === 1 ? 'day' : 'days'}.`;
     } else summary.textContent = 'No valid daily observations are available.';

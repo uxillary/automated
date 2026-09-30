@@ -210,6 +210,21 @@ test('heatmap distinguishes the baseline, valid zero days, and activity on a Mon
   ]);
 });
 
+test('heatmap weeks retain seven weekday slots and blanks without inventing dates', () => {
+  const calendar = patterns.heatmapCalendar(snapshotsFromDaily(20706, Array(19).fill(1)));
+  assert.equal(calendar.weeks.length, 4);
+  assert.ok(calendar.weeks.every((week) => week.length === 7));
+  assert.deepEqual(calendar.weeks.flat().filter(Boolean).map(({ date }) => date),
+    Array.from({ length: 20 }, (_, index) => dateAt(20706 + index)));
+  assert.equal(calendar.weeks.flat().filter((cell) => cell === null).length, 8);
+
+  const partial = patterns.heatmapCalendar([{ date: '2026-09-10', total: 1 }]);
+  assert.equal(partial.weeks.length, 1);
+  assert.equal(partial.weeks[0].length, 7);
+  assert.equal(partial.weeks[0].filter((cell) => cell === null).length, 6);
+  assert.deepEqual(partial.weeks[0].filter(Boolean).map(({ date }) => date), ['2026-09-10']);
+});
+
 test('heatmap marks gaps and reset deltas unavailable while retaining later valid days', () => {
   const snapshots = [
     { date: '2026-01-01', total: 100 }, { date: '2026-01-02', total: 101 },
