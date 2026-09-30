@@ -2,7 +2,9 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const patterns = require('../docs/js/github-patterns');
+const heatmapCss = fs.readFileSync(require.resolve('../docs/css/github-releases.css'), 'utf8');
 
 const dateAt = (day) => new Date(day * 86400000).toISOString().slice(0, 10);
 const snapshotsFromDaily = (start, changes) => {
@@ -223,6 +225,13 @@ test('heatmap weeks retain seven weekday slots and blanks without inventing date
   assert.equal(partial.weeks[0].length, 7);
   assert.equal(partial.weeks[0].filter((cell) => cell === null).length, 6);
   assert.deepEqual(partial.weeks[0].filter(Boolean).map(({ date }) => date), ['2026-09-10']);
+});
+
+test('heatmap CSS fixes cell and week geometry against global button sizing', () => {
+  assert.match(heatmapCss, /\.github-download-heatmap\{--heatmap-cell:12px;--heatmap-gap:3px/);
+  assert.match(heatmapCss, /\.github-heatmap-week\{[^}]*grid-template-rows:repeat\(7,var\(--heatmap-cell\)\)[^}]*height:102px/);
+  assert.match(heatmapCss, /\.github-heatmap-cell\{[^}]*min-height:var\(--heatmap-cell\)[^}]*max-height:var\(--heatmap-cell\)/);
+  assert.match(heatmapCss, /\.github-heatmap-empty\{[^}]*min-height:var\(--heatmap-cell\)[^}]*max-height:var\(--heatmap-cell\)/);
 });
 
 test('heatmap marks gaps and reset deltas unavailable while retaining later valid days', () => {
