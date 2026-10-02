@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-10-01",
-  "currentTotalDownloads": 1350,
+  "latestSnapshotDate": "2026-10-02",
+  "currentTotalDownloads": 1352,
   "milestoneThresholds": [
     100,
     250,
@@ -12,10 +12,10 @@
     5000,
     10000
   ],
-  "gainSincePreviousSnapshot": 8,
-  "gain7Days": 54,
+  "gainSincePreviousSnapshot": 2,
+  "gain7Days": 44,
   "gain30Days": null,
-  "averageDaily7Days": 7.714285714285714,
+  "averageDaily7Days": 6.285714285714286,
   "averageDaily30Days": null,
   "trackedRepositoryCount": 2,
   "trackedReleaseCount": 4,
@@ -23,8 +23,8 @@
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1336,
-      "gain7": 54,
+      "downloads": 1338,
+      "gain7": 44,
       "gain30": null
     },
     {
@@ -43,7 +43,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 279
+      "downloads": 281
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -96,7 +96,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 224
+      "downloads": 226
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -134,15 +134,15 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1336,
-    "gain7": 54,
+    "downloads": 1338,
+    "gain7": 44,
     "gain30": null
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1336,
-    "gain7": 54,
+    "downloads": 1338,
+    "gain7": 44,
     "gain30": null
   },
   "highestDownloadedRelease": {
@@ -169,12 +169,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 279
+    "downloads": 281
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 23.3
+    "progressPercent": 23.5
   },
   "daily": [
     {
@@ -264,6 +264,10 @@
     {
       "date": "2026-10-01",
       "downloads": 8
+    },
+    {
+      "date": "2026-10-02",
+      "downloads": 2
     }
   ]
 }
