@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-10-10",
-  "currentTotalDownloads": 1436,
+  "latestSnapshotDate": "2026-10-11",
+  "currentTotalDownloads": 1442,
   "milestoneThresholds": [
     100,
     250,
@@ -12,20 +12,20 @@
     5000,
     10000
   ],
-  "gainSincePreviousSnapshot": 8,
-  "gain7Days": 74,
-  "gain30Days": 223,
-  "averageDaily7Days": 10.571428571428571,
-  "averageDaily30Days": 7.433333333333334,
+  "gainSincePreviousSnapshot": 6,
+  "gain7Days": 71,
+  "gain30Days": 228,
+  "averageDaily7Days": 10.142857142857142,
+  "averageDaily30Days": 7.6,
   "trackedRepositoryCount": 2,
   "trackedReleaseCount": 4,
   "repositories": [
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1422,
-      "gain7": 74,
-      "gain30": 223
+      "downloads": 1428,
+      "gain7": 71,
+      "gain30": 228
     },
     {
       "repo": "uxillary/maintenance-goblin",
@@ -43,7 +43,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 365
+      "downloads": 371
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -96,7 +96,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 296
+      "downloads": 302
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -134,16 +134,16 @@
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1422,
-    "gain7": 74,
-    "gain30": 223
+    "downloads": 1428,
+    "gain7": 71,
+    "gain30": 228
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1422,
-    "gain7": 74,
-    "gain30": 223
+    "downloads": 1428,
+    "gain7": 71,
+    "gain30": 228
   },
   "highestDownloadedRelease": {
     "id": "uxillary/font-size-tweak#233617246",
@@ -169,12 +169,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 365
+    "downloads": 371
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 29.1
+    "progressPercent": 29.5
   },
   "daily": [
     {
@@ -300,6 +300,10 @@
     {
       "date": "2026-10-10",
       "downloads": 8
+    },
+    {
+      "date": "2026-10-11",
+      "downloads": 6
     }
   ]
 }
