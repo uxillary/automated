@@ -509,11 +509,22 @@
     {
       "projectId": "font-size-tweak",
       "date": "2026-10-24",
+      "views": 11,
+      "uniqueVisitors": 5,
+      "clones": 6,
+      "uniqueCloners": 4,
+      "stars": 9,
+      "forks": 0,
+      "subscribers": 0
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-10-25",
       "views": null,
       "uniqueVisitors": null,
       "clones": null,
       "uniqueCloners": null,
-      "stars": 9,
+      "stars": 8,
       "forks": 0,
       "subscribers": 0
     },
@@ -1004,6 +1015,17 @@
     {
       "projectId": "maintenance-goblin",
       "date": "2026-10-24",
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 2,
+      "uniqueCloners": 1,
+      "stars": 0,
+      "forks": 0,
+      "subscribers": 1
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-10-25",
       "views": null,
       "uniqueVisitors": null,
       "clones": null,
