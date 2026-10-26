@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T08:55:36.227Z",
+  "generatedAt": "2026-10-26T08:58:23.534Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -23,21 +23,21 @@
       "status": "success",
       "image": "virtual-stock-market.webp",
       "url": "https://404cache.pages.dev",
-      "capturedAt": "2026-10-19T08:55:25.325Z",
+      "capturedAt": "2026-10-26T08:58:10.954Z",
       "existingPreview": true
     },
     "youtube-tracker": {
       "status": "success",
       "image": "youtube-tracker.webp",
       "url": "https://uxillary.github.io/automated/",
-      "capturedAt": "2026-10-19T08:55:27.347Z",
+      "capturedAt": "2026-10-26T08:58:13.158Z",
       "existingPreview": true
     },
     "clipsift": {
       "status": "success",
       "image": "clipsift.webp",
       "url": "https://uxillary.github.io/clipsift/",
-      "capturedAt": "2026-10-19T08:55:29.376Z",
+      "capturedAt": "2026-10-26T08:58:15.116Z",
       "existingPreview": true
     },
     "get-optimized": {
@@ -62,12 +62,11 @@
       "existingPreview": true
     },
     "astrogenesis": {
-      "status": "failed",
+      "status": "success",
       "image": "astrogenesis.webp",
       "url": "https://astrogenesis.wiki",
-      "capturedAt": null,
-      "existingPreview": true,
-      "error": "page.goto: net::ERR_SSL_VERSION_OR_CIPHER_MISMATCH at https://astrogenesis.wiki/"
+      "capturedAt": "2026-10-26T08:58:23.502Z",
+      "existingPreview": true
     }
   }
 }
