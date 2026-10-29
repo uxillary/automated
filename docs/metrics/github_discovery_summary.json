@@ -6,7 +6,7 @@
       "projectId": "font-size-tweak",
       "label": "FontSize Tweak",
       "repository": "uxillary/font-size-tweak",
-      "latestObservationDate": "2026-10-28",
+      "latestObservationDate": "2026-10-29",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -16,10 +16,6 @@
       "currentSubscribers": 0,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-10-22",
-          "uniqueVisitors": 1
-        },
         {
           "date": "2026-10-23",
           "uniqueVisitors": 3
@@ -39,14 +35,14 @@
         {
           "date": "2026-10-27",
           "uniqueVisitors": 4
+        },
+        {
+          "date": "2026-10-28",
+          "uniqueVisitors": 3
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
-        {
-          "date": "2026-10-22",
-          "uniqueCloners": 1
-        },
         {
           "date": "2026-10-23",
           "uniqueCloners": 0
@@ -66,12 +62,16 @@
         {
           "date": "2026-10-27",
           "uniqueCloners": 2
+        },
+        {
+          "date": "2026-10-28",
+          "uniqueCloners": 1
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-10-28",
+      "availableHistoryEnd": "2026-10-29",
       "coverage": {
-        "observations": 49,
+        "observations": 50,
         "daysWithViews": 6,
         "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
@@ -84,7 +84,7 @@
       "projectId": "maintenance-goblin",
       "label": "Maintenance Goblin",
       "repository": "uxillary/maintenance-goblin",
-      "latestObservationDate": "2026-10-28",
+      "latestObservationDate": "2026-10-29",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -94,10 +94,6 @@
       "currentSubscribers": 1,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-10-22",
-          "uniqueVisitors": 0
-        },
         {
           "date": "2026-10-23",
           "uniqueVisitors": 0
@@ -117,14 +113,14 @@
         {
           "date": "2026-10-27",
           "uniqueVisitors": 0
+        },
+        {
+          "date": "2026-10-28",
+          "uniqueVisitors": 1
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
-        {
-          "date": "2026-10-22",
-          "uniqueCloners": 0
-        },
         {
           "date": "2026-10-23",
           "uniqueCloners": 0
@@ -144,12 +140,16 @@
         {
           "date": "2026-10-27",
           "uniqueCloners": 1
+        },
+        {
+          "date": "2026-10-28",
+          "uniqueCloners": 3
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-10-28",
+      "availableHistoryEnd": "2026-10-29",
       "coverage": {
-        "observations": 49,
+        "observations": 50,
         "daysWithViews": 6,
         "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
