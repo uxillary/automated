@@ -1,8 +1,8 @@
 {
   "version": 1,
   "status": "ready",
-  "latestSnapshotDate": "2026-11-05",
-  "currentTotalDownloads": 1713,
+  "latestSnapshotDate": "2026-11-06",
+  "currentTotalDownloads": 1732,
   "milestoneThresholds": [
     100,
     250,
@@ -12,27 +12,27 @@
     5000,
     10000
   ],
-  "gainSincePreviousSnapshot": 21,
-  "gain7Days": 78,
-  "gain30Days": 316,
-  "averageDaily7Days": 11.142857142857142,
-  "averageDaily30Days": 10.533333333333333,
+  "gainSincePreviousSnapshot": 19,
+  "gain7Days": 73,
+  "gain30Days": 325,
+  "averageDaily7Days": 10.428571428571429,
+  "averageDaily30Days": 10.833333333333334,
   "trackedRepositoryCount": 2,
   "trackedReleaseCount": 4,
   "repositories": [
     {
       "repo": "uxillary/font-size-tweak",
       "label": "FontSize Tweak",
-      "downloads": 1698,
-      "gain7": 78,
-      "gain30": 315
+      "downloads": 1714,
+      "gain7": 70,
+      "gain30": 321
     },
     {
       "repo": "uxillary/maintenance-goblin",
       "label": "Maintenance Goblin",
-      "downloads": 15,
-      "gain7": 0,
-      "gain30": 1
+      "downloads": 18,
+      "gain7": 3,
+      "gain30": 4
     }
   ],
   "releases": [
@@ -43,7 +43,7 @@
       "tag": "v1.1.0",
       "publishedAt": "2026-08-26T00:35:59Z",
       "prerelease": false,
-      "downloads": 640
+      "downloads": 656
     },
     {
       "id": "uxillary/font-size-tweak#233617246",
@@ -61,7 +61,7 @@
       "tag": "v0.2.0",
       "publishedAt": "2026-08-23T19:04:38Z",
       "prerelease": false,
-      "downloads": 5
+      "downloads": 7
     },
     {
       "id": "uxillary/maintenance-goblin#247813517",
@@ -70,7 +70,7 @@
       "tag": "v0.1.0",
       "publishedAt": "2025-09-17T00:20:58Z",
       "prerelease": false,
-      "downloads": 10
+      "downloads": 11
     }
   ],
   "assets": [
@@ -80,7 +80,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak-v1.1.0.sha256",
       "size": 92,
-      "downloads": 19
+      "downloads": 20
     },
     {
       "id": "uxillary/font-size-tweak#376794812#529999176",
@@ -88,7 +88,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak-v1.1.0.zip",
       "size": 19470290,
-      "downloads": 99
+      "downloads": 103
     },
     {
       "id": "uxillary/font-size-tweak#376794812#529998977",
@@ -96,7 +96,7 @@
       "release": "uxillary/font-size-tweak#376794812",
       "name": "FontSizeTweak.exe",
       "size": 19864943,
-      "downloads": 522
+      "downloads": 533
     },
     {
       "id": "uxillary/font-size-tweak#233617246#274204651",
@@ -112,7 +112,7 @@
       "release": "uxillary/maintenance-goblin#375299671",
       "name": "MaintenanceGoblin.exe",
       "size": 15103757,
-      "downloads": 5
+      "downloads": 6
     },
     {
       "id": "uxillary/maintenance-goblin#375299671#526542691",
@@ -120,7 +120,7 @@
       "release": "uxillary/maintenance-goblin#375299671",
       "name": "MaintenanceGoblin.exe.sha256",
       "size": 89,
-      "downloads": 0
+      "downloads": 1
     },
     {
       "id": "uxillary/maintenance-goblin#247813517#294023669",
@@ -128,22 +128,22 @@
       "release": "uxillary/maintenance-goblin#247813517",
       "name": "MaintenanceGoblin.exe",
       "size": 28890618,
-      "downloads": 10
+      "downloads": 11
     }
   ],
   "topRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1698,
-    "gain7": 78,
-    "gain30": 315
+    "downloads": 1714,
+    "gain7": 70,
+    "gain30": 321
   },
   "fastestGrowingRepository": {
     "repo": "uxillary/font-size-tweak",
     "label": "FontSize Tweak",
-    "downloads": 1698,
-    "gain7": 78,
-    "gain30": 315
+    "downloads": 1714,
+    "gain7": 70,
+    "gain30": 321
   },
   "highestDownloadedRelease": {
     "id": "uxillary/font-size-tweak#233617246",
@@ -169,12 +169,12 @@
     "tag": "v1.1.0",
     "publishedAt": "2026-08-26T00:35:59Z",
     "prerelease": false,
-    "downloads": 640
+    "downloads": 656
   },
   "milestones": {
     "latestAchieved": 1000,
     "next": 2500,
-    "progressPercent": 47.5
+    "progressPercent": 48.8
   },
   "daily": [
     {
@@ -400,6 +400,10 @@
     {
       "date": "2026-11-05",
       "downloads": 21
+    },
+    {
+      "date": "2026-11-06",
+      "downloads": 19
     }
   ]
 }
