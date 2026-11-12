@@ -6,20 +6,16 @@
       "projectId": "font-size-tweak",
       "label": "FontSize Tweak",
       "repository": "uxillary/font-size-tweak",
-      "latestObservationDate": "2026-11-11",
+      "latestObservationDate": "2026-11-12",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
       "latestDailyUniqueCloners": null,
-      "currentStars": 10,
+      "currentStars": 11,
       "currentForks": 0,
       "currentSubscribers": 1,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-11-05",
-          "uniqueVisitors": 4
-        },
         {
           "date": "2026-11-06",
           "uniqueVisitors": 6
@@ -39,14 +35,14 @@
         {
           "date": "2026-11-10",
           "uniqueVisitors": 4
+        },
+        {
+          "date": "2026-11-11",
+          "uniqueVisitors": 5
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
-        {
-          "date": "2026-11-05",
-          "uniqueCloners": 3
-        },
         {
           "date": "2026-11-06",
           "uniqueCloners": 1
@@ -66,12 +62,16 @@
         {
           "date": "2026-11-10",
           "uniqueCloners": 3
+        },
+        {
+          "date": "2026-11-11",
+          "uniqueCloners": 1
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-11-11",
+      "availableHistoryEnd": "2026-11-12",
       "coverage": {
-        "observations": 63,
+        "observations": 64,
         "daysWithViews": 6,
         "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
@@ -84,7 +84,7 @@
       "projectId": "maintenance-goblin",
       "label": "Maintenance Goblin",
       "repository": "uxillary/maintenance-goblin",
-      "latestObservationDate": "2026-11-11",
+      "latestObservationDate": "2026-11-12",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -94,10 +94,6 @@
       "currentSubscribers": 1,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-11-05",
-          "uniqueVisitors": 0
-        },
         {
           "date": "2026-11-06",
           "uniqueVisitors": 0
@@ -117,14 +113,14 @@
         {
           "date": "2026-11-10",
           "uniqueVisitors": 3
+        },
+        {
+          "date": "2026-11-11",
+          "uniqueVisitors": 1
         }
       ],
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
-        {
-          "date": "2026-11-05",
-          "uniqueCloners": 1
-        },
         {
           "date": "2026-11-06",
           "uniqueCloners": 4
@@ -144,12 +140,16 @@
         {
           "date": "2026-11-10",
           "uniqueCloners": 0
+        },
+        {
+          "date": "2026-11-11",
+          "uniqueCloners": 0
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-11-11",
+      "availableHistoryEnd": "2026-11-12",
       "coverage": {
-        "observations": 63,
+        "observations": 64,
         "daysWithViews": 6,
         "daysWithClones": 6,
         "expectedDaysIn7DayWindow": 7,
