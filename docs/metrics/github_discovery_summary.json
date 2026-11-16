@@ -6,7 +6,7 @@
       "projectId": "font-size-tweak",
       "label": "FontSize Tweak",
       "repository": "uxillary/font-size-tweak",
-      "latestObservationDate": "2026-11-15",
+      "latestObservationDate": "2026-11-16",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -16,10 +16,6 @@
       "currentSubscribers": 1,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-11-09",
-          "uniqueVisitors": 3
-        },
         {
           "date": "2026-11-10",
           "uniqueVisitors": 4
@@ -44,10 +40,6 @@
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
         {
-          "date": "2026-11-09",
-          "uniqueCloners": 0
-        },
-        {
           "date": "2026-11-10",
           "uniqueCloners": 3
         },
@@ -69,11 +61,11 @@
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-11-15",
+      "availableHistoryEnd": "2026-11-16",
       "coverage": {
-        "observations": 67,
-        "daysWithViews": 6,
-        "daysWithClones": 6,
+        "observations": 68,
+        "daysWithViews": 5,
+        "daysWithClones": 5,
         "expectedDaysIn7DayWindow": 7,
         "views7DaysComplete": false,
         "clones7DaysComplete": false,
@@ -84,7 +76,7 @@
       "projectId": "maintenance-goblin",
       "label": "Maintenance Goblin",
       "repository": "uxillary/maintenance-goblin",
-      "latestObservationDate": "2026-11-15",
+      "latestObservationDate": "2026-11-16",
       "latestDailyViews": null,
       "latestDailyUniqueVisitors": null,
       "latestDailyClones": null,
@@ -94,10 +86,6 @@
       "currentSubscribers": 1,
       "views7Days": null,
       "uniqueVisitorsDaily7Days": [
-        {
-          "date": "2026-11-09",
-          "uniqueVisitors": 1
-        },
         {
           "date": "2026-11-10",
           "uniqueVisitors": 3
@@ -122,10 +110,6 @@
       "clones7Days": null,
       "uniqueClonersDaily7Days": [
         {
-          "date": "2026-11-09",
-          "uniqueCloners": 0
-        },
-        {
           "date": "2026-11-10",
           "uniqueCloners": 0
         },
@@ -147,11 +131,11 @@
         }
       ],
       "availableHistoryStart": "2026-09-10",
-      "availableHistoryEnd": "2026-11-15",
+      "availableHistoryEnd": "2026-11-16",
       "coverage": {
-        "observations": 67,
-        "daysWithViews": 6,
-        "daysWithClones": 6,
+        "observations": 68,
+        "daysWithViews": 5,
+        "daysWithClones": 5,
         "expectedDaysIn7DayWindow": 7,
         "views7DaysComplete": false,
         "clones7DaysComplete": false,
