@@ -751,10 +751,10 @@
     {
       "projectId": "font-size-tweak",
       "date": "2026-11-15",
-      "views": null,
-      "uniqueVisitors": null,
-      "clones": null,
-      "uniqueCloners": null,
+      "views": 1,
+      "uniqueVisitors": 1,
+      "clones": 1,
+      "uniqueCloners": 1,
       "stars": 11,
       "forks": 0,
       "subscribers": 1
@@ -762,6 +762,17 @@
     {
       "projectId": "font-size-tweak",
       "date": "2026-11-16",
+      "views": 5,
+      "uniqueVisitors": 5,
+      "clones": 2,
+      "uniqueCloners": 2,
+      "stars": 11,
+      "forks": 0,
+      "subscribers": 1
+    },
+    {
+      "projectId": "font-size-tweak",
+      "date": "2026-11-17",
       "views": null,
       "uniqueVisitors": null,
       "clones": null,
@@ -1499,10 +1510,10 @@
     {
       "projectId": "maintenance-goblin",
       "date": "2026-11-15",
-      "views": null,
-      "uniqueVisitors": null,
-      "clones": null,
-      "uniqueCloners": null,
+      "views": 0,
+      "uniqueVisitors": 0,
+      "clones": 0,
+      "uniqueCloners": 0,
       "stars": 0,
       "forks": 0,
       "subscribers": 1
@@ -1510,6 +1521,17 @@
     {
       "projectId": "maintenance-goblin",
       "date": "2026-11-16",
+      "views": 1,
+      "uniqueVisitors": 1,
+      "clones": 1,
+      "uniqueCloners": 1,
+      "stars": 0,
+      "forks": 0,
+      "subscribers": 1
+    },
+    {
+      "projectId": "maintenance-goblin",
+      "date": "2026-11-17",
       "views": null,
       "uniqueVisitors": null,
       "clones": null,
