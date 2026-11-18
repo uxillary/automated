@@ -1,23 +1,23 @@
 {
-  "last_updated": "2026-11-17T05:50:22+00:00",
+  "last_updated": "2026-11-18T05:16:37+00:00",
   "current": {
     "subscribers": 819,
-    "views": 932712,
+    "views": 932869,
     "videos": 496
   },
   "rolling": {
     "subs_per_day_7": 0.0,
     "subs_per_day_30": -0.06666666666666667,
-    "views_per_day_7": 151.57142857142858,
-    "views_per_day_30": 229.86666666666667
+    "views_per_day_7": 156.85714285714286,
+    "views_per_day_30": 226.33333333333334
   },
   "ratios": {
-    "views_per_video": 1880.467741935484,
-    "views_per_sub": 1138.8424908424909,
+    "views_per_video": 1880.7842741935483,
+    "views_per_sub": 1139.034188034188,
     "subs_per_video": 1.6512096774193548
   },
   "projection": {
-    "slope_subs_per_day": -0.07780267797811477,
+    "slope_subs_per_day": -0.08045410555186493,
     "next_50": {
       "target": 850,
       "eta_days": null,
