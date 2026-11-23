@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T11:22:42.522Z",
+  "generatedAt": "2026-11-23T12:46:46.714Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -23,14 +23,14 @@
       "status": "success",
       "image": "virtual-stock-market.webp",
       "url": "https://404cache.pages.dev",
-      "capturedAt": "2026-11-16T11:22:30.414Z",
+      "capturedAt": "2026-11-23T12:46:36.473Z",
       "existingPreview": true
     },
     "youtube-tracker": {
       "status": "success",
       "image": "youtube-tracker.webp",
       "url": "https://uxillary.github.io/automated/",
-      "capturedAt": "2026-11-16T11:22:32.594Z",
+      "capturedAt": "2026-11-23T12:46:38.784Z",
       "existingPreview": true
     },
     "clipsift": {
@@ -62,11 +62,12 @@
       "existingPreview": true
     },
     "astrogenesis": {
-      "status": "success",
+      "status": "failed",
       "image": "astrogenesis.webp",
       "url": "https://astrogenesis.wiki",
-      "capturedAt": "2026-10-26T08:58:23.502Z",
-      "existingPreview": true
+      "capturedAt": null,
+      "existingPreview": true,
+      "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://astrogenesis.wiki/"
     }
   }
 }
