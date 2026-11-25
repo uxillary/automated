@@ -1809,6 +1809,29 @@
         "uxillary/maintenance-goblin#375299671#526542691": 1,
         "uxillary/maintenance-goblin#247813517#294023669": 11
       }
+    },
+    {
+      "date": "2026-11-25",
+      "total": 1945,
+      "repositories": {
+        "uxillary/font-size-tweak": 1926,
+        "uxillary/maintenance-goblin": 19
+      },
+      "releases": {
+        "uxillary/font-size-tweak#376794812": 865,
+        "uxillary/font-size-tweak#233617246": 1061,
+        "uxillary/maintenance-goblin#375299671": 8,
+        "uxillary/maintenance-goblin#247813517": 11
+      },
+      "assets": {
+        "uxillary/font-size-tweak#376794812#529999169": 28,
+        "uxillary/font-size-tweak#376794812#529999176": 145,
+        "uxillary/font-size-tweak#376794812#529998977": 692,
+        "uxillary/font-size-tweak#233617246#274204651": 1061,
+        "uxillary/maintenance-goblin#375299671#526542692": 7,
+        "uxillary/maintenance-goblin#375299671#526542691": 1,
+        "uxillary/maintenance-goblin#247813517#294023669": 11
+      }
     }
   ]
 }
